@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-07-05T18:08:22.742392Z",
+  "gpu": "Tesla T4",
+  "fragment_duration_s": 30.0,
+  "source_wav": "/kaggle/input/datasets/alonhaviv/the-maestro-dataset-v3-0-0/maestro-v3.0.0/2017/MIDI-Unprocessed_059_PIANO059_MID--AUDIO-split_07-07-17_Piano-e_2-03_wav--1.wav",
+  "source_midi": "/kaggle/input/datasets/alonhaviv/the-maestro-dataset-v3-0-0/maestro-v3.0.0/2017/MIDI-Unprocessed_059_PIANO059_MID--AUDIO-split_07-07-17_Piano-e_2-03_wav--1.midi",
+  "ground_truth_notes": 398,
+  "results": [
+    {
+      "Modelo": "Kong et al. (piano_transcription_inference)",
+      "Notas detectadas": 398,
+      "F1_onset": 100.0,
+      "P_onset": 100.0,
+      "R_onset": 100.0,
+      "F1_note (con offset)": 97.24,
+      "Latencia (s)": 2.99,
+      "Latencia norm.": 0.1
+    },
+    {
+      "Modelo": "Basic Pitch (Spotify)",
+      "Notas detectadas": 306,
+      "F1_onset": 81.25,
+      "P_onset": 93.46,
+      "R_onset": 71.86,
+      "F1_note (con offset)": 9.38,
+      "Latencia (s)": 4.35,
+      "Latencia norm.": 0.145
+    }
+  ]
+}
