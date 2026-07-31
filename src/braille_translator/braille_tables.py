@@ -15,10 +15,6 @@ def cell(*dots: int) -> str:
     return chr(0x2800 + value)
 
 
-# ---------------------------------------------------------------------------
-# Regla 1-1 — Notas base (valor de corchea, sin puntos 3/6)
-# Manual: Tabla 1A, Seccion I.A
-# ---------------------------------------------------------------------------
 NOTE_BASE = {
     "C": cell(1, 4, 5),      # Do
     "D": cell(1, 5),         # Re
@@ -29,7 +25,7 @@ NOTE_BASE = {
     "B": cell(2, 4, 5),      # Si
 }
 
-# Puntos adicionales por grupo de duracion (Regla 1-1, Tabla 1A)
+# Puntos adicionales por grupo de duracion 
 #   redonda/semicorchea -> +3+6 ; blanca/fusa -> +3 ; negra/semifusa -> +6 ;
 #   corchea/garrapatea  -> nada
 DURATION_EXTRA_DOTS = {
@@ -49,10 +45,6 @@ def note_cell(step: str, duration_type: str) -> str:
     return chr(0x2800 + value)
 
 
-# ---------------------------------------------------------------------------
-# Regla 1-1 — Silencios
-# Manual: Tabla 1A
-# ---------------------------------------------------------------------------
 REST = {
     "whole": cell(1, 3, 4), "16th": cell(1, 3, 4),
     "half": cell(1, 3, 6), "32nd": cell(1, 3, 6),
@@ -60,12 +52,8 @@ REST = {
     "eighth": cell(1, 3, 4, 6), "128th": cell(1, 3, 4, 6),
 }
 
-# Regla 1-2 — Puntillo
 DOT = cell(3)
 
-# ---------------------------------------------------------------------------
-# Regla 2-x — Signos de octava (Manual: Tabla 1B, Seccion I.B)
-# ---------------------------------------------------------------------------
 OCTAVE_SIGN = {
     1: cell(4),
     2: cell(4, 5),
@@ -76,10 +64,6 @@ OCTAVE_SIGN = {
     7: cell(6),
 }
 
-# ---------------------------------------------------------------------------
-# Regla 3-1 — Alteraciones (Manual: Tabla 3A)
-# alter: +1 sostenido, -1 bemol, 0 becuadro explicito
-# ---------------------------------------------------------------------------
 ACCIDENTAL = {
     1: cell(1, 4, 6),    # sostenido
     -1: cell(1, 2, 6),   # bemol
@@ -88,10 +72,6 @@ ACCIDENTAL = {
     -2: cell(1, 2, 6) + cell(1, 2, 6),   # doble bemol
 }
 
-# ---------------------------------------------------------------------------
-# Regla 5-1 — Intervalos (Manual: Tabla 5A)
-# La 4a comparte celda con NUMBER_SIGN; se desambigua por posicion.
-# ---------------------------------------------------------------------------
 INTERVAL = {
     2: cell(3, 4),
     3: cell(3, 4, 6),
@@ -102,24 +82,13 @@ INTERVAL = {
     8: cell(3, 6),
 }
 
-# ---------------------------------------------------------------------------
-# Regla 15-1 — Signos de mano (Manual: Tabla 15A)
-# ---------------------------------------------------------------------------
 RIGHT_HAND = cell(4, 6) + cell(3, 4, 5)   # parte de mano derecha
 LEFT_HAND = cell(4, 5, 6) + cell(3, 4, 5)  # parte de mano izquierda
 
-# ---------------------------------------------------------------------------
-# Regla 9-x — Barras (Manual: Tabla 9A)
-# Barra simple = espacio en blanco (Regla 9-1)
-# ---------------------------------------------------------------------------
 BAR = "\u2800"                      # celda vacia = separador de compas
 DOUBLE_BAR = cell(1, 2, 6) + cell(1, 3)          # doble barra (fin de seccion)
 FINAL_BAR = cell(1, 2, 6) + cell(1, 3)           # barra final
 
-# ---------------------------------------------------------------------------
-# Indicacion de compas (Regla 3-6): signo de numero + numerador (superior)
-# + denominador (inferior)
-# ---------------------------------------------------------------------------
 NUMBER_SIGN = cell(3, 4, 5, 6)
 
 UPPER_DIGIT = {
@@ -136,13 +105,9 @@ LOWER_DIGIT = {
 
 
 def time_signature(beats: int, beat_type: int) -> str:
-    """Regla 3-6: numerador arriba, denominador abajo, un solo signo de numero."""
     return NUMBER_SIGN + UPPER_DIGIT[beats] + LOWER_DIGIT[beat_type]
 
 
-# ---------------------------------------------------------------------------
-# Exportacion BRF: tabla Braille ASCII estandar (indice = valor binario de puntos)
-# ---------------------------------------------------------------------------
 BRAILLE_ASCII = (
     " a1b'k2l@cif/msp\"e3h9o6r^djg>ntq,*5<-u8v.%[$+x!&;:4\\0z7(_?w]#y)="
 )

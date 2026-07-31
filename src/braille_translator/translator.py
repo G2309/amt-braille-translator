@@ -36,7 +36,6 @@ class HandTranslator:
         return "".join(out)
 
     def _emit_chord(self, chord: Chord) -> str:
-        """Reglas 5-1/5-2/5-3: nota principal + intervalos."""
         principal = chord.principal(self.hand.side)
         principal.duration_type = chord.duration_type
         principal.dots = chord.dots
@@ -47,9 +46,6 @@ class HandTranslator:
             if alter is not None:
                 out.append(bt.ACCIDENTAL[alter])
             interval = abs(sec.diatonic_index - principal.diatonic_index) + 1
-            # Regla 5-1: un intervalo mayor que la octava se reduce a su
-            # equivalente simple y se antepone el signo de octava de la nota,
-            # que es lo que lo distingue del intervalo simple homonimo.
             if interval > 8:
                 out.append(bt.OCTAVE_SIGN[sec.octave])
                 while interval > 8:
@@ -71,14 +67,11 @@ class HandTranslator:
 
     def translate(self, measures_per_line: int = DEFAULT_MEASURES_PER_LINE) -> List[str]:
         """Devuelve la lista de compases traducidos de esta mano.
-
         measures_per_line debe coincidir con el del renderizador: marca donde
         empieza cada renglon Bar-over-bar.
         """
         result = []
         for i, measure in enumerate(self.hand.measures):
-            # Reglas 2-2 / 15-2: la primera nota de cada renglon lleva signo de
-            # octava explicito, porque va precedida del signo de mano.
             if i % measures_per_line == 0:
                 self.octave_state.reset()
             result.append(self.translate_measure(measure))

@@ -1,10 +1,7 @@
 """AST musical del sistema 
 
-Jerarquia: Score -> Hand -> Measure -> (Note | Chord | Rest)
-
 El AST es la representacion intermedia entre el parser (MusicXML o, en Fase 4,
-la salida del modulo AMT) y el traductor Braille. Es deliberadamente simple:
-solo contiene la informacion que las reglas del subset requieren.
+la salida del modulo AMT) y el traductor Braille. 
 """
 from dataclasses import dataclass, field
 from typing import List, Optional, Union
@@ -16,8 +13,8 @@ class Note:
     octave: int               # 1..7 (octavas Braille; 4 = octava central)
     duration_type: str        # whole half quarter eighth 16th 32nd 64th 128th
     alter: int = 0            # -2..+2 (0 = natural)
-    dots: int = 0             # puntillos (Regla 1-2)
-    explicit_accidental: bool = False  # el MusicXML trae <accidental> explicito
+    dots: int = 0             # puntillos 
+    explicit_accidental: bool = False  # el MusicXML trae explicito
 
     @property
     def diatonic_index(self) -> int:
@@ -33,12 +30,10 @@ class Chord:
     dots: int = 0
 
     def principal(self, hand: str) -> Note:
-        """Regla 5-2: mano derecha -> nota mas aguda; izquierda -> mas grave."""
         ordered = sorted(self.notes, key=lambda n: n.diatonic_index)
         return ordered[-1] if hand == "right" else ordered[0]
 
     def secondary(self, hand: str) -> List[Note]:
-        """Notas restantes en el orden de emision de intervalos (Regla 5-3)."""
         ordered = sorted(self.notes, key=lambda n: n.diatonic_index)
         if hand == "right":
             return list(reversed(ordered[:-1]))   # descendente desde la aguda

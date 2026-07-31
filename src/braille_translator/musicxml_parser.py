@@ -2,11 +2,10 @@
 
 Implementacion minima con xml.etree, soporta:
 - partwise MusicXML 
-- dos pentagramas de piano (staff 1 = mano derecha, staff 2 = mano izquierda)
+- dos pentagramas de piano staff 1 = mano derecha, staff 2 = mano izquierda
 - notas, silencios, acordes (<chord/>), puntillos, alteraciones
 - armadura (<fifths>) e indicacion de compas (<time>)
 
-Fuera de alcance v0: in-accords (voces), ligaduras, repeticiones.
 """
 import xml.etree.ElementTree as ET
 from typing import Optional
@@ -16,8 +15,7 @@ from .model import Chord, Measure, Note, Rest, Score
 
 def _octave_musicxml_to_braille(octave_xml: int) -> int:
     """MusicXML usa octavas cientificas (C4 = Do central); el Manual numera
-    las octavas Braille del 1 al 7 con la 4a como central. Coinciden para
-    el rango util del piano, con recorte a los extremos 1..7."""
+    las octavas Braille del 1 al 7 con la 4a como central.""" 
     return max(1, min(7, octave_xml))
 
 

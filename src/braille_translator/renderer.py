@@ -1,6 +1,5 @@
 """Renderizador Bar-over-bar 
 
-Reglas 14-1 / 14-2 / 14-3 y 15-1 / 15-2 del subset:
 - Cada parrafo agrupa N compases, por defecto 4
 - Linea de mano derecha arriba, mano izquierda debajo
 - El primer signo de cada compas queda alineado verticalmente entre ambas
@@ -12,8 +11,6 @@ from . import braille_tables as bt
 
 EMPTY = "\u2800"   # celda Braille vacia
 
-# Regla 14-2: compases por parrafo; el traductor usa el mismo valor para
-# reiniciar el estado de octava en cada renglon (Regla 2-2).
 DEFAULT_MEASURES_PER_LINE = 4
 
 

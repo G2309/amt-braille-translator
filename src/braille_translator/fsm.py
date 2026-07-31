@@ -25,7 +25,6 @@ class OctaveState:
         self._prev: Optional[Note] = None
 
     def reset(self) -> None:
-        """Regla 2-2 / 15-2: inicio de pieza, de linea o tras signo de mano."""
         self._prev = None
 
     def needs_octave_sign(self, note: Note) -> bool:
@@ -41,7 +40,6 @@ class OctaveState:
         return True                                       # 6a o mayor
 
     def observe(self, note: Note) -> None:
-        """Actualiza la referencia sin emitir (p.ej. tras intervalos, Regla 2-4)."""
         self._prev = note
 
 
@@ -54,11 +52,10 @@ class AccidentalState:
     """
 
     def __init__(self, key_alterations: dict) -> None:
-        self._key = dict(key_alterations)     # step -> alter (armadura)
+        self._key = dict(key_alterations)     
         self._active: dict = {}
 
     def start_measure(self) -> None:
-        """Regla 3-2: reset al estado de la armadura en cada compas."""
         self._active = {}
 
     def _expected(self, step: str, octave: int) -> int:
