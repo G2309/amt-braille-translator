@@ -65,9 +65,12 @@ El puntillo se representa con el punto 3 (⠄) colocado inmediatamente después 
 
 Cuando el contexto no basta para determinar si un símbolo representa el valor mayor o el menor de su par, se emplean signos especiales:
 
-* Signo de valor mayor (aplica a redonda, blanca, negra, corchea)
-* Signo de valor menor (aplica a semicorchea, fusa, semifusa, garrapatea)
-* Signo de separación de valores (indica cambio dentro del compás)
+| Signo | Puntos | Unicode | Aplica a |
+| --- | --- | --- | --- |
+| Valor mayor | 4-5, 1-2-6, 2 | ⠘⠣⠂ | redonda, blanca, negra, corchea |
+| Valor menor | 6, 1-2-6, 2 | ⠠⠣⠂ | semicorchea, fusa, semifusa, garrapatea |
+
+> Leídos de la tabla de la sección IV del Manual. **Confirmar antes de implementar**: son signos de tres celdas, que es inusual, y el sistema todavía no los emite. Sin ellos la redonda y la semicorchea comparten celda y son indistinguibles, que es la ambigüedad que esta regla resuelve.
 
 ### Regla 1-6 — Compás de espera (silencio prolongado)
 
@@ -82,6 +85,8 @@ Para representar compases completos de silencio se usa siempre el silencio de re
 
 Las octavas se numeran del 1 al 7. La cuarta octava contiene el Do central (Do4). Los signos de octava indican en qué octava se ubica una nota:
 
+Verificado contra el Ejemplo 1-9 del Manual (ONCE, 2001), que muestra las siete octavas antepuestas a un do negra:
+
 | Octava | Puntos | Unicode | Rango aproximado |
 | --- | --- | --- | --- |
 | 1ª | 4 | ⠈ | Do1–Si1 (grave extrema) |
@@ -91,6 +96,8 @@ Las octavas se numeran del 1 al 7. La cuarta octava contiene el Do central (Do4)
 | 5ª | 4-6 | ⠨ | Do5–Si5 |
 | 6ª | 5-6 | ⠰ | Do6–Si6 |
 | 7ª | 6 | ⠠ | Do7–Si7 (aguda extrema) |
+
+Una versión anterior de este documento tenía la 4ª y la 5ª intercambiadas.
 
 Los signos de octava se colocan inmediatamente antes de la nota a la que afectan.
 
@@ -128,11 +135,11 @@ al procesar nueva_nota:
       # no emitir signo
       pass
   elif intervalo in (4, 5):
-      if nueva_nota.octava != nota_previa.octava:
+      if nueva_nota.octava != octava_actual:
           emitir signo_octava(nueva_nota.octava)
   else:  # intervalo >= 6
       emitir signo_octava(nueva_nota.octava)
-  nota_previa = nueva_nota
+  octava_actual = nueva_nota.octava
 
 ```
 
@@ -204,11 +211,11 @@ Cuando dos o más notas suenan simultáneamente, la nota principal se escribe co
 | 7ª | 2-5 | ⠒ |
 | 8ª (octava) | 3-6 | ⠤ |
 
-Nota de implementación: el signo de 4ª (3-4-5-6) usa la misma celda que el signo de número (Regla 3-6). Se desambigua por contexto: el signo de número solo precede a una cifra de compás o a un número de compás, mientras que el intervalo solo aparece inmediatamente después de una nota.
+Nota de implementación: el signo de 4ª usa la misma celda que el signo de número (Regla 3-6). Se desambigua por posición: el signo de número solo precede a una cifra de compás, mientras que el intervalo solo aparece inmediatamente después de una nota.
 
 ### Regla 5-1b — Intervalos mayores que la octava
 
-Un intervalo superior a la 8ª se reduce a su equivalente simple restando séptimas y se antepone el signo de octava de la nota del intervalo. Ese signo de octava es lo único que lo distingue del intervalo simple homónimo: una 9ª es «signo de octava + 2ª» y una 2ª es solo «2ª».
+Un intervalo superior a la 8ª se reduce a su equivalente simple restando séptimas y se antepone el signo de octava de la nota del intervalo. Ese signo es lo único que lo distingue del intervalo simple homónimo: una 9ª es «signo de octava + 2ª», una 2ª es solo «2ª».
 
 ### Regla 5-2 — Nota principal según la mano
 
@@ -227,17 +234,23 @@ Los intervalos se emiten en orden desde la nota principal hacia el extremo opues
 
 Cuando dos o más voces melódicas ocupan el mismo compás en la misma mano y no pueden representarse como intervalos armónicos (porque tienen ritmos independientes), se separan con el signo de cópula o in-accord:
 
-* Signo de cópula: puntos 1-2-6 (⠣)
+Verificado contra la tabla de la sección V.B del Manual (ONCE, 2001):
 
-La estructura del compás es: voz_1  ⠣  voz_2  [ ⠣  voz_3 ]
+| Signo | Puntos | Unicode |
+| --- | --- | --- |
+| Cópula total | 1-2-6, 3-4-5 | ⠣⠜ |
+| Cópula parcial | 5, 2 | ⠐⠂ |
+| División de compás (con cópula parcial) | 4-6, 1-3 | ⠨⠅ |
 
-El signo de cópula usa la misma celda que el bemol (Regla 3-1) y se desambigua por posición: el bemol precede a una nota, la cópula separa dos voces completas.
+La estructura del compás es: voz_1  ⠣⠜  voz_2  [ ⠣⠜  voz_3 ]
 
-> PENDIENTE DE VERIFICACIÓN contra la Tabla 5B del Manual antes de implementar la Regla 5-4. La versión anterior de este documento asignaba a la cópula los puntos 4-6 + 3-4-5, que son exactamente el signo de mano derecha de la Regla 15-1, por lo que era inutilizable. El valor 1-2-6 que aparece arriba corresponde al signo de in-accord del estándar internacional, no está confirmado contra el Manual Simplificado (ONCE, 2001) y todavía no tiene contraparte en `braille_tables.py`.
+La versión anterior de este documento daba la cópula como 4-6 + 3-4-5, que son exactamente el signo de mano derecha de la Regla 15-1; era un error.
+
+El sistema implementa solo la cópula total. La cópula parcial y la división de compás quedan documentadas pero fuera de alcance.
 
 ### Regla 5-5 — Signos de octava en in-accords
 
-Al iniciar cada voz nueva después del signo de cópula se emite siempre un signo de octava para la primera nota de esa voz, sin importar las reglas 2-3.
+Al iniciar cada voz nueva después del signo de cópula se emite siempre un signo de octava para la primera nota de esa voz, sin importar las reglas 2-3. Cada voz parte además de la misma altura de referencia con la que se entró al compás, no de la última nota de la voz anterior.
 
 ---
 
@@ -252,9 +265,11 @@ La ligadura de expresión que agrupa dos o más notas se representa con el signo
 
 ### Regla 6-2 — Ligadura de prolongación (tie)
 
-La ligadura de prolongación entre dos notas de la misma altura tonal se representa con el signo de puntos 4, 1-4 (⠈⠉) colocado entre las dos notas afectadas.
+La ligadura de prolongación entre dos notas de la misma altura tonal se representa con el signo de puntos 4, 1-4 (⠈⠉). Verificado contra la tabla de la sección VI.B del Manual.
 
-Cuando la ligadura de prolongación cruza una barra de compás, el signo se emite antes de la barra de compás y la nota destino en el compás siguiente no lleva signo de continuación (a diferencia del tie en tinta que se dibuja como arco).
+El signo se coloca **después de la primera nota o de su puntillo**, no entre ambas. Cuando la ligadura cruza una barra de compás, se emite antes de la barra y la nota destino no lleva signo de continuación (a diferencia del arco en tinta).
+
+Esto es lo que permite al cuantizador representar duraciones que no caben en una sola figura: una nota de cinco semicorcheas se escribe como negra ligada a semicorchea, y una nota que cruza la barra se parte en dos figuras ligadas sin perder duración.
 
 ---
 
