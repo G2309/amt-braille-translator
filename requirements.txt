@@ -1,0 +1,4 @@
+torch>=1.13
+librosa>=0.10
+piano_transcription_inference>=0.0.6
+numpy>=1.23
