@@ -12,6 +12,10 @@ from . import braille_tables as bt
 
 EMPTY = "\u2800"   # celda Braille vacia
 
+# Regla 14-2: compases por parrafo; el traductor usa el mismo valor para
+# reiniciar el estado de octava en cada renglon (Regla 2-2).
+DEFAULT_MEASURES_PER_LINE = 4
+
 
 def _pad(cells: str, width: int) -> str:
     return cells + EMPTY * (width - len(cells))
@@ -20,7 +24,7 @@ def _pad(cells: str, width: int) -> str:
 def render_bar_over_bar(
     rh_measures: List[str],
     lh_measures: List[str],
-    measures_per_line: int = 4,
+    measures_per_line: int = DEFAULT_MEASURES_PER_LINE,
     header: str = "",
 ) -> str:
     assert len(rh_measures) == len(lh_measures), "Ambas manos deben tener el mismo numero de compases"

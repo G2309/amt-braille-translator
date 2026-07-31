@@ -9,6 +9,7 @@ from typing import List
 from . import braille_tables as bt
 from .fsm import AccidentalState, OctaveState
 from .model import Chord, Hand, Note, Rest, Score
+from .renderer import DEFAULT_MEASURES_PER_LINE
 
 
 class HandTranslator:
@@ -46,8 +47,13 @@ class HandTranslator:
             if alter is not None:
                 out.append(bt.ACCIDENTAL[alter])
             interval = abs(sec.diatonic_index - principal.diatonic_index) + 1
-            while interval > 8:
-                interval -= 7
+            # Regla 5-1: un intervalo mayor que la octava se reduce a su
+            # equivalente simple y se antepone el signo de octava de la nota,
+            # que es lo que lo distingue del intervalo simple homonimo.
+            if interval > 8:
+                out.append(bt.OCTAVE_SIGN[sec.octave])
+                while interval > 8:
+                    interval -= 7
             out.append(bt.INTERVAL[interval])
         return "".join(out)
 
@@ -63,19 +69,24 @@ class HandTranslator:
                 parts.append(self._emit_note(ev))
         return "".join(parts)
 
-    def translate(self) -> List[str]:
-        """Devuelve la lista de compases traducidos de esta mano."""
-        self.octave_state.reset()
+    def translate(self, measures_per_line: int = DEFAULT_MEASURES_PER_LINE) -> List[str]:
+        """Devuelve la lista de compases traducidos de esta mano.
+
+        measures_per_line debe coincidir con el del renderizador: marca donde
+        empieza cada renglon Bar-over-bar.
+        """
         result = []
         for i, measure in enumerate(self.hand.measures):
-            if i == 0:
-                self.octave_state.reset()                    
+            # Reglas 2-2 / 15-2: la primera nota de cada renglon lleva signo de
+            # octava explicito, porque va precedida del signo de mano.
+            if i % measures_per_line == 0:
+                self.octave_state.reset()
             result.append(self.translate_measure(measure))
         return result
 
 
-def translate_score(score: Score):
+def translate_score(score: Score, measures_per_line: int = DEFAULT_MEASURES_PER_LINE):
     """Traduce ambas manos. Devuelve (compases_md, compases_mi)."""
-    rh = HandTranslator(score, score.right).translate()
-    lh = HandTranslator(score, score.left).translate()
+    rh = HandTranslator(score, score.right).translate(measures_per_line)
+    lh = HandTranslator(score, score.left).translate(measures_per_line)
     return rh, lh

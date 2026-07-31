@@ -65,9 +65,6 @@ DOT = cell(3)
 
 # ---------------------------------------------------------------------------
 # Regla 2-x — Signos de octava (Manual: Tabla 1B, Seccion I.B)
-# Estandar internacional: 1a=p4, 2a=p45, 3a=p456, 4a=p5, 5a=p46, 6a=p56, 7a=p6.
-# NOTA: verificar contra Tabla 1B del Manual; docs/braille_rules_subset.md
-# tiene 4a y 5a intercambiadas y debe corregirse.
 # ---------------------------------------------------------------------------
 OCTAVE_SIGN = {
     1: cell(4),
@@ -93,7 +90,7 @@ ACCIDENTAL = {
 
 # ---------------------------------------------------------------------------
 # Regla 5-1 — Intervalos (Manual: Tabla 5A)
-# Estandar internacional. Verificar contra Tabla 5A del Manual.
+# La 4a comparte celda con NUMBER_SIGN; se desambigua por posicion.
 # ---------------------------------------------------------------------------
 INTERVAL = {
     2: cell(3, 4),

@@ -10,17 +10,21 @@ from . import braille_tables
 from .brf_exporter import export_brf
 from .model import Chord, Hand, Measure, Note, Rest, Score
 from .musicxml_parser import parse_musicxml
-from .renderer import render_bar_over_bar
+from .renderer import DEFAULT_MEASURES_PER_LINE, render_bar_over_bar
 from .translator import translate_score
 
 
-def musicxml_to_brf(input_path: str, output_path: str, measures_per_line: int = 4) -> str:
+def musicxml_to_brf(
+    input_path: str,
+    output_path: str,
+    measures_per_line: int = DEFAULT_MEASURES_PER_LINE,
+) -> str:
     """Pipeline completo de archivo MusicXML a archivo BRF.
 
     Devuelve el texto Braille Unicode generado (util para inspeccion y pruebas).
     """
     score = parse_musicxml(input_path)
-    rh, lh = translate_score(score)
+    rh, lh = translate_score(score, measures_per_line)
     header = braille_tables.time_signature(score.beats, score.beat_type)
     braille = render_bar_over_bar(rh, lh, measures_per_line, header=header)
     export_brf(braille, output_path)

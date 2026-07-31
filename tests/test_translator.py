@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from braille_translator import braille_tables as bt
 from braille_translator.fsm import AccidentalState, OctaveState
-from braille_translator.model import Chord, Measure, Note, Rest, Score
+from braille_translator.model import Chord, Hand, Measure, Note, Rest, Score
 from braille_translator.renderer import render_bar_over_bar
 from braille_translator.translator import HandTranslator, translate_score
 
@@ -104,6 +104,62 @@ class TestChordIntervals(unittest.TestCase):
         chord = Chord(notes=[N("C", 4), N("E", 4), N("G", 4)], duration_type="half")
         secundarias = [n.step for n in chord.secondary("right")]
         self.assertEqual(secundarias, ["E", "C"])
+
+
+class TestCompoundIntervals(unittest.TestCase):
+    """Regla 5-1b — intervalos mayores que la octava (US-09)."""
+
+    def _traducir(self, notas, side="left"):
+        t = HandTranslator(Score(), Hand(side))
+        return t.translate_measure(Measure(1, events=[
+            Chord(notes=notas, duration_type="quarter")
+        ]))
+
+    def test_novena_lleva_signo_de_octava_antes_del_intervalo(self):
+        salida = self._traducir([N("C", 4), N("D", 5)])
+        self.assertEqual(salida[-2:], bt.OCTAVE_SIGN[5] + bt.INTERVAL[2])
+
+    def test_novena_no_se_confunde_con_segunda(self):
+        novena = self._traducir([N("C", 4), N("D", 5)])
+        segunda = self._traducir([N("C", 5), N("D", 5)])
+        self.assertNotEqual(novena[1:], segunda[1:])
+
+    def test_quincena_no_se_confunde_con_octava(self):
+        quincena = self._traducir([N("C", 4), N("C", 6)])
+        octava = self._traducir([N("C", 4), N("C", 5)])
+        self.assertEqual(quincena[-2:], bt.OCTAVE_SIGN[6] + bt.INTERVAL[8])
+        self.assertEqual(octava[-1:], bt.INTERVAL[8])
+
+    def test_octava_justa_no_lleva_signo_de_octava(self):
+        salida = self._traducir([N("C", 4), N("C", 5)])
+        self.assertEqual(salida, bt.OCTAVE_SIGN[4] + bt.note_cell("C", "quarter") + bt.INTERVAL[8])
+
+
+class TestLineBreakOctave(unittest.TestCase):
+    """Reglas 2-2 / 15-2 — signo de octava al inicio de cada renglon (US-08)."""
+
+    def _score_repetido(self, n_compases):
+        score = Score()
+        for i in range(1, n_compases + 1):
+            score.right.measures.append(Measure(i, events=[N("C", 4, "whole")]))
+            score.left.measures.append(Measure(i, events=[N("C", 3, "whole")]))
+        return score
+
+    def test_primer_compas_de_cada_renglon_lleva_octava(self):
+        rh, lh = translate_score(self._score_repetido(6), measures_per_line=4)
+        self.assertTrue(rh[0].startswith(bt.OCTAVE_SIGN[4]))
+        self.assertTrue(rh[4].startswith(bt.OCTAVE_SIGN[4]))
+        self.assertTrue(lh[4].startswith(bt.OCTAVE_SIGN[3]))
+
+    def test_compas_interior_del_renglon_no_reemite_octava(self):
+        rh, _ = translate_score(self._score_repetido(6), measures_per_line=4)
+        for i in (1, 2, 3, 5):
+            self.assertFalse(rh[i].startswith(bt.OCTAVE_SIGN[4]), f"compas {i}")
+
+    def test_renglon_respeta_measures_per_line_configurado(self):
+        rh, _ = translate_score(self._score_repetido(6), measures_per_line=2)
+        for i in (0, 2, 4):
+            self.assertTrue(rh[i].startswith(bt.OCTAVE_SIGN[4]), f"compas {i}")
 
 
 class TestBarOverBar(unittest.TestCase):
