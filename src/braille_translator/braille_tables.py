@@ -89,6 +89,13 @@ BAR = "\u2800"                      # celda vacia = separador de compas
 DOUBLE_BAR = cell(1, 2, 6) + cell(1, 3)          # doble barra (fin de seccion)
 FINAL_BAR = cell(1, 2, 6) + cell(1, 3)           # barra final
 
+TIE = cell(4) + cell(1, 4)
+
+# Separan voces simultaneas dentro de un mismo compas y mano.
+IN_ACCORD = cell(1, 2, 6) + cell(3, 4, 5)
+PARTIAL_IN_ACCORD = cell(5) + cell(2)
+MEASURE_DIVISION = cell(4, 6) + cell(1, 3)
+
 NUMBER_SIGN = cell(3, 4, 5, 6)
 
 UPPER_DIGIT = {

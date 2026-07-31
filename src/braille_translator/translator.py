@@ -4,6 +4,7 @@ Serializa cada compas de cada mano aplicando la FSM de octavas y alteraciones.
 El resultado es una lista de cadenas Braille Unicode, una por compas, que el
 renderizador Bar-over-bar alinea despues.
 """
+import copy
 from typing import List
 
 from . import braille_tables as bt
@@ -32,7 +33,9 @@ class HandTranslator:
             out.append(bt.OCTAVE_SIGN[note.octave])
 
         out.append(bt.note_cell(note.step, note.duration_type))
-        out.append(bt.DOT * note.dots)                      
+        out.append(bt.DOT * note.dots)
+        if note.tie:
+            out.append(bt.TIE)
         return "".join(out)
 
     def _emit_chord(self, chord: Chord) -> str:
@@ -51,19 +54,35 @@ class HandTranslator:
                 while interval > 8:
                     interval -= 7
             out.append(bt.INTERVAL[interval])
+        if chord.tie:
+            out.append(bt.TIE)
         return "".join(out)
 
-    def translate_measure(self, measure) -> str:
-        self.accidental_state.start_measure()               
+    def _emit_voice(self, events, force_first_octave: bool) -> str:
         parts: List[str] = []
-        for ev in measure.events:
+        first = force_first_octave
+        for ev in events:
             if isinstance(ev, Rest):
                 parts.append(bt.REST[ev.duration_type] + bt.DOT * ev.dots)
             elif isinstance(ev, Chord):
                 parts.append(self._emit_chord(ev))
+                first = False
             elif isinstance(ev, Note):
-                parts.append(self._emit_note(ev))
+                parts.append(self._emit_note(ev, force_octave=first))
+                first = False
         return "".join(parts)
+
+    def translate_measure(self, measure) -> str:
+        self.accidental_state.start_measure()
+        # Cada voz arranca desde la misma altura de referencia que la primera,
+        # y su nota inicial lleva siempre signo de octava.
+        entry_state = copy.deepcopy(self.octave_state)
+        rendered = []
+        for i, voice in enumerate(measure.voices()):
+            if i > 0:
+                self.octave_state = copy.deepcopy(entry_state)
+            rendered.append(self._emit_voice(voice, force_first_octave=i > 0))
+        return bt.IN_ACCORD.join(rendered)
 
     def translate(self, measures_per_line: int = DEFAULT_MEASURES_PER_LINE) -> List[str]:
         """Devuelve la lista de compases traducidos de esta mano.

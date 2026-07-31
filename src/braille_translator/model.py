@@ -13,12 +13,13 @@ class Note:
     octave: int               # 1..7 (octavas Braille; 4 = octava central)
     duration_type: str        # whole half quarter eighth 16th 32nd 64th 128th
     alter: int = 0            # -2..+2 (0 = natural)
-    dots: int = 0             # puntillos 
+    dots: int = 0             # puntillos
     explicit_accidental: bool = False  # el MusicXML trae explicito
+    tie: bool = False         # ligada a la siguiente nota del mismo sonido
 
     @property
     def diatonic_index(self) -> int:
-        """Indice diatonico absoluto para calculo de intervalos (Regla 2-3)."""
+        """Indice diatonico absoluto para calculo de intervalos."""
         steps = "CDEFGAB"
         return self.octave * 7 + steps.index(self.step)
 
@@ -28,6 +29,7 @@ class Chord:
     notes: List[Note]         # todas las notas del acorde
     duration_type: str
     dots: int = 0
+    tie: bool = False
 
     def principal(self, hand: str) -> Note:
         ordered = sorted(self.notes, key=lambda n: n.diatonic_index)
@@ -53,6 +55,12 @@ Event = Union[Note, Chord, Rest]
 class Measure:
     number: int
     events: List[Event] = field(default_factory=list)
+    # Voces simultaneas adicionales de la misma mano. Cada una se escribe
+    # completa y separada de la anterior por el signo de cópula.
+    extra_voices: List[List[Event]] = field(default_factory=list)
+
+    def voices(self) -> List[List[Event]]:
+        return [self.events] + self.extra_voices
 
 
 @dataclass

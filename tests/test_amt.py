@@ -108,13 +108,30 @@ class TestQuantize(unittest.TestCase):
             isinstance(e, Rest) for m in score.left.measures for e in m.events
         ))
 
-    def test_nota_no_cruza_la_barra_de_compas(self):
-        res = TranscriptionResult(notes=[ev(3.0, 7.0, 60)])   # cruza el compas 1
+    def test_nota_que_cruza_la_barra_queda_ligada(self):
+        res = TranscriptionResult(notes=[ev(3.0, 7.0, 60)])   # 4 negras desde el 4o tiempo
         score = quantize(res, tempo_bpm=60)
-        primer_compas = score.right.measures[0].events
-        notas = [e for e in primer_compas if isinstance(e, Note)]
-        self.assertEqual(len(notas), 1)
-        self.assertEqual(notas[0].duration_type, "quarter")
+        c1 = [e for e in score.right.measures[0].events if isinstance(e, Note)]
+        c2 = [e for e in score.right.measures[1].events if isinstance(e, Note)]
+        self.assertTrue(c1[-1].tie)
+        self.assertFalse(c2[0].tie)
+
+    def test_la_ligadura_conserva_la_duracion_total(self):
+        from amt.quantizer import _DURATION_TICKS
+        res = TranscriptionResult(notes=[ev(3.0, 7.0, 60)])
+        score = quantize(res, tempo_bpm=60)
+        total = sum(
+            _DURATION_TICKS[(e.duration_type, e.dots)]
+            for m in score.right.measures for e in m.events if isinstance(e, Note)
+        )
+        self.assertEqual(total, 16)   # 4 s a 60 bpm = 4 negras = 16 semicorcheas
+
+    def test_duracion_no_representable_se_parte_ligada(self):
+        res = TranscriptionResult(notes=[ev(0.0, 1.25, 60)])   # 5 semicorcheas
+        score = quantize(res, tempo_bpm=60)
+        notas = [e for e in score.right.measures[0].events if isinstance(e, Note)]
+        self.assertEqual([(n.duration_type, n.tie) for n in notas],
+                         [("quarter", True), ("16th", False)])
 
     def test_alteracion_llega_al_ast(self):
         res = TranscriptionResult(notes=[ev(0, 1, 61)])

@@ -10,6 +10,7 @@ import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from braille_translator import braille_tables as bt
+from braille_translator.brf_exporter import wrap_line
 from braille_translator.fsm import AccidentalState, OctaveState
 from braille_translator.model import Chord, Hand, Measure, Note, Rest, Score
 from braille_translator.renderer import render_bar_over_bar
@@ -173,6 +174,79 @@ class TestBarOverBar(unittest.TestCase):
         body_rh = lines[0][3:]
         body_lh = lines[1][3:]
         self.assertEqual(len(body_rh), len(body_lh))
+
+
+class TestTies(unittest.TestCase):
+    def test_nota_ligada_lleva_el_signo_despues_de_la_figura(self):
+        t = HandTranslator(Score(), Hand("right"))
+        salida = t.translate_measure(Measure(1, events=[N("C", 4, dtype="half")]))
+        ligada = HandTranslator(Score(), Hand("right")).translate_measure(
+            Measure(1, events=[Note("C", 4, "half", tie=True)])
+        )
+        self.assertEqual(ligada, salida + bt.TIE)
+
+    def test_el_puntillo_precede_a_la_ligadura(self):
+        t = HandTranslator(Score(), Hand("right"))
+        salida = t.translate_measure(
+            Measure(1, events=[Note("C", 4, "half", dots=1, tie=True)])
+        )
+        self.assertTrue(salida.endswith(bt.DOT + bt.TIE))
+
+    def test_acorde_ligado(self):
+        t = HandTranslator(Score(), Hand("right"))
+        acorde = Chord(notes=[N("C", 4), N("E", 4)], duration_type="quarter", tie=True)
+        self.assertTrue(t.translate_measure(Measure(1, events=[acorde])).endswith(bt.TIE))
+
+
+class TestInAccords(unittest.TestCase):
+    """Voces simultaneas de una misma mano separadas por cópula."""
+
+    def _dos_voces(self):
+        return Measure(1, events=[N("C", 4, "half")], extra_voices=[[N("E", 4, "half")]])
+
+    def test_las_voces_se_separan_con_el_signo_de_copula(self):
+        t = HandTranslator(Score(), Hand("right"))
+        self.assertIn(bt.IN_ACCORD, t.translate_measure(self._dos_voces()))
+
+    def test_la_primera_nota_de_la_segunda_voz_lleva_octava(self):
+        t = HandTranslator(Score(), Hand("right"))
+        _, segunda = t.translate_measure(self._dos_voces()).split(bt.IN_ACCORD)
+        self.assertTrue(segunda.startswith(bt.OCTAVE_SIGN[4]))
+
+    def test_sin_voces_extra_no_aparece_copula(self):
+        t = HandTranslator(Score(), Hand("right"))
+        salida = t.translate_measure(Measure(1, events=[N("C", 4)]))
+        self.assertNotIn(bt.IN_ACCORD, salida)
+
+    def test_la_segunda_voz_no_hereda_la_altura_de_la_primera(self):
+        # Ambas voces parten de la misma referencia de entrada al compas.
+        m = Measure(1, events=[N("C", 4, "half"), N("B", 6, "half")],
+                    extra_voices=[[N("D", 4, "half")]])
+        t = HandTranslator(Score(), Hand("right"))
+        _, segunda = t.translate_measure(m).split(bt.IN_ACCORD)
+        self.assertTrue(segunda.startswith(bt.OCTAVE_SIGN[4]))
+
+
+class TestBrfWrap(unittest.TestCase):
+    def test_no_parte_un_compas_a_la_mitad(self):
+        linea = " ".join(["cccc"] * 12)
+        for l in wrap_line(linea, width=40):
+            self.assertLessEqual(len(l), 40)
+            self.assertNotIn("  c", l.strip())
+
+    def test_la_continuacion_va_sangrada(self):
+        linea = " ".join(["cccc"] * 12)
+        salida = wrap_line(linea, width=40)
+        self.assertGreater(len(salida), 1)
+        self.assertTrue(salida[1].startswith("  "))
+
+    def test_linea_corta_no_se_toca(self):
+        self.assertEqual(wrap_line("abc", width=40), ["abc"])
+
+    def test_compas_mas_largo_que_la_linea_se_corta_duro(self):
+        salida = wrap_line("c" * 95, width=40)
+        self.assertTrue(all(len(l) <= 40 for l in salida))
+        self.assertEqual("".join(l.strip() for l in salida), "c" * 95)
 
 
 class TestBrfMapping(unittest.TestCase):
