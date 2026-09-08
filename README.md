@@ -122,6 +122,7 @@ python -m unittest discover -s tests
 - [`docs/bsa_metric.md`](docs/bsa_metric.md) — procedimiento de medición de la Exactitud de Símbolo Braille.
 - [`docs/literature_review_amt.md`](docs/literature_review_amt.md) — revisión de modelos de transcripción y benchmark comparativo.
 - [`notebooks/amt-benchmark-full.ipynb`](notebooks/amt-benchmark-full.ipynb) — benchmark reproducible sobre veinte obras completas de MAESTRO v3.0.0.
+- [`notebooks/latency-e2e.ipynb`](notebooks/latency-e2e.ipynb) — medición de latencia del pipeline completo, de audio a BRF.
 
 ## Selección del modelo acústico
 

@@ -74,7 +74,12 @@ class HandTranslator:
         for sec in chord.secondary(self.hand.side):
             out.append(self._accidental_cells(sec))
             interval = abs(sec.diatonic_index - principal.diatonic_index) + 1
-            if interval > 8:
+            if interval == 1:
+                # unisono, el caso de dos notas con la misma letra y octava pero
+                # distinta alteracion; se escribe como octava con su signo
+                out.append(bt.OCTAVE_SIGN[sec.octave])
+                interval = 8
+            elif interval > 8:
                 # un intervalo mayor que la octava se reduce y lleva delante
                 # el signo de octava de su propia nota
                 out.append(bt.OCTAVE_SIGN[sec.octave])

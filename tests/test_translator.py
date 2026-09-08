@@ -131,6 +131,16 @@ class TestCompoundIntervals(unittest.TestCase):
         self.assertEqual(quincena[-2:], bt.OCTAVE_SIGN[6] + bt.INTERVAL[8])
         self.assertEqual(octava[-1:], bt.INTERVAL[8])
 
+    def test_unisono_se_escribe_como_octava_con_su_signo(self):
+        # dos notas de la misma letra y octava con distinta alteracion
+        salida = self._traducir([N("C", 4), N("C", 4, alter=1)])
+        self.assertEqual(salida[-2:], bt.OCTAVE_SIGN[4] + bt.INTERVAL[8])
+
+    def test_unisono_no_revienta_el_traductor(self):
+        # el racimo cromatico aparece en repertorio real y antes lanzaba KeyError
+        for alter in (-1, 1):
+            self._traducir([N("D", 5), N("D", 5, alter=alter)])
+
     def test_octava_justa_no_lleva_signo_de_octava(self):
         salida = self._traducir([N("C", 4), N("C", 5)])
         self.assertEqual(salida, bt.OCTAVE_SIGN[4] + bt.note_cell("C", "quarter") + bt.INTERVAL[8])
