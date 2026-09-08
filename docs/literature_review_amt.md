@@ -170,6 +170,14 @@ MT3 se descarta como candidato del pipeline por tres motivos operativos: su dese
 
 ## 6. Metodología del benchmark empírico
 
+> **Estado**: el benchmark descrito en esta sección (1 fragmento de 30 s) fue la fase
+> exploratoria. El benchmark definitivo del Objetivo específico 1 —veinte obras
+> completas de la partición de prueba de MAESTRO v3.0.0, tres arquitecturas empíricas
+> (Kong et al., Basic Pitch y hFT-Transformer como tercera familia, con Onsets and
+> Frames como línea base bibliográfica) y métricas F1_onset, F1_note, NER y latencia—
+> está implementado en `notebooks/amt-benchmark-full.ipynb`. Al ejecutarlo en Kaggle,
+> actualizar las secciones 6 a 8 de este documento con sus resultados.
+
 ### 6.1 Objetivo
 
 Comparar cuantitativamente los dos candidatos seleccionados, Kong et al. (2021) y Basic Pitch (2022), sobre un fragmento estándar del conjunto de prueba de MAESTRO v3.0.0, en las métricas definidas en el Marco Metodológico.
