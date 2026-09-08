@@ -117,7 +117,7 @@ class TestQuantize(unittest.TestCase):
         self.assertFalse(c2[0].tie)
 
     def test_el_trozo_posterior_se_marca_como_continuacion(self):
-        # Regla 6-10: la continuacion no repite alteracion salvo renglon nuevo
+        # la continuacion no repite alteracion salvo en renglon nuevo
         res = TranscriptionResult(notes=[ev(3.0, 7.0, 61)])
         score = quantize(res, tempo_bpm=60)
         c1 = [e for e in score.right.measures[0].events if isinstance(e, Note)]

@@ -22,7 +22,7 @@ def N(step, octave, dtype="quarter", alter=0, dots=0):
 
 
 class TestOctaveRules(unittest.TestCase):
-    """Regla 1-10 — signos de octava segun distancia intervalica (US-08)."""
+    """Signos de octava segun el salto interválico (US-08)."""
 
     def setUp(self):
         self.fsm = OctaveState()
@@ -52,7 +52,7 @@ class TestOctaveRules(unittest.TestCase):
 
 
 class TestAccidentalRules(unittest.TestCase):
-    """Seccion III.A — vigencia de alteraciones en el compas (US-09)."""
+    """Alteraciones vigentes dentro del compas (US-09)."""
 
     def test_alteracion_se_emite_una_vez_por_compas(self):
         fsm = AccidentalState({})
@@ -91,7 +91,7 @@ class TestAccidentalRules(unittest.TestCase):
 
 
 class TestChordIntervals(unittest.TestCase):
-    """Regla 5-1 — nota principal e intervalos segun la mano (US-05)."""
+    """Nota escrita e intervalos segun la mano (US-05)."""
 
     def test_mano_derecha_principal_es_la_mas_aguda(self):
         chord = Chord(notes=[N("C", 4), N("E", 4), N("G", 4)], duration_type="half")
@@ -108,7 +108,7 @@ class TestChordIntervals(unittest.TestCase):
 
 
 class TestCompoundIntervals(unittest.TestCase):
-    """Regla 5-2 — intervalos mayores que la octava (US-09)."""
+    """Intervalos mayores que la octava (US-09)."""
 
     def _traducir(self, notas, side="left"):
         t = HandTranslator(Score(), Hand(side))
@@ -137,7 +137,7 @@ class TestCompoundIntervals(unittest.TestCase):
 
 
 class TestLineBreakOctave(unittest.TestCase):
-    """Reglas 1-10 / 15-3 — signo de octava al inicio de cada renglon (US-08)."""
+    """Signo de octava al inicio de cada renglon (US-08)."""
 
     def _score_repetido(self, n_compases):
         score = Score()
@@ -164,7 +164,7 @@ class TestLineBreakOctave(unittest.TestCase):
 
 
 class TestBarOverBar(unittest.TestCase):
-    """Reglas 14-17 / 14-22 — alineacion vertical y linea guia (US-10)."""
+    """Alineacion vertical de compases y linea guia (US-10)."""
 
     def test_primer_signo_de_cada_compas_alineado(self):
         rh = ["\u2801\u2803\u2805", "\u2801"]
@@ -206,7 +206,7 @@ class TestTies(unittest.TestCase):
         self.assertTrue(salida.endswith(bt.DOT + bt.TIE))
 
     def test_acorde_entero_ligado_usa_el_signo_de_acorde(self):
-        # Regla 6-12: acorde completo prolongado -> ligadura de acorde
+        # acorde completo prolongado -> ligadura de acorde
         t = HandTranslator(Score(), Hand("right"))
         acorde = Chord(notes=[N("C", 4), N("E", 4)], duration_type="quarter", tie=True)
         salida = t.translate_measure(Measure(1, events=[acorde]))
@@ -224,7 +224,7 @@ class TestTies(unittest.TestCase):
         self.assertNotIn(bt.TIE, salida)
 
     def test_ligadura_de_una_sola_nota_del_acorde(self):
-        # Regla 6-11: la ligadura de nota unica va tras la nota o intervalo
+        # con una sola nota prolongada, la ligadura va tras su intervalo
         t = HandTranslator(Score(), Hand("right"))
         miembros = [Note("C", 4, "quarter", tie=True), Note("E", 4, "quarter")]
         acorde = Chord(notes=miembros, duration_type="quarter")
@@ -263,10 +263,9 @@ class TestInAccords(unittest.TestCase):
 
 
 class TestSlurs(unittest.TestCase):
-    """Reglas 6-2 / 6-3(b) / 6-8 — ligaduras de expresion (US-11)."""
+    """Ligaduras de expresion (US-11)."""
 
     def test_ligadura_corta_tras_cada_nota_menos_la_ultima(self):
-        # Regla 6-2
         t = HandTranslator(Score(), Hand("right"))
         notas = [Note("C", 4, "quarter", slur=True),
                  Note("D", 4, "quarter", slur=True),
@@ -276,7 +275,6 @@ class TestSlurs(unittest.TestCase):
         self.assertFalse(salida.endswith(bt.SLUR))
 
     def test_ligadura_larga_usa_apertura_y_cierre(self):
-        # Regla 6-3(b)
         t = HandTranslator(Score(), Hand("right"))
         notas = [Note("C", 4, "quarter", slur_open=True)] + [
             N(s, 4) for s in "DEFG"
@@ -287,14 +285,12 @@ class TestSlurs(unittest.TestCase):
         self.assertNotIn(bt.SLUR, salida.replace(bt.SLUR_OPEN, "").replace(bt.SLUR_CLOSE, ""))
 
     def test_en_acordes_la_ligadura_va_antes_de_los_intervalos(self):
-        # Regla 6-8 (uso de España)
         t = HandTranslator(Score(), Hand("right"))
         acorde = Chord(notes=[N("C", 4), N("E", 4)], duration_type="quarter", slur=True)
         salida = t.translate_measure(Measure(1, events=[acorde]))
         self.assertTrue(salida.endswith(bt.SLUR + bt.INTERVAL[3]))
 
     def test_la_ligadura_de_expresion_precede_a_la_de_prolongacion(self):
-        # Regla 6-9
         t = HandTranslator(Score(), Hand("right"))
         nota = Note("C", 4, "quarter", slur=True, tie=True)
         salida = t.translate_measure(Measure(1, events=[nota]))
@@ -302,7 +298,7 @@ class TestSlurs(unittest.TestCase):
 
 
 class TestInAccordAccidentals(unittest.TestCase):
-    """Regla 5-14 — las alteraciones no sobreviven al signo de cópula."""
+    """Las alteraciones no sobreviven al signo de copula."""
 
     def test_la_segunda_voz_reemite_la_alteracion(self):
         m = Measure(1, events=[N("F", 4, "half", alter=1), N("F", 4, "half", alter=1)],
@@ -314,7 +310,7 @@ class TestInAccordAccidentals(unittest.TestCase):
 
 
 class TestTieContinuationAccidental(unittest.TestCase):
-    """Regla 6-10 — alteracion de nota ligada al compas siguiente."""
+    """Alteracion de una nota ligada al compas siguiente."""
 
     def _score(self):
         score = Score()
@@ -345,7 +341,7 @@ class TestTieContinuationAccidental(unittest.TestCase):
 
 
 class TestKeySignature(unittest.TestCase):
-    """Regla 3-3 — armadura de la clave."""
+    """Armadura de la clave."""
 
     def test_sin_alteraciones_no_emite_nada(self):
         self.assertEqual(bt.key_signature(0), "")
@@ -360,7 +356,7 @@ class TestKeySignature(unittest.TestCase):
 
 
 class TestBarSigns(unittest.TestCase):
-    """Tabla 9 A — barra final y doble barra de fin de seccion."""
+    """Barra final y doble barra de fin de seccion."""
 
     def test_barra_final_y_doble_barra_son_distintas(self):
         self.assertNotEqual(bt.FINAL_BAR, bt.DOUBLE_BAR)
