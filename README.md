@@ -2,7 +2,7 @@
 
 Convierte grabaciones de piano polifónico en partituras de musicografía Braille listas para leer en una línea Braille o imprimir en un embosser.
 
-El problema que resuelve está en el hueco entre dos tecnologías maduras que nunca se hablaron: los modelos de Transcripción Musical Automática terminan su trabajo entregando un MIDI, y los traductores a Braille empiezan el suyo exigiendo una partitura digital ya estructurada. Entre ese punto final y ese punto de partida hay un tramo que hasta ahora recaía sobre el propio músico invidente, obligado a encadenar herramientas que no fueron diseñadas para comunicarse. Este proyecto cubre ese tramo completo, de audio a archivo BRF, sin intervención manual.
+El problema que resuelve está en el hueco entre dos tecnologías maduras que nunca se hablaron. Los modelos de Transcripción Musical Automática terminan su trabajo entregando un MIDI, y los traductores a Braille empiezan el suyo exigiendo una partitura digital ya estructurada. Entre ese punto final y ese punto de partida hay un tramo que hasta ahora recaía sobre el propio músico invidente, obligado a encadenar herramientas que no fueron diseñadas para comunicarse. Este proyecto cubre ese tramo completo, de audio a archivo BRF, sin intervención manual.
 
 Trabajo de graduación · Universidad del Valle de Guatemala · Gustavo Cruz Bardales
 
@@ -11,7 +11,6 @@ Trabajo de graduación · Universidad del Valle de Guatemala · Gustavo Cruz Bar
 ```mermaid
 flowchart TD
     A["Audio de piano<br/>MP3 · WAV · FLAC · hasta 5 min"]
-    X["MusicXML<br/>(entrada alterna)"]
 
     subgraph IA["Etapa probabilística — inteligencia artificial"]
         B["AMTTranscriber<br/>Kong et al. 2021"]
@@ -31,7 +30,6 @@ flowchart TD
     K["BSA contra referencia humana"]
 
     A --> B --> C --> D --> E --> F --> G --> H --> I
-    X --> E
     I --> J
     I --> K
 ```
@@ -40,9 +38,9 @@ La separación en dos etapas es la decisión de diseño central del proyecto, no
 
 ## Qué hace y qué no
 
-Procesa piano polifónico a dos manos y produce un archivo BRF conforme al subconjunto de veintiocho reglas, en nueve secciones, del *Manual Simplificado de Musicografía Braille* (Aller Pérez, ONCE, 2001): notas y silencios, signos de octava, alteraciones y su vigencia dentro del compás, intervalos armónicos, in-accords, ligaduras de expresión y de prolongación, barras de compás, formato compás sobre compás y signos de mano.
+Procesa piano polifónico a dos manos y produce un archivo BRF conforme al subconjunto de veintiocho reglas, en nueve secciones, del *Manual Simplificado de Musicografía Braille* (Aller Pérez, ONCE, 2001). Ese subconjunto abarca notas y silencios, signos de octava, alteraciones y su vigencia dentro del compás, intervalos armónicos, in-accords, ligaduras de expresión y de prolongación, barras de compás, formato compás sobre compás y signos de mano.
 
-Queda fuera del alcance: audio con voz cantada u otros instrumentos, notación visual en pentagrama, edición interactiva del Braille, procesamiento en tiempo real y las reglas avanzadas del Manual (ornamentos, matices detallados, signos de pedal en su notación Braille propia). El detalle completo, con su justificación técnica, está en [`docs/braille_rules_subset.md`](docs/braille_rules_subset.md).
+Queda fuera del alcance el audio con voz cantada u otros instrumentos, la notación visual en pentagrama, la edición interactiva del Braille, el procesamiento en tiempo real y las reglas avanzadas del Manual como ornamentos, matices detallados y signos de pedal en su notación Braille propia. El detalle completo, con su justificación técnica, está en [`docs/braille_rules_subset.md`](docs/braille_rules_subset.md).
 
 ## Instalación
 
@@ -52,24 +50,18 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-El checkpoint del modelo acústico se descarga solo la primera vez que se transcribe audio. Para trabajar únicamente con MusicXML no hace falta ni PyTorch ni GPU.
+El checkpoint del modelo acústico se descarga solo la primera vez que se transcribe audio.
 
 ## Uso
 
-**De MusicXML a BRF**, que es la vía más rápida para probar el traductor:
-
-```bash
-python run_demo.py examples/simple_piece.musicxml salida.brf
-```
-
-**De audio a BRF**:
+**De audio a BRF**, que es el flujo del sistema.
 
 ```python
 from pipeline import audio_to_brf
 audio_to_brf("nocturno.wav", "nocturno.brf", tempo_bpm=60, beats=4, beat_type=4)
 ```
 
-**Como API REST**:
+**Como API REST.**
 
 ```bash
 uvicorn api.app:app --app-dir src
@@ -82,13 +74,21 @@ uvicorn api.app:app --app-dir src
 | `GET` | `/transcriptions/{id}/brf` | descarga el archivo resultante |
 | `GET` | `/health` | disponibilidad del servicio y del modelo |
 
-**Medir la calidad del resultado** contra una transcripción de referencia:
+**Medir la calidad del resultado** contra una transcripción de referencia.
 
 ```bash
 PYTHONPATH=src python -m evaluation referencia.brf generado.brf
 ```
 
 Devuelve la Exactitud de Símbolo Braille global y ponderada, con el desglose de aciertos, sustituciones, omisiones e inserciones por categoría sintáctica.
+
+### Banco de pruebas del traductor
+
+La entrada del sistema es audio. Aun así, el repositorio incluye un lector de MusicXML que alimenta directamente el árbol de sintaxis abstracta, saltándose la etapa acústica. Sirve para ejercitar y depurar la traducción Braille con una partitura de contenido conocido, sin GPU ni modelo, y es lo que usan buena parte de las pruebas. No forma parte del alcance del producto.
+
+```bash
+python run_demo.py examples/simple_piece.musicxml salida.brf
+```
 
 ## Arquitectura
 
@@ -106,7 +106,7 @@ Devuelve la Exactitud de Símbolo Braille global y ponderada, con el desglose de
 | `src/api/` | API REST asíncrona |
 | `src/evaluation/bsa.py` | métrica de exactitud sobre el Braille final |
 
-El árbol de sintaxis abstracta no es un adorno: el formato compás sobre compás exige que las barras de ambas manos queden alineadas verticalmente, y como todas las celdas Braille ocupan el mismo ancho, el sistema no puede decidir el relleno sin conocer de antemano la longitud proyectada de los dos compases. Solo una representación jerárquica en memoria permite ese cálculo anticipado.
+El árbol de sintaxis abstracta cumple una función muy concreta. El formato compás sobre compás exige que las barras de ambas manos queden alineadas verticalmente, y como todas las celdas Braille ocupan el mismo ancho, no hay forma de decidir el relleno sin saber de antemano cuánto va a medir cada uno de los dos compases. Ese cálculo anticipado solo es posible teniendo la obra entera representada en memoria antes de emitir el primer carácter.
 
 ## Pruebas
 
@@ -125,7 +125,7 @@ python -m unittest discover -s tests
 
 ## Selección del modelo acústico
 
-Sobre veinte obras completas de la partición de prueba de MAESTRO v3.0.0, medidas con `mir_eval`:
+Estos son los resultados sobre veinte obras completas de la partición de prueba de MAESTRO v3.0.0, medidos con `mir_eval`.
 
 | Modelo | F1 onset | F1 nota (con offset) | NER | Latencia normalizada |
 | --- | :---: | :---: | :---: | :---: |
