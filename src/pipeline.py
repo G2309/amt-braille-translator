@@ -21,7 +21,7 @@ def result_to_brf(
 ) -> str:
     score = quantize(result, tempo_bpm=tempo_bpm, beats=beats, beat_type=beat_type, fifths=fifths)
     rh, lh = translate_score(score, measures_per_line)
-    # Regla 3-8: armadura e indicacion de compas agrupadas al inicio
+    # armadura y compas van juntos en la cabecera
     header = braille_tables.key_signature(score.fifths) + braille_tables.time_signature(
         score.beats, score.beat_type
     )

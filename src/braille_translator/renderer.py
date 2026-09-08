@@ -1,12 +1,10 @@
-"""Renderizador Bar-over-bar (compas sobre compas, Seccion XIV.C.1)
+"""Renderizador compas sobre compas (bar over bar).
 
-- Regla 14-16: una linea por pentagrama; en piano, paralela de dos lineas.
-- Regla 14-17 / 14-20: el primer signo de cada compas queda alineado
-  verticalmente entre ambas manos.
-- Regla 14-18: los tres primeros espacios de cada linea llevan el
-  indicativo de parte (signo de mano + celda en blanco).
-- Regla 14-22: el espacio sobrante de un compas mas corto se rellena con
-  una linea guia de punto 3, innecesaria en el ultimo compas de la paralela.
+Una linea por pentagrama, que en piano forman la paralela de dos. El primer
+signo de cada compas queda alineado en vertical entre ambas manos, los tres
+primeros espacios llevan el signo de mano y el hueco que deja el compas mas
+corto se rellena con una linea guia de punto 3, salvo en el ultimo de la
+paralela.
 """
 from typing import List
 
@@ -43,7 +41,7 @@ def render_bar_over_bar(
         last = len(rh_group) - 1
         for i, (rh_m, lh_m) in enumerate(zip(rh_group, lh_group)):
             if i == last:
-                # Regla 14-22: sin linea guia en el ultimo compas de la paralela
+                # el ultimo compas de la paralela no necesita linea guia
                 padded_rh.append(rh_m)
                 padded_lh.append(lh_m)
                 continue

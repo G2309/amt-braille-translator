@@ -16,10 +16,10 @@ class Note:
     dots: int = 0             # puntillos
     explicit_accidental: bool = False  # el MusicXML trae explicito
     tie: bool = False         # ligada a la siguiente nota del mismo sonido
-    tie_from_prev: bool = False  # continuacion de una ligadura de prolongacion (Regla 6-10)
-    slur: bool = False        # Regla 6-2: ligadura de expresion hacia la nota siguiente
-    slur_open: bool = False   # Regla 6-3(b): apertura de ligadura larga
-    slur_close: bool = False  # Regla 6-3(b): cierre de ligadura larga
+    tie_from_prev: bool = False  # viene ligada de la nota anterior
+    slur: bool = False        # ligadura de expresion hacia la nota siguiente
+    slur_open: bool = False   # abre una ligadura larga
+    slur_close: bool = False  # cierra una ligadura larga
 
     @property
     def diatonic_index(self) -> int:
@@ -33,7 +33,7 @@ class Chord:
     notes: List[Note]         # todas las notas del acorde
     duration_type: str
     dots: int = 0
-    tie: bool = False         # Regla 6-12: todo el acorde se prolonga al siguiente
+    tie: bool = False         # el acorde entero se prolonga al siguiente
     slur: bool = False
     slur_open: bool = False
     slur_close: bool = False
@@ -86,7 +86,7 @@ class Score:
     left: Hand = field(default_factory=lambda: Hand("left"))
 
     def key_signature_alterations(self) -> dict:
-        """Regla 3-4: mapa (step -> alter) derivado de la armadura."""
+        """Alteraciones que impone la armadura, por nombre de nota."""
         sharps = ["F", "C", "G", "D", "A", "E", "B"]
         flats = ["B", "E", "A", "D", "G", "C", "F"]
         result = {}

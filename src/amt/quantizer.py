@@ -82,10 +82,9 @@ def _hand_events(
     def emit(start: int, length: int, pitches: Optional[List[int]]) -> None:
         """Coloca un evento, partiendolo en figuras representables.
 
-        Los trozos de una misma nota quedan unidos por ligadura de
-        prolongacion, asi que puede cruzar la barra sin perder duracion.
-        Los trozos posteriores al primero se marcan como continuacion
-        (Regla 6-10: la alteracion no se repite salvo en renglon nuevo).
+        Los trozos de una misma nota van unidos por ligadura, asi que puede
+        cruzar la barra sin perder duracion. Todos menos el primero quedan
+        marcados como continuacion para no repetir la alteracion.
         """
         continuation = False
         while length > 0:

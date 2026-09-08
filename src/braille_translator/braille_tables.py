@@ -1,10 +1,8 @@
-"""Tablas de simbolos de musicografia Braille.
+"""Tablas de simbolos Braille, cotejadas con el Manual de la ONCE (2001).
 
-Cada tabla referencia la regla correspondiente de docs/braille_rules_subset.md
-y la seccion del Manual Simplificado de Musicografia Braille (ONCE, 2001).
-
-Convencion de puntos: dot1=1, dot2=2, dot3=4, dot4=8, dot5=16, dot6=32.
-El caracter Unicode Braille es chr(0x2800 + suma_de_puntos).
+La trazabilidad regla por regla esta en docs/braille_rules_subset.md.
+Cada celda es chr(0x2800 + suma de puntos), con dot1=1, dot2=2, dot3=4,
+dot4=8, dot5=16, dot6=32.
 """
 
 def cell(*dots: int) -> str:
@@ -37,7 +35,7 @@ DURATION_EXTRA_DOTS = {
 
 
 def note_cell(step: str, duration_type: str) -> str:
-    """Regla 1-1: celda de nota = letra base + puntos de duracion."""
+    """Celda de nota: letra base mas los puntos que marcan la figura."""
     base = NOTE_BASE[step]
     value = ord(base) - 0x2800
     for d in DURATION_EXTRA_DOTS[duration_type]:
@@ -85,18 +83,18 @@ INTERVAL = {
 RIGHT_HAND = cell(4, 6) + cell(3, 4, 5)   # parte de mano derecha
 LEFT_HAND = cell(4, 5, 6) + cell(3, 4, 5)  # parte de mano izquierda
 
-BAR = "\u2800"                      # Regla 9-1: espacio = linea divisoria
-# Tabla 9 A: barra final y doble barra de fin de seccion
+BAR = "\u2800"                      # la linea divisoria es un espacio en blanco
+# barra final y doble barra de fin de seccion
 FINAL_BAR = cell(1, 2, 6) + cell(1, 3)
 DOUBLE_BAR = cell(1, 2, 6) + cell(1, 3) + cell(3)
 
-# Regla 6-2: ligadura de expresion (max. cuatro notas), tras cada nota menos la ultima
+# ligadura de expresion corta: va tras cada nota menos la ultima
 SLUR = cell(1, 4)
-# Regla 6-3(b): ligadura de mas de cuatro notas, apertura y cierre
+# ligadura de mas de cuatro notas: apertura y cierre
 SLUR_OPEN = cell(5, 6) + cell(1, 2)
 SLUR_CLOSE = cell(4, 5) + cell(2, 3)
 
-# Tabla 6 B: ligaduras de prolongacion (nota unica, Regla 6-9; acorde, Regla 6-12)
+# ligaduras de prolongacion: una nota suelta y un acorde entero
 TIE = cell(4) + cell(1, 4)
 CHORD_TIE = cell(4, 6) + cell(1, 4)
 
@@ -121,13 +119,13 @@ LOWER_DIGIT = {
 
 
 def time_signature(beats: int, beat_type: int) -> str:
-    """Regla 3-6: numerador en posicion normal, denominador en la parte baja."""
+    """Numerador en posicion normal, denominador en la parte baja."""
     return NUMBER_SIGN + UPPER_DIGIT[beats] + LOWER_DIGIT[beat_type]
 
 
 def key_signature(fifths: int) -> str:
-    """Regla 3-3: hasta tres alteraciones se repite el signo; con cuatro o mas
-    se escribe el numero seguido del signo de alteracion."""
+    """Hasta tres alteraciones repite el signo; de cuatro en adelante escribe
+    el numero seguido del signo."""
     if fifths == 0:
         return ""
     count = abs(fifths)

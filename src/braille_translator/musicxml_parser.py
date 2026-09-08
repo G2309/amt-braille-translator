@@ -7,10 +7,9 @@ Implementacion minima con xml.etree, soporta:
 - armadura (<fifths>) e indicacion de compas (<time>)
 - ligaduras de prolongacion (<tie>) y de expresion (<notations><slur>)
 
-Las ligaduras de expresion se agrupan segun las Reglas 6-2 y 6-3(b): hasta
-cuatro notas se marca el signo simple tras cada nota menos la ultima; con mas
-de cuatro se usan los signos de apertura y cierre (forma recomendada, 6-4).
-No se soportan ligaduras anidadas: solo se sigue una ligadura activa por mano.
+Las ligaduras de expresion se agrupan por longitud: hasta cuatro notas va el
+signo simple tras cada nota menos la ultima, y de ahi en adelante los signos de
+apertura y cierre. No hay ligaduras anidadas: una sola activa por mano.
 """
 import xml.etree.ElementTree as ET
 from typing import List, Optional, Union
@@ -22,12 +21,12 @@ Container = Union[Note, Chord]
 
 def _octave_musicxml_to_braille(octave_xml: int) -> int:
     """MusicXML usa octavas cientificas (C4 = Do central); el Manual numera
-    las octavas Braille del 1 al 7 con la 4a como central (Regla 1-8)."""
+    las octavas Braille del 1 al 7 con la 4a como central."""
     return max(1, min(7, octave_xml))
 
 
 def _close_slur_group(group: List[Container]) -> None:
-    """Reglas 6-2 / 6-3(b): marca los signos de expresion de un grupo ligado."""
+    """Marca los signos de expresion de un grupo de notas ligadas."""
     if len(group) < 2:
         return
     if len(group) <= 4:
@@ -87,8 +86,7 @@ def parse_musicxml(path: str) -> Score:
                 obj.tie = pending_chord.tie or obj.tie
             else:
                 obj = pending_chord
-                # Regla 6-12: si todas las notas estan ligadas, el acorde
-                # entero lleva la ligadura de prolongacion de acorde.
+                # con todas las notas ligadas basta la ligadura de acorde
                 if all(n.tie for n in obj.notes):
                     obj.tie = True
             target.events.append(obj)

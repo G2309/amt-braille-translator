@@ -1,10 +1,7 @@
-"""Maquina de Estados Finitos del traductor
+"""Maquina de estados del traductor.
 
-Gestiona los dos estados de la transcripcion:
-
-1. OctaveState  — Reglas 1-9 / 1-10 del Manual (signos de octava).
-2. AccidentalState — Seccion III.A del Manual (vigencia de alteraciones
-   dentro del compas, convencion heredada de la escritura en tinta).
+Lleva los dos contextos que el Braille necesita arrastrar: en que octava
+quedo la ultima nota y que alteraciones siguen vigentes en el compas.
 """
 from typing import Optional
 
@@ -12,7 +9,7 @@ from .model import Note
 
 
 class OctaveState:
-    """Regla 1-10 (a/b/c): decidir si una nota lleva signo de octava.
+    """Decide si una nota necesita signo de octava.
 
     | Intervalo con la nota previa | Cambia de octava | Se emite signo |
     |------------------------------|------------------|----------------|
@@ -32,7 +29,7 @@ class OctaveState:
         prev = self._prev
         self._prev = note
         if prev is None:
-            return True                                   # Reglas 1-10 y 15-3
+            return True                                   # primera nota del renglon
         interval = abs(note.diatonic_index - prev.diatonic_index) + 1
         if interval <= 3:
             return False
@@ -45,7 +42,7 @@ class OctaveState:
 
 
 class AccidentalState:
-    """Seccion III.A: vigencia de alteraciones dentro del compas.
+    """Alteraciones vigentes dentro del compas.
 
     Estado: dict (step, octave) -> alter vigente.
     Al inicio de cada compas se reinicia con la armadura de la clave;
@@ -67,8 +64,7 @@ class AccidentalState:
     def accidental_to_emit(self, note: Note) -> Optional[int]:
         """Devuelve el alter a emitir (o None si la alteracion ya esta vigente).
 
-        Emite becuadro (0) cuando hay que cancelar una alteracion vigente
-        (Tabla 3, becuadro).
+        Devuelve becuadro (0) cuando hay que cancelar una alteracion vigente.
         """
         expected = self._expected(note.step, note.octave)
         if note.alter == expected:
