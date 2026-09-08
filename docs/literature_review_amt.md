@@ -16,9 +16,9 @@ A partir de 2017 la investigación se orientó de forma casi total al aprendizaj
 
 1. CNN + BiLSTM con doble objetivo onset/frame, inaugurada por Onsets and Frames (Hawthorne et al., 2018) y refinada por Kong et al. (2021).
 2. CNN ligera multi-tarea, representada por Basic Pitch (Bittner et al., 2022), enfocada en instrumento-agnosticismo y eficiencia computacional.
-3. Transformer seq2seq, representada por Sequence-to-Sequence Piano Transcription (Hawthorne et al., 2021) y su extensión multi-instrumento MT3 (Gardner et al., 2022), con vocabulario tipo MIDI y arquitectura T5.
+3. Transformer, en dos variantes: la seq2seq con vocabulario tipo MIDI y arquitectura T5, representada por Sequence-to-Sequence Piano Transcription (Hawthorne et al., 2021) y su extensión multi-instrumento MT3 (Gardner et al., 2022); y la jerárquica frecuencia-tiempo del hFT-Transformer (Toyama et al., 2023).
 
-Estos cuatro modelos constituyen los candidatos evaluados en este documento.
+Este documento caracteriza cinco modelos de esas tres familias. Tres de ellos se evalúan empíricamente sobre obras completas (Kong et al., Basic Pitch y hFT-Transformer); Onsets and Frames se conserva como línea base bibliográfica y MT3 se descarta por motivos operativos, ambos con la justificación detallada en su sección correspondiente.
 
 ## 2. Modelo 1 — Onsets and Frames (Hawthorne et al., 2018)
 
@@ -168,99 +168,117 @@ Estado en el benchmark: descartado del benchmark empírico, documentado como opc
 
 MT3 se descarta como candidato del pipeline por tres motivos operativos: su desempeño sobre piano en solitario es inferior al de Kong et al. (F1_onset aproximadamente 95.8% frente a 96.72%), y su ventaja principal, la multi-instrumentalidad, no es aprovechable en este proyecto cuyo alcance está restringido a piano; el stack JAX + T5X + FLAX es notablemente más complejo de integrar en un backend FastAPI comparado con un modelo PyTorch estándar, aumentando innecesariamente la complejidad del despliegue (US-12); y el tamaño del checkpoint (aproximadamente 200 MB) junto con los requisitos de memoria GPU son mayores. Se documenta como candidato natural para una extensión futura del sistema a otros instrumentos (US-25), donde su capacidad multi-instrumento aportaría valor real.
 
-## 6. Metodología del benchmark empírico
+## 6. Modelo 5 — hFT-Transformer (Toyama et al., 2023)
 
-> **Estado**: el benchmark descrito en esta sección (1 fragmento de 30 s) fue la fase
-> exploratoria. El benchmark definitivo del Objetivo específico 1 —veinte obras
-> completas de la partición de prueba de MAESTRO v3.0.0, tres arquitecturas empíricas
-> (Kong et al., Basic Pitch y hFT-Transformer como tercera familia, con Onsets and
-> Frames como línea base bibliográfica) y métricas F1_onset, F1_note, NER y latencia—
-> está implementado en `notebooks/amt-benchmark-full.ipynb`. Al ejecutarlo en Kaggle,
-> actualizar las secciones 6 a 8 de este documento con sus resultados.
+### 6.1 Arquitectura
 
-### 6.1 Objetivo
+Transformer jerárquico de dos niveles sobre el eje frecuencia-tiempo. El primer nivel combina un bloque convolucional en el eje temporal, un codificador Transformer en el eje de frecuencia y un decodificador; el segundo aplica otro codificador Transformer sobre el eje temporal. Opera sobre mel-espectrogramas de 256 bandas a 16 kHz y produce cuatro salidas por nivel: onset, offset, actividad (mpe) y velocidad, para las 88 notas del piano.
 
-Comparar cuantitativamente los dos candidatos seleccionados, Kong et al. (2021) y Basic Pitch (2022), sobre un fragmento estándar del conjunto de prueba de MAESTRO v3.0.0, en las métricas definidas en el Marco Metodológico.
+### 6.2 Dataset de entrenamiento
 
-### 6.2 Fragmento de evaluación
+MAESTRO v3.0.0. El checkpoint publicado (`model_016_003.pkl`, release ISMIR 2023) corresponde al modelo entrenado sobre la partición de entrenamiento de ese conjunto.
 
-- Fuente: MAESTRO v3.0.0, tomado del dataset público de Kaggle alonhaviv/the-maestro-dataset-v3-0-0.
-- Archivo evaluado: MIDI-Unprocessed_059_PIANO059_MID--AUDIO-split_07-07-17_Piano-e_2-03_wav--1, correspondiente a una grabación de 2017 del International Piano-e-Competition.
-- Duración: 30 segundos recortados desde el inicio de la pieza, con 398 notas de referencia (ground truth) en ese intervalo.
-- Justificación: un fragmento corto permite iteraciones rápidas del benchmark sin comprometer la validez de la comparación relativa entre modelos. Los resultados no pretenden reproducir los reportados en las publicaciones originales (que usan el conjunto de prueba completo, del orden de 50 horas), sino comparar el desempeño relativo bajo condiciones controladas y reproducibles.
+### 6.3 Licencia y disponibilidad
 
-### 6.3 Ambiente de ejecución
+- Repositorio: `sony/hFT-Transformer` en GitHub, licencia MIT.
+- Framework: PyTorch, con `torchaudio` para el cálculo de la característica de entrada.
+- Checkpoint: se descarga del release `ismir2023`.
 
-- Plataforma: Kaggle Notebooks, con el dataset de MAESTRO v3.0.0 montado como input y acceso a internet habilitado para descargar los checkpoints pre-entrenados.
-- Acelerador: GPU NVIDIA Tesla T4.
-- Frameworks: PyTorch (Kong et al.), TensorFlow 2 (Basic Pitch).
-- Instalación de dependencias:
+A diferencia de Kong et al., no se distribuye como paquete instalable: hay que clonar el repositorio, y el archivo de configuración que consume el modelo no es el que viene publicado sino uno derivado, al que `corpus/make_dataset.py` agrega los campos `min_value`, `max_value` y `n_bins`. Sin ellos la inferencia falla. El notebook del benchmark reconstruye ese config.
 
-  pip install --no-deps basic-pitch tensorflow-io-gcs-filesystem
-  pip install mir_eval
-  pip install --no-deps resampy
+### 6.4 Justificación
 
-  Las dependencias de basic-pitch y pretty_midi/piano_transcription_inference se instalaron con la bandera --no-deps para evitar que pip intentara forzar un downgrade de numpy incompatible con la versión de Python del entorno de Kaggle (3.12). Las dependencias faltantes (resampy) se agregaron de forma manual, también sin arrastrar versiones conflictivas.
-- Herramienta de evaluación: mir_eval.transcription (Raffel et al., 2014), estándar de facto en la comunidad MIR.
+Estado en el benchmark: incluido y evaluado empíricamente.
 
-### 6.4 Métricas medidas
+Se incorporó como tercera familia arquitectónica del benchmark, en sustitución de Onsets and Frames, que no pudo evaluarse empíricamente por depender de TensorFlow 1.15 (ver sección 2.5) y para el que no existe un checkpoint público utilizable en el entorno de ejecución. Con hFT-Transformer las tres familias del estado del arte quedan representadas por modelos ejecutables: la CRNN de doble objetivo en su variante de alta resolución (Kong et al.), la CNN ligera instrumento-agnóstica (Basic Pitch) y el Transformer jerárquico (hFT).
 
-Para cada modelo se calculan:
+## 7. Metodología del benchmark empírico
+
+### 7.1 Objetivo
+
+Comparar cuantitativamente tres arquitecturas sobre **obras completas** de la partición de prueba de MAESTRO v3.0.0, para verificar los umbrales del primer objetivo específico: F1 de onset ≥ 80 %, F1 a nivel de nota ≥ 75 % y Tasa de Error de Nota ≤ 25 %.
+
+### 7.2 Conjunto de evaluación
+
+Veinte obras completas tomadas de las 177 de la partición de prueba, seleccionadas por muestreo aleatorio con semilla fija (22779) para no sesgar por compositor ni por duración. Suman unas 2.4 horas de audio y abarcan desde Scarlatti hasta Debussy. La partición de prueba está excluida del entrenamiento de los tres modelos. La lista exacta queda registrada en `benchmark_full_por_obra.csv`.
+
+### 7.3 Convención de evaluación de los offsets
+
+Esta es la decisión metodológica que más afecta al resultado y conviene explicitarla.
+
+La referencia de MAESTRO registra el instante en que se suelta la tecla. Sin embargo, los modelos entrenados sobre ese corpus aprenden offsets **prolongados por el pedal de resonancia**: mientras el pedal está pisado la nota sigue sonando, y esa es la convención con la que la línea Onsets and Frames y Kong et al. reportan sus métricas. Comparar contra los offsets crudos penaliza al modelo por acertar.
+
+El efecto es cuantitativamente decisivo. Una primera corrida contra los offsets sin extender dio para Kong et al. un F1 a nivel de nota de **33.38 % con desviación estándar de ±26.56**, con el repertorio de pedal denso hundido (Rachmaninoff 3 %, Chopin 10 %) y el barroco intacto (Scarlatti 78 %). Repetida la medición extendiendo cada offset de la referencia mientras el control 64 permanece por encima de 64 —y recortándolo en el siguiente ataque de la misma altura—, el mismo modelo sobre las mismas obras pasa a **83.74 % ± 4.87**, prácticamente el 83.16 % que reportan sus autores.
+
+El hallazgo es relevante más allá de este proyecto: la elección de la convención de offset mueve la métrica más de cincuenta puntos porcentuales, y ninguna de las dos alternativas es incorrecta en abstracto. Refuerza el argumento sobre el vacío de medición que motiva la Tasa de Exactitud de Símbolo Braille.
+
+### 7.4 Métricas medidas
 
 | Métrica | Definición | Tolerancia |
 |---|---|:---:|
-| F1_onset | F1-Score a nivel de onset | ±50 ms |
-| Precision_onset, Recall_onset | Componentes del F1_onset | ±50 ms |
-| F1_note (con offset) | F1-Score considerando onset y offset | ±50 ms onset, máximo entre 50 ms y 20% de la duración para offset |
-| Latencia total | Tiempo de inferencia en segundos | — |
-| Latencia normalizada | Latencia dividida entre la duración del audio | — |
+| F1_onset | F1 a nivel de onset con altura correcta | ±50 ms |
+| F1_note | F1 considerando onset y offset | ±50 ms onset; offset dentro de max(50 ms, 20 % de la duración) |
+| NER | (omisiones + inserciones) / notas de referencia, sobre el emparejamiento onset-altura | ±50 ms |
+| Latencia normalizada | tiempo de inferencia entre duración del audio | — |
 
-### 6.5 Notebook reproducible
+Calculadas con `mir_eval.transcription` (Raffel et al., 2014).
 
-El benchmark completo está implementado en notebooks/amt_benchmark.ipynb, adaptado para ejecutarse en Kaggle Notebooks con el dataset the-maestro-dataset-v3-0-0 montado como input y el acelerador GPU T4 activado. El notebook localiza automáticamente un par audio/MIDI dentro del dataset montado, ejecuta ambos modelos y produce como salida final la tabla de resultados en formato Markdown incorporada en la sección 7.1.
+### 7.5 Ambiente y reproducibilidad
 
-## 7. Resultados del benchmark
+Kaggle Notebooks con GPU Tesla T4, dataset `alonhaviv/the-maestro-dataset-v3-0-0` montado como input. El notebook `notebooks/amt-benchmark-full.ipynb` es reanudable y guarda las notas estimadas crudas junto a las métricas, de modo que un cambio en la convención de evaluación puede recalcularse sin volver a ejecutar la inferencia. La corrida completa de los tres modelos sobre las veinte obras tomó 34 minutos.
 
-### 7.1 Tabla comparativa
+## 8. Resultados del benchmark
 
-Resultados obtenidos sobre el fragmento de 30 segundos descrito en la sección 6.2 (398 notas de referencia), ejecutado en Kaggle con GPU Tesla T4:
+### 8.1 Tabla comparativa
 
-| Modelo | F1_onset | Precision_onset | Recall_onset | F1_note (con offset) | Latencia (s) | Latencia normalizada |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| Kong et al. (piano_transcription_inference) | 100.00% | 100.00% | 100.00% | 97.24% | 2.99 | 0.100 |
-| Basic Pitch (Spotify) | 81.25% | 93.46% | 71.86% | 9.38% | 4.35 | 0.145 |
+Sesenta transcripciones (tres modelos × veinte obras), sin fallos:
 
-Notas detectadas: Kong et al. identificó las 398 notas del fragmento (una detección por cada nota de referencia); Basic Pitch detectó 306 notas.
+| Modelo | Obras | F1_onset | F1_note (con offset) | NER | Latencia norm. (media / p90) |
+|---|:---:|:---:|:---:|:---:|:---:|
+| Kong et al. (2021) | 20 | 95.89 % ± 2.82 % | 83.74 % ± 4.87 % | 8.01 % | 0.097 / 0.098 |
+| hFT-Transformer (2023) | 20 | 96.68 % ± 2.44 % | 89.30 % ± 4.35 % | 6.36 % | 0.079 / 0.081 |
+| Basic Pitch (2022) | 20 | 64.75 % ± 8.21 % | 19.46 % ± 6.71 % | 63.37 % | 0.030 / 0.043 |
+| Onsets and Frames (2018), línea base bibliográfica | — | 94.80 % (publicado) | 82.60 % (publicado) | — | — |
 
-### 7.2 Discusión
+Verificación de umbrales del hito H2: **Kong et al. y hFT-Transformer cumplen los tres**; Basic Pitch no cumple ninguno.
 
-Kong et al. (2021) reprodujo, sobre este fragmento específico, un desempeño incluso superior al reportado en la publicación original: F1_onset perfecto (100%) y F1_note con offset de 97.24%, ambos muy por encima del umbral de 80% definido en el hito H2. Esto es coherente con el hecho de que el fragmento evaluado proviene del mismo dataset (MAESTRO) y del mismo tipo de grabación (Disklavier del International Piano-e-Competition) sobre el que el modelo fue entrenado y validado originalmente, por lo que representa una condición favorable para el modelo más que una sobreestimación anómala.
+### 8.2 Discusión
 
-Basic Pitch mostró una brecha considerable entre F1_onset (81.25%) y F1_note con offset (9.38%). El F1_onset por sí solo cumpliría el umbral de detección básica de notas, pero la caída abrupta en F1_note indica que, aunque el modelo detecta razonablemente bien cuándo empieza una nota, sus estimaciones de offset (duración de la nota) no coinciden con la tolerancia exigida por mir_eval en este fragmento polifónico. Esto es consistente con lo documentado en la literatura: Basic Pitch es un modelo generalista entrenado para múltiples instrumentos, no especializado en las duraciones largas y sostenidas típicas del repertorio pianístico con pedal, lo que penaliza fuertemente la métrica de offset en piezas de este tipo.
+**Kong et al.** reproduce sobre obras completas los valores de su publicación, lo que valida el montaje experimental. Su dispersión por obra es baja y el rango va de 74.3 % (Rachmaninoff, *Étude-Tableaux* Op. 39 No. 5) a 91.3 % (Scarlatti), un gradiente coherente con la densidad armónica y el uso de pedal del repertorio.
 
-En cuanto a latencia, ambos modelos cumplen holgadamente el criterio del hito H4 (latencia normalizada menor o igual a 1.5): Kong et al. con 0.100 y Basic Pitch con 0.145. La diferencia de latencia entre ambos no es decisiva para la selección, dado que el margen frente al umbral es amplio en los dos casos.
+**hFT-Transformer** supera a Kong et al. en las tres métricas de precisión y además es más rápido, con la ventaja mayor en el F1 a nivel de nota (+5.56 puntos), que es donde pesa la estimación del offset: es justamente lo que cabría esperar de una arquitectura que modela explícitamente la dimensión temporal con un codificador dedicado. Su obra peor evaluada (81.4 %) queda por encima del umbral exigido.
 
-En conjunto, para este fragmento de piano polifónico del repertorio de concierto, Kong et al. domina a Basic Pitch en las tres métricas de precisión sin sacrificar latencia.
+**Basic Pitch** confirma lo documentado en la literatura. Su F1 de onset del 64.75 % ya queda lejos del umbral, y el desplome del F1 a nivel de nota refleja que un modelo generalista entrenado sobre múltiples instrumentos no modela bien las duraciones largas y sostenidas del repertorio pianístico con pedal. Queda descartado como módulo principal.
 
-## 8. Decisión final y trazabilidad
+En latencia los tres cumplen con holgura el criterio del hito H4: la etapa acústica consume menos de la décima parte de la duración del audio, lo que deja un margen amplio para el resto del pipeline.
 
-### 8.1 Modelo seleccionado
+## 9. Decisión final y trazabilidad
 
-Se selecciona el modelo de Kong et al. (2021), piano_transcription_inference, como módulo AMT del pipeline. Cumple con margen amplio el criterio cuantitativo del hito H2 (F1-Score note-level igual o mayor a 80%, con 97.24% obtenido) y es el único de los dos candidatos evaluados que detecta el pedal de resonancia, requerido por la historia US-06. Basic Pitch queda descartado como módulo principal de transcripción por su bajo desempeño en F1_note sobre el repertorio pianístico evaluado, pero se conserva documentado como alternativa ligera para escenarios sin GPU o como referencia de comparación en trabajos futuros.
+### 9.1 Modelo seleccionado
 
-### 8.2 Trazabilidad con historias de usuario
+Se selecciona **Kong et al. (2021)** como módulo acústico del sistema, pese a que hFT-Transformer obtiene mejores métricas de nota. La decisión se apoya en tres razones.
+
+La primera es funcional: **hFT-Transformer no detecta el pedal de resonancia**. Su salida son las 88 notas del piano y nada más, mientras que Kong et al. incorpora una rama dedicada al pedal, que es el primer benchmark publicado de esa tarea sobre MAESTRO y que cubre la historia US-06.
+
+La segunda es arquitectónica: la ventaja de hFT se concentra en la precisión del offset, y esa precisión **la absorbe el cuantizador rítmico**. Como el módulo determinista ajusta las duraciones a una grilla de semicorchea antes de asignar figuras, una diferencia de pocos milisegundos en el offset no cambia la figura que termina escrita en el archivo BRF. La ganancia medida no se propaga hasta la salida del sistema.
+
+La tercera es operativa: Kong et al. se instala como paquete de PyPI con descarga automática del checkpoint, mientras que hFT-Transformer exige clonar el repositorio, reconstruir su archivo de configuración y cargar el modelo desde un pickle. Esa fricción recae sobre el backend del cuarto objetivo específico.
+
+La diferencia entre ambos queda documentada y medida, de modo que la elección es una decisión de ingeniería justificada sobre evidencia propia y no una suposición heredada de la literatura.
+
+### 9.2 Trazabilidad con historias de usuario
 
 | Modelo | Historias que cumple | Épica |
 |---|---|:---:|
 | Kong et al. (2021) | US-03 (precisión de notas), US-04 (precisión rítmica), US-05 (acordes complejos), US-06 (pedal de resonancia) | SCRUM-6 |
 | Basic Pitch (2022) | US-02 (soporte MusicXML/MIDI opcional como alternativa) | SCRUM-5 |
 
-### 8.3 Modelos documentados como opciones futuras
+### 9.3 Modelos documentados como opciones futuras
 
-- MT3 (Gardner et al., 2022): candidato natural para extender el sistema a otros instrumentos (US-25).
-- Hierarchical Frequency-Time Transformer (Toyama et al., 2023): mejora reciente sobre Kong et al. que podría considerarse en una versión futura del pipeline.
+- **hFT-Transformer (Toyama et al., 2023)**: la mejora inmediata del sistema si se resuelve la detección de pedal, ya sea combinándolo con la rama de pedal de Kong et al. o prescindiendo de ella. Ventaja medida: +5.56 puntos de F1 a nivel de nota y menor latencia.
+- **MT3 (Gardner et al., 2022)**: candidato natural para extender el sistema a otros instrumentos (US-25).
 
-## 9. Referencias (APA 7)
+## 10. Referencias (APA 7)
 
 Benetos, E., Dixon, S., Duan, Z., & Ewert, S. (2019). Automatic music transcription: An overview. IEEE Signal Processing Magazine, 36(1), 20–30. https://doi.org/10.1109/MSP.2018.2869928
 
