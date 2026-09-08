@@ -1,5 +1,7 @@
 # amt-braille-translator
 
+[![pruebas](https://github.com/G2309/amt-braille-translator/actions/workflows/tests.yml/badge.svg)](https://github.com/G2309/amt-braille-translator/actions/workflows/tests.yml)
+
 Convierte grabaciones de piano polifónico en partituras de musicografía Braille listas para leer en una línea Braille o imprimir en un embosser.
 
 El problema que resuelve está en el hueco entre dos tecnologías maduras que nunca se hablaron. Los modelos de Transcripción Musical Automática terminan su trabajo entregando un MIDI, y los traductores a Braille empiezan el suyo exigiendo una partitura digital ya estructurada. Entre ese punto final y ese punto de partida hay un tramo que hasta ahora recaía sobre el propio músico invidente, obligado a encadenar herramientas que no fueron diseñadas para comunicarse. Este proyecto cubre ese tramo completo, de audio a archivo BRF, sin intervención manual.
@@ -114,7 +116,9 @@ El árbol de sintaxis abstracta cumple una función muy concreta. El formato com
 python -m unittest discover -s tests
 ```
 
-120 pruebas. Las de la API se omiten solas si FastAPI no está instalado. La correspondencia entre cada regla del Manual y la prueba que la verifica está en la sección de trazabilidad de [`docs/braille_rules_subset.md`](docs/braille_rules_subset.md).
+146 pruebas. Las de la API se omiten solas si FastAPI no está instalado. La correspondencia entre cada regla del Manual y la prueba que la verifica está en la sección de trazabilidad de [`docs/braille_rules_subset.md`](docs/braille_rules_subset.md), y hay pruebas que verifican que esa tabla siga siendo cierta.
+
+Cada push a `dev` o `main` dispara el workflow de GitHub Actions, que corre la suite en Python 3.10, 3.12 y 3.13, traduce la partitura de ejemplo comprobando que el BRF resultante sea válido, mide la latencia de la etapa determinista y verifica que los notebooks estén bien formados.
 
 ## Documentación
 

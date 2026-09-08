@@ -1,0 +1,134 @@
+name: pruebas
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+  workflow_dispatch:
+
+jobs:
+  unitarias:
+    name: suite en Python ${{ matrix.python }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      # Solo las dependencias de la API. PyTorch queda fuera a proposito: las
+      # pruebas cubren el modulo acustico con una salida simulada, y una de
+      # ellas verifica justamente que importar el wrapper no arrastre torch.
+      - name: Instalar dependencias de prueba
+        run: pip install --quiet fastapi httpx python-multipart
+
+      - name: Ejecutar la suite
+        run: python -m unittest discover -s tests -v
+
+  integracion:
+    name: pipeline determinista de extremo a extremo
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Traducir la partitura de ejemplo
+        run: python run_demo.py examples/simple_piece.musicxml salida.brf
+
+      - name: Validar el BRF generado
+        run: |
+          PYTHONPATH=src python - <<'EOF'
+          import sys
+          from braille_translator.brf_exporter import validate_brf
+          problemas = validate_brf("salida.brf")
+          if problemas:
+              print("BRF invalido:")
+              for p in problemas:
+                  print(" -", p)
+              sys.exit(1)
+          print("BRF valido")
+          EOF
+
+      - name: El BSA de un archivo contra si mismo debe ser total
+        run: |
+          PYTHONPATH=src python - <<'EOF'
+          import sys
+          from evaluation import compare_files
+          r = compare_files("salida.brf", "salida.brf")
+          print(f"BSA {r.bsa:.2%} sobre {r.total_ref} celdas")
+          if r.bsa != 1.0 or "desconocido" in r.per_category:
+              print("el clasificador de celdas tiene lagunas")
+              sys.exit(1)
+          EOF
+
+      - name: Medir la latencia de la etapa determinista
+        run: |
+          PYTHONPATH=src python - <<'EOF'
+          import sys
+          from evaluation.latency import synthetic_result, time_deterministic
+          t = time_deterministic(synthetic_result(300, notes_per_second=10))
+          ratio = t.deterministic_s / 300
+          print(f"cinco minutos de audio -> {t.deterministic_s:.3f}s ({ratio:.6f}x)")
+          if ratio > 0.05:
+              print("la etapa determinista se comio parte del presupuesto de latencia")
+              sys.exit(1)
+          EOF
+
+      - name: Guardar el BRF resultante
+        uses: actions/upload-artifact@v4
+        with:
+          name: brf-de-ejemplo
+          path: salida.brf
+
+  notebooks:
+    name: notebooks bien formados
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Un notebook con una celda rota cuesta una corrida entera de GPU, asi
+      # que conviene detectarlo antes de subirlo a Kaggle.
+      - name: Verificar el JSON y la sintaxis de cada celda
+        run: |
+          python - <<'EOF'
+          import ast, json, pathlib, sys
+          fallos = []
+          for nb_path in sorted(pathlib.Path("notebooks").glob("*.ipynb")):
+              try:
+                  nb = json.loads(nb_path.read_text(encoding="utf-8"))
+              except json.JSONDecodeError as exc:
+                  fallos.append(f"{nb_path}: JSON invalido ({exc})")
+                  continue
+              for i, celda in enumerate(nb.get("cells", [])):
+                  if celda.get("cell_type") != "code":
+                      continue
+                  fuente = celda["source"]
+                  if isinstance(fuente, list):
+                      fuente = "".join(fuente)
+                  if fuente.lstrip().startswith(("!", "%")):
+                      continue
+                  try:
+                      ast.parse(fuente)
+                  except SyntaxError as exc:
+                      fallos.append(f"{nb_path} celda {i}: {exc}")
+              print(f"{nb_path.name}: {len(nb.get('cells', []))} celdas")
+          if fallos:
+              print("\nProblemas encontrados:")
+              for f in fallos:
+                  print(" -", f)
+              sys.exit(1)
+          print("\ntodos los notebooks estan bien formados")
+          EOF
