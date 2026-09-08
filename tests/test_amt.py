@@ -116,6 +116,15 @@ class TestQuantize(unittest.TestCase):
         self.assertTrue(c1[-1].tie)
         self.assertFalse(c2[0].tie)
 
+    def test_el_trozo_posterior_se_marca_como_continuacion(self):
+        # Regla 6-10: la continuacion no repite alteracion salvo renglon nuevo
+        res = TranscriptionResult(notes=[ev(3.0, 7.0, 61)])
+        score = quantize(res, tempo_bpm=60)
+        c1 = [e for e in score.right.measures[0].events if isinstance(e, Note)]
+        c2 = [e for e in score.right.measures[1].events if isinstance(e, Note)]
+        self.assertFalse(c1[-1].tie_from_prev)
+        self.assertTrue(c2[0].tie_from_prev)
+
     def test_la_ligadura_conserva_la_duracion_total(self):
         from amt.quantizer import _DURATION_TICKS
         res = TranscriptionResult(notes=[ev(3.0, 7.0, 60)])
