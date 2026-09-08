@@ -25,7 +25,10 @@ def musicxml_to_brf(
     """
     score = parse_musicxml(input_path)
     rh, lh = translate_score(score, measures_per_line)
-    header = braille_tables.time_signature(score.beats, score.beat_type)
+    # Regla 3-8: armadura e indicacion de compas agrupadas al inicio
+    header = braille_tables.key_signature(score.fifths) + braille_tables.time_signature(
+        score.beats, score.beat_type
+    )
     braille = render_bar_over_bar(rh, lh, measures_per_line, header=header)
     export_brf(braille, output_path)
     return braille

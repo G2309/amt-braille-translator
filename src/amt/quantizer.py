@@ -84,7 +84,10 @@ def _hand_events(
 
         Los trozos de una misma nota quedan unidos por ligadura de
         prolongacion, asi que puede cruzar la barra sin perder duracion.
+        Los trozos posteriores al primero se marcan como continuacion
+        (Regla 6-10: la alteracion no se repite salvo en renglon nuevo).
         """
+        continuation = False
         while length > 0:
             index = start // per_measure
             if index >= len(measures):
@@ -101,13 +104,17 @@ def _hand_events(
             dtype, dots = largest_duration(min(length, room))
             used = _DURATION_TICKS[(dtype, dots)]
             tied = length - used > 0
-            built = [_build_note(p, dtype, dots, tie=tied) for p in pitches]
+            built = [
+                _build_note(p, dtype, dots, tie=tied, tie_from_prev=continuation)
+                for p in pitches
+            ]
             if len(built) == 1:
                 measures[index].events.append(built[0])
             else:
                 measures[index].events.append(Chord(built, dtype, dots, tie=tied))
             start += used
             length -= used
+            continuation = True
 
     cursor = 0
     for i, onset in enumerate(onsets):
@@ -133,7 +140,10 @@ def _hand_events(
     return measures
 
 
-def _build_note(pitch: int, duration_type: str, dots: int, tie: bool = False) -> Note:
+def _build_note(
+    pitch: int, duration_type: str, dots: int,
+    tie: bool = False, tie_from_prev: bool = False,
+) -> Note:
     step, alter, octave = midi_to_note(pitch)
     return Note(
         step=step,
@@ -142,6 +152,7 @@ def _build_note(pitch: int, duration_type: str, dots: int, tie: bool = False) ->
         alter=alter,
         dots=dots,
         tie=tie,
+        tie_from_prev=tie_from_prev,
     )
 
 

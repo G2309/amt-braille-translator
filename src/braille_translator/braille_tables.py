@@ -85,11 +85,20 @@ INTERVAL = {
 RIGHT_HAND = cell(4, 6) + cell(3, 4, 5)   # parte de mano derecha
 LEFT_HAND = cell(4, 5, 6) + cell(3, 4, 5)  # parte de mano izquierda
 
-BAR = "\u2800"                      # celda vacia = separador de compas
-DOUBLE_BAR = cell(1, 2, 6) + cell(1, 3)          # doble barra (fin de seccion)
-FINAL_BAR = cell(1, 2, 6) + cell(1, 3)           # barra final
+BAR = "\u2800"                      # Regla 9-1: espacio = linea divisoria
+# Tabla 9 A: barra final y doble barra de fin de seccion
+FINAL_BAR = cell(1, 2, 6) + cell(1, 3)
+DOUBLE_BAR = cell(1, 2, 6) + cell(1, 3) + cell(3)
 
+# Regla 6-2: ligadura de expresion (max. cuatro notas), tras cada nota menos la ultima
+SLUR = cell(1, 4)
+# Regla 6-3(b): ligadura de mas de cuatro notas, apertura y cierre
+SLUR_OPEN = cell(5, 6) + cell(1, 2)
+SLUR_CLOSE = cell(4, 5) + cell(2, 3)
+
+# Tabla 6 B: ligaduras de prolongacion (nota unica, Regla 6-9; acorde, Regla 6-12)
 TIE = cell(4) + cell(1, 4)
+CHORD_TIE = cell(4, 6) + cell(1, 4)
 
 # Separan voces simultaneas dentro de un mismo compas y mano.
 IN_ACCORD = cell(1, 2, 6) + cell(3, 4, 5)
@@ -112,7 +121,20 @@ LOWER_DIGIT = {
 
 
 def time_signature(beats: int, beat_type: int) -> str:
+    """Regla 3-6: numerador en posicion normal, denominador en la parte baja."""
     return NUMBER_SIGN + UPPER_DIGIT[beats] + LOWER_DIGIT[beat_type]
+
+
+def key_signature(fifths: int) -> str:
+    """Regla 3-3: hasta tres alteraciones se repite el signo; con cuatro o mas
+    se escribe el numero seguido del signo de alteracion."""
+    if fifths == 0:
+        return ""
+    count = abs(fifths)
+    sign = ACCIDENTAL[1] if fifths > 0 else ACCIDENTAL[-1]
+    if count <= 3:
+        return sign * count
+    return NUMBER_SIGN + UPPER_DIGIT[count] + sign
 
 
 BRAILLE_ASCII = (

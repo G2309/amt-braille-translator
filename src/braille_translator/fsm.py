@@ -1,9 +1,10 @@
-"""Maquina de Estados Finitos del traductor 
+"""Maquina de Estados Finitos del traductor
 
 Gestiona los dos estados de la transcripcion:
 
-1. OctaveState  — Reglas 2-2 / 2-3 / 2-4 del subset (signos de octava).
-2. AccidentalState — Reglas 3-2 / 3-3 / 3-4 (vigencia de alteraciones).
+1. OctaveState  — Reglas 1-9 / 1-10 del Manual (signos de octava).
+2. AccidentalState — Seccion III.A del Manual (vigencia de alteraciones
+   dentro del compas, convencion heredada de la escritura en tinta).
 """
 from typing import Optional
 
@@ -11,7 +12,7 @@ from .model import Note
 
 
 class OctaveState:
-    """Regla 2-3: decidir si una nota lleva signo de octava.
+    """Regla 1-10 (a/b/c): decidir si una nota lleva signo de octava.
 
     | Intervalo con la nota previa | Cambia de octava | Se emite signo |
     |------------------------------|------------------|----------------|
@@ -31,7 +32,7 @@ class OctaveState:
         prev = self._prev
         self._prev = note
         if prev is None:
-            return True                                   # Regla 2-2
+            return True                                   # Reglas 1-10 y 15-3
         interval = abs(note.diatonic_index - prev.diatonic_index) + 1
         if interval <= 3:
             return False
@@ -44,7 +45,7 @@ class OctaveState:
 
 
 class AccidentalState:
-    """Reglas 3-2 / 3-3 / 3-4: vigencia de alteraciones dentro del compas.
+    """Seccion III.A: vigencia de alteraciones dentro del compas.
 
     Estado: dict (step, octave) -> alter vigente.
     Al inicio de cada compas se reinicia con la armadura de la clave;
@@ -67,7 +68,7 @@ class AccidentalState:
         """Devuelve el alter a emitir (o None si la alteracion ya esta vigente).
 
         Emite becuadro (0) cuando hay que cancelar una alteracion vigente
-        (Regla 3-3).
+        (Tabla 3, becuadro).
         """
         expected = self._expected(note.step, note.octave)
         if note.alter == expected:

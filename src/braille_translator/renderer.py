@@ -1,21 +1,24 @@
-"""Renderizador Bar-over-bar 
+"""Renderizador Bar-over-bar (compas sobre compas, Seccion XIV.C.1)
 
-- Cada parrafo agrupa N compases, por defecto 4
-- Linea de mano derecha arriba, mano izquierda debajo
-- El primer signo de cada compas queda alineado verticalmente entre ambas
-  manos, rellenando con celdas vacias la mano mas corta.
+- Regla 14-16: una linea por pentagrama; en piano, paralela de dos lineas.
+- Regla 14-17 / 14-20: el primer signo de cada compas queda alineado
+  verticalmente entre ambas manos.
+- Regla 14-18: los tres primeros espacios de cada linea llevan el
+  indicativo de parte (signo de mano + celda en blanco).
+- Regla 14-22: el espacio sobrante de un compas mas corto se rellena con
+  una linea guia de punto 3, innecesaria en el ultimo compas de la paralela.
 """
 from typing import List
 
 from . import braille_tables as bt
 
-EMPTY = "\u2800"   # celda Braille vacia
+EMPTY = "⠀"   # celda Braille vacia
 
 DEFAULT_MEASURES_PER_LINE = 4
 
 
-def _pad(cells: str, width: int) -> str:
-    return cells + EMPTY * (width - len(cells))
+def _pad(cells: str, width: int, filler: str) -> str:
+    return cells + filler * (width - len(cells))
 
 
 def render_bar_over_bar(
@@ -37,16 +40,22 @@ def render_bar_over_bar(
         lh_group = lh_measures[start : start + measures_per_line]
 
         padded_rh, padded_lh = [], []
-        for rh_m, lh_m in zip(rh_group, lh_group):
+        last = len(rh_group) - 1
+        for i, (rh_m, lh_m) in enumerate(zip(rh_group, lh_group)):
+            if i == last:
+                # Regla 14-22: sin linea guia en el ultimo compas de la paralela
+                padded_rh.append(rh_m)
+                padded_lh.append(lh_m)
+                continue
             width = max(len(rh_m), len(lh_m))
-            padded_rh.append(_pad(rh_m, width))
-            padded_lh.append(_pad(lh_m, width))
+            padded_rh.append(_pad(rh_m, width, bt.DOT))
+            padded_lh.append(_pad(lh_m, width, bt.DOT))
 
         is_last_group = start + measures_per_line >= n
         tail = bt.FINAL_BAR if is_last_group else ""
 
         lines.append(bt.RIGHT_HAND + EMPTY + (EMPTY.join(padded_rh)) + tail)
         lines.append(bt.LEFT_HAND + EMPTY + (EMPTY.join(padded_lh)) + tail)
-        lines.append("")   # separador entre parrafos
+        lines.append("")   # separador entre paralelas
 
     return "\n".join(lines).rstrip("\n")

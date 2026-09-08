@@ -6,7 +6,7 @@ usa lineas de hasta 40 celdas y paginas de 25 lineas.
 """
 from typing import List
 
-from .braille_tables import unicode_to_brf
+from .braille_tables import BRAILLE_ASCII, unicode_to_brf
 
 LINE_WIDTH = 40
 LINES_PER_PAGE = 25
@@ -36,6 +36,28 @@ def wrap_line(line: str, width: int = LINE_WIDTH, indent: int = RUNOVER_INDENT) 
     if rest:
         out.append(prefix + rest)
     return out
+
+
+def validate_brf(path: str) -> List[str]:
+    """Comprueba la validez sintactica de un archivo BRF.
+
+    Devuelve la lista de problemas encontrados (vacia si es valido).
+    """
+    problems: List[str] = []
+    try:
+        with open(path, "r", encoding="ascii", newline="") as f:
+            content = f.read()
+    except UnicodeDecodeError:
+        return ["el archivo contiene bytes fuera de ASCII"]
+
+    valid_chars = set(BRAILLE_ASCII.upper()) | set(BRAILLE_ASCII)
+    for i, line in enumerate(content.replace("\f", "").split("\r\n"), start=1):
+        if len(line) > LINE_WIDTH:
+            problems.append(f"linea {i}: {len(line)} celdas (max {LINE_WIDTH})")
+        bad = {c for c in line if c not in valid_chars}
+        if bad:
+            problems.append(f"linea {i}: caracteres invalidos {sorted(bad)}")
+    return problems
 
 
 def export_brf(braille_text: str, path: str) -> None:
