@@ -361,6 +361,8 @@ Para clasificar las desviaciones sintácticas en la validación (Fase 5) se empl
 
 Los pesos son orientativos y se ajustarán en Fase 5 en función de la frecuencia observada de cada categoría de error sobre el conjunto de validación integral.
 
+El procedimiento de cálculo (clasificación de celdas, reglas de desambiguación, alineación y atribución del error) está especificado en [`bsa_metric.md`](bsa_metric.md) e implementado en `src/evaluation/bsa.py`.
+
 ## 11. Trazabilidad con las historias de usuario
 
 | Regla | Historia de usuario | Épica |

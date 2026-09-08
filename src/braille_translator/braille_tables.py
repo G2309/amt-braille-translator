@@ -140,6 +140,22 @@ BRAILLE_ASCII = (
 )
 
 
+def brf_to_unicode(text: str) -> str:
+    """Convierte Braille ASCII (BRF) de vuelta a celdas Unicode.
+
+    Los archivos BRF suelen venir en mayusculas, asi que las letras se
+    normalizan a minuscula antes de buscarlas en la tabla.
+    """
+    inverse = {ch: chr(0x2800 + i) for i, ch in enumerate(BRAILLE_ASCII)}
+    out = []
+    for ch in text:
+        if ch in ("\n", "\r", "\f"):
+            out.append(ch)
+            continue
+        out.append(inverse.get(ch, inverse.get(ch.lower(), "⠀")))
+    return "".join(out)
+
+
 def unicode_to_brf(text: str) -> str:
     """Convierte una cadena de celdas Braille Unicode a Braille ASCII (BRF)."""
     out = []
