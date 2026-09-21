@@ -123,6 +123,7 @@ Cada push a `dev` o `main` dispara el workflow de GitHub Actions, que corre la s
 ## Documentación
 
 - [`docs/braille_rules_subset.md`](docs/braille_rules_subset.md) — las veintiocho reglas implementadas, con su numeración original del Manual y su trazabilidad con el código y las pruebas.
+- [`docs/deterministic_pipeline.md`](docs/deterministic_pipeline.md) — las seis etapas del módulo determinista de traducción (cuantizador, AST, máquina de estados, traductor, renderizador, exportador BRF), con diagrama.
 - [`docs/bsa_metric.md`](docs/bsa_metric.md) — procedimiento de medición de la Exactitud de Símbolo Braille.
 - [`docs/literature_review_amt.md`](docs/literature_review_amt.md) — revisión de modelos de transcripción y benchmark comparativo.
 - [`notebooks/amt-benchmark-full.ipynb`](notebooks/amt-benchmark-full.ipynb) — benchmark reproducible sobre veinte obras completas de MAESTRO v3.0.0.
