@@ -1,4 +1,4 @@
-# Módulo determinista de traducción — Objetivo específico 2
+# Módulo determinista de traducción — Objetivo específico 3
 
 Este documento describe la etapa determinista del sistema: el bloque que toma la salida del módulo de transcripción (o de un archivo MusicXML, en el banco de pruebas) y produce un archivo BRF válido, aplicando el subconjunto de veintiocho reglas descrito en `braille_rules_subset.md`.
 
