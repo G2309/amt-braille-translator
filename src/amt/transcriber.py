@@ -8,9 +8,11 @@ MODEL_NAME = "Kong et al. 2021 (piano_transcription_inference)"
 
 
 class AMTTranscriber:
-    def __init__(self, checkpoint_path: Optional[str] = None, device: str = "cpu") -> None:
+    def __init__(self, checkpoint_path: Optional[str] = None, device: str = "cpu",
+                 normalize: bool = True) -> None:
         self.checkpoint_path = checkpoint_path
         self.device = device
+        self.normalize = normalize
         self._model = None
         self._sample_rate = None
 
@@ -37,6 +39,9 @@ class AMTTranscriber:
 
         model = self._load()
         audio, _ = librosa.load(audio_path, sr=self._sample_rate, mono=True)
+        if self.normalize:
+            from .audio import normalize_loudness
+            audio = normalize_loudness(audio)
         output = model.transcribe(audio, None)
         return self.from_model_output(output, source=audio_path, duration_s=len(audio) / self._sample_rate)
 
