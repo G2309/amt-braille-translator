@@ -26,7 +26,7 @@ jobs:
       # pruebas cubren el modulo acustico con una salida simulada, y una de
       # ellas verifica justamente que importar el wrapper no arrastre torch.
       - name: Instalar dependencias de prueba
-        run: pip install --quiet fastapi httpx python-multipart
+        run: pip install --quiet fastapi httpx python-multipart numpy
 
       - name: Ejecutar la suite
         run: python -m unittest discover -s tests -v
