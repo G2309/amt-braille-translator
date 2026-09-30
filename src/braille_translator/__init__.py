@@ -8,7 +8,7 @@ Historias de usuario: US-02, US-07, US-08, US-09, US-10, US-11 (parcial).
 """
 from . import braille_tables
 from .brf_exporter import export_brf
-from .model import Chord, Hand, Measure, Note, Rest, Score
+from .model import Chord, Hand, Measure, MultiRest, Note, Rest, Score
 from .musicxml_parser import parse_musicxml
 from .renderer import DEFAULT_MEASURES_PER_LINE, render_bar_over_bar
 from .translator import translate_score
@@ -35,7 +35,7 @@ def musicxml_to_brf(
 
 
 __all__ = [
-    "Score", "Hand", "Measure", "Note", "Chord", "Rest",
+    "Score", "Hand", "Measure", "Note", "Chord", "Rest", "MultiRest",
     "parse_musicxml", "translate_score", "render_bar_over_bar",
     "export_brf", "musicxml_to_brf", "braille_tables",
 ]

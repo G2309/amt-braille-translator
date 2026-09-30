@@ -9,7 +9,7 @@ from typing import List
 
 from . import braille_tables as bt
 from .fsm import AccidentalState, OctaveState
-from .model import Chord, Hand, Note, Rest, Score
+from .model import Chord, Hand, Measure, MultiRest, Note, Rest, Score
 from .renderer import DEFAULT_MEASURES_PER_LINE
 
 
@@ -95,11 +95,22 @@ class HandTranslator:
             out.append(bt.SLUR_CLOSE)
         return "".join(out)
 
+    @staticmethod
+    def _multi_rest(count: int) -> str:
+        """Hasta tres compases se repite el silencio de redonda; desde cuatro
+        se escribe el numero de compases antes de un solo silencio."""
+        if count <= 3:
+            return bt.REST["whole"] * count
+        digits = "".join(bt.UPPER_DIGIT[int(d)] for d in str(count))
+        return bt.NUMBER_SIGN + digits + bt.REST["whole"]
+
     def _emit_voice(self, events, force_first_octave: bool) -> str:
         parts: List[str] = []
         first = force_first_octave
         for ev in events:
-            if isinstance(ev, Rest):
+            if isinstance(ev, MultiRest):
+                parts.append(self._multi_rest(ev.count))
+            elif isinstance(ev, Rest):
                 parts.append(bt.REST[ev.duration_type] + bt.DOT * ev.dots)
             elif isinstance(ev, Chord):
                 parts.append(self._emit_chord(ev))
@@ -138,8 +149,43 @@ class HandTranslator:
         return result
 
 
-def translate_score(score: Score, measures_per_line: int = DEFAULT_MEASURES_PER_LINE):
+def _rest_only(measure: Measure) -> bool:
+    return not measure.extra_voices and all(isinstance(ev, (Rest, MultiRest)) for ev in measure.events)
+
+
+def merge_rest_measures(score: Score) -> Score:
+    """Compases de silencio segun el Manual.
+
+    Un compas que en una mano es solo silencio se escribe con el silencio de
+    redonda, sin importar la indicacion de compas. Si las dos manos callan
+    varios compases seguidos, se agrupan en una sola paralela para que las
+    barras de ambas manos sigan alineadas.
+    """
+    rh, lh = score.right.measures, score.left.measures
+    new_rh, new_lh = [], []
+    i = 0
+    while i < min(len(rh), len(lh)):
+        if _rest_only(rh[i]) and _rest_only(lh[i]):
+            j = i
+            while j < min(len(rh), len(lh)) and _rest_only(rh[j]) and _rest_only(lh[j]):
+                j += 1
+            new_rh.append(Measure(rh[i].number, events=[MultiRest(j - i)]))
+            new_lh.append(Measure(lh[i].number, events=[MultiRest(j - i)]))
+            i = j
+            continue
+        new_rh.append(Measure(rh[i].number, events=[MultiRest(1)]) if _rest_only(rh[i]) else rh[i])
+        new_lh.append(Measure(lh[i].number, events=[MultiRest(1)]) if _rest_only(lh[i]) else lh[i])
+        i += 1
+    merged = Score(title=score.title, beats=score.beats, beat_type=score.beat_type, fifths=score.fifths)
+    merged.right.measures, merged.left.measures = new_rh, new_lh
+    return merged
+
+
+def translate_score(score: Score, measures_per_line: int = DEFAULT_MEASURES_PER_LINE,
+                    merge_rests: bool = True):
     """Traduce ambas manos. Devuelve (compases_md, compases_mi)."""
+    if merge_rests:
+        score = merge_rest_measures(score)
     rh = HandTranslator(score, score.right).translate(measures_per_line)
     lh = HandTranslator(score, score.left).translate(measures_per_line)
     return rh, lh

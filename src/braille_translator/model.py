@@ -55,7 +55,13 @@ class Rest:
     dots: int = 0
 
 
-Event = Union[Note, Chord, Rest]
+@dataclass
+class MultiRest:
+    """Compases completos de silencio escritos como un solo evento."""
+    count: int = 1
+
+
+Event = Union[Note, Chord, Rest, MultiRest]
 
 
 @dataclass

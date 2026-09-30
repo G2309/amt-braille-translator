@@ -188,3 +188,50 @@ class TestTranscriberContract(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestResolveCheckpoint(unittest.TestCase):
+    """Eleccion del checkpoint sin tocar la red."""
+
+    def setUp(self):
+        import tempfile
+        from pathlib import Path
+        from amt import transcriber
+        self.t = transcriber
+        self.tmp = tempfile.TemporaryDirectory()
+        self.original_dir = transcriber.CACHE_DIR
+        transcriber.CACHE_DIR = Path(self.tmp.name)
+
+    def tearDown(self):
+        self.t.CACHE_DIR = self.original_dir
+        self.tmp.cleanup()
+
+    def descarga_falsa(self, contenido):
+        def urlretrieve(url, destino):
+            with open(destino, "wb") as f:
+                f.write(contenido)
+        return urlretrieve
+
+    def test_original_usa_el_checkpoint_del_paquete(self):
+        self.assertIsNone(self.t.resolve_checkpoint("original"))
+        self.assertIsNone(self.t.resolve_checkpoint(None))
+
+    def test_una_ruta_se_respeta(self):
+        self.assertEqual(self.t.resolve_checkpoint("/modelos/otro.pth"), "/modelos/otro.pth")
+
+    def test_ajustado_se_descarga_y_verifica(self):
+        import hashlib
+        from unittest import mock
+        contenido = b"pesos de prueba"
+        with mock.patch.object(self.t, "FINETUNED_SHA256", hashlib.sha256(contenido).hexdigest()), \
+             mock.patch.object(self.t.urllib.request, "urlretrieve", self.descarga_falsa(contenido)) as _:
+            ruta = self.t.resolve_checkpoint("ajustado")
+        with open(ruta, "rb") as f:
+            self.assertEqual(f.read(), contenido)
+
+    def test_hash_distinto_no_deja_archivo_corrupto(self):
+        from unittest import mock
+        with mock.patch.object(self.t.urllib.request, "urlretrieve", self.descarga_falsa(b"otra cosa")):
+            with self.assertRaises(RuntimeError):
+                self.t.resolve_checkpoint("ajustado")
+        self.assertFalse((self.t.CACHE_DIR / "kong_ajustado.pth").exists())

@@ -76,7 +76,7 @@ Para representar compases completos de silencio se usa siempre el silencio de re
 * 2 o 3 compases consecutivos: repetición del silencio de redonda.
 * 4 o más compases consecutivos: signo numérico + número de compases + silencio de redonda.
 
-El cuantizador rellena con silencio de redonda cada compás vacío (forma expandida; la forma abreviada con número queda pendiente).
+Un compás que en una mano es solo silencio se escribe con el silencio de redonda, sea cual sea la indicación de compás. Cuando las dos manos callan varios compases seguidos, se agrupan en una sola paralela: dos o tres compases repiten el silencio de redonda y cuatro o más llevan el signo numérico, el número de compases y el silencio de redonda. Implementada en `translator.merge_rest_measures`.
 
 ---
 
@@ -383,6 +383,7 @@ Correspondencia entre cada regla implementada y la clase de prueba que la verifi
 | Regla | Clase de prueba | Archivo |
 | --- | --- | --- |
 | 1-1, 1-2 | `TestBrfMapping`, `TestQuantize` | `test_translator.py`, `test_amt.py` |
+| 1-6 | `TestRestMeasures` | `test_translator.py` |
 | 1-9, 1-10 | `TestOctaveRules`, `TestCompoundIntervals` | `test_translator.py` |
 | 3-1 (colocación y vigencia de alteraciones) | `TestAccidentalRules` | `test_translator.py` |
 | 3-3 | `TestKeySignature` | `test_translator.py` |
@@ -405,7 +406,6 @@ Correspondencia entre cada regla implementada y la clase de prueba que la verifi
 
 * Claves (II): el sistema asume clave de Sol para mano derecha y clave de Fa para mano izquierda por defecto; en Braille los signos de clave son informativos (regla 2-1).
 * Signos de valor mayor/menor y separación de valores (1-3): documentados arriba; aún no emitidos.
-* Compás de espera abreviado con número (1-6, forma b): los compases vacíos se emiten expandidos.
 * Grupos rítmicos con signos de agrupación (IV): tresillos y demás grupos irregulares se representan por sus notas individuales.
 * Regla 5-4 (octava entre intervalos del mismo acorde) y duplicación de intervalos (5-7, 5-8, 5-13).
 * Cópula parcial y división de compás (5-16 a 5-21); punto 5 ante alteraciones/silencios agregados en Braille (5-14, 5-15).

@@ -52,7 +52,7 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-El checkpoint del modelo acústico se descarga solo la primera vez que se transcribe audio.
+El checkpoint del modelo acústico se descarga solo la primera vez que se transcribe audio. Por omisión se usa el del ajuste fino (`notebooks/amt-finetune.ipynb`), publicado en el release `modelo-ajustado-v1` y verificado por su hash; `AMTTranscriber(checkpoint_path="original")` usa el checkpoint publicado de Kong.
 
 ## Uso
 
@@ -62,6 +62,8 @@ El checkpoint del modelo acústico se descarga solo la primera vez que se transc
 from pipeline import audio_to_brf
 audio_to_brf("nocturno.wav", "nocturno.brf", tempo_bpm=60, beats=4, beat_type=4)
 ```
+
+El modelo acústico no estima tempo, compás ni armadura, así que se pasan como parámetros. `legato` (0.5 por omisión) indica qué fracción del intervalo entre dos ataques puede quedar en silencio y aun así escribirse como parte de la nota, para que una corchea tocada separada se escriba como corchea.
 
 **Como API REST.**
 

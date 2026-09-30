@@ -350,6 +350,52 @@ class TestTieContinuationAccidental(unittest.TestCase):
         self.assertNotIn(bt.ACCIDENTAL[1], rh[1])
 
 
+class TestRestMeasures(unittest.TestCase):
+    """Compases de silencio con el silencio de redonda."""
+
+    def partitura(self, rh_eventos, lh_eventos, beats=4):
+        score = Score(beats=beats)
+        for i, (d, iz) in enumerate(zip(rh_eventos, lh_eventos), start=1):
+            score.right.measures.append(Measure(i, events=d))
+            score.left.measures.append(Measure(i, events=iz))
+        return score
+
+    def silencio(self, beats=4):
+        return [Rest("half", 1)] if beats == 3 else [Rest("whole")]
+
+    def test_un_compas_de_silencio_usa_redonda_aunque_sea_tres_cuartos(self):
+        score = self.partitura([[N("C", 4, "half", dots=1)]], [self.silencio(3)], beats=3)
+        _, lh = translate_score(score)
+        self.assertEqual(lh[0], bt.REST["whole"])
+
+    def test_dos_compases_en_ambas_manos_repiten_el_silencio(self):
+        nota = [[N("C", 4, "whole")]]
+        score = self.partitura(nota + [self.silencio()] * 2 + nota, [[N("C", 3, "whole")]] + [self.silencio()] * 2 + [[N("C", 3, "whole")]])
+        rh, lh = translate_score(score)
+        self.assertEqual(len(rh), 3)
+        self.assertEqual(rh[1], bt.REST["whole"] * 2)
+        self.assertEqual(lh[1], bt.REST["whole"] * 2)
+
+    def test_cuatro_o_mas_compases_llevan_numero(self):
+        score = self.partitura([self.silencio()] * 5, [self.silencio()] * 5)
+        rh, lh = translate_score(score)
+        esperado = bt.NUMBER_SIGN + bt.UPPER_DIGIT[5] + bt.REST["whole"]
+        self.assertEqual(rh, [esperado])
+        self.assertEqual(lh, [esperado])
+
+    def test_si_solo_calla_una_mano_no_se_agrupan_compases(self):
+        rh_ev = [[N("C", 4, "whole")], [N("D", 4, "whole")]]
+        score = self.partitura(rh_ev, [self.silencio()] * 2)
+        rh, lh = translate_score(score)
+        self.assertEqual(len(rh), 2)
+        self.assertEqual(lh, [bt.REST["whole"]] * 2)
+
+    def test_se_puede_desactivar(self):
+        score = self.partitura([self.silencio(3)] * 4, [self.silencio(3)] * 4, beats=3)
+        rh, _ = translate_score(score, merge_rests=False)
+        self.assertEqual(len(rh), 4)
+
+
 class TestTimeSignature(unittest.TestCase):
     """Indicación de compás."""
 
