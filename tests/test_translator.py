@@ -350,6 +350,46 @@ class TestTieContinuationAccidental(unittest.TestCase):
         self.assertNotIn(bt.ACCIDENTAL[1], rh[1])
 
 
+class TestTimeSignature(unittest.TestCase):
+    """Indicación de compás."""
+
+    def test_cuatro_cuartos(self):
+        self.assertEqual(bt.time_signature(4, 4),
+                         bt.NUMBER_SIGN + bt.UPPER_DIGIT[4] + bt.LOWER_DIGIT[4])
+
+    def test_cifras_de_dos_digitos_se_escriben_una_por_una(self):
+        self.assertEqual(bt.time_signature(12, 8),
+                         bt.NUMBER_SIGN + bt.UPPER_DIGIT[1] + bt.UPPER_DIGIT[2] + bt.LOWER_DIGIT[8])
+        self.assertEqual(bt.time_signature(12, 16),
+                         bt.NUMBER_SIGN + bt.UPPER_DIGIT[1] + bt.UPPER_DIGIT[2]
+                         + bt.LOWER_DIGIT[1] + bt.LOWER_DIGIT[6])
+
+
+class TestHeaderSignatures(unittest.TestCase):
+    """Armadura y compás agrupados al inicio de la obra, armadura primero."""
+
+    def test_cabecera_lleva_armadura_seguida_del_compas(self):
+        from amt.events import NoteEvent, TranscriptionResult
+        from pipeline import result_to_brf
+        result = TranscriptionResult(notes=[NoteEvent(0.0, 1.0, 67)], duration_s=1.0)
+        braille = result_to_brf(result, tempo_bpm=60, beats=3, beat_type=4, fifths=1)
+        cabecera = braille.split("\n")[0]
+        self.assertEqual(cabecera, bt.key_signature(1) + bt.time_signature(3, 4))
+
+
+class TestChordDots(unittest.TestCase):
+    """El puntillo de un acorde va solo tras la nota escrita."""
+
+    def test_puntillo_tras_la_nota_escrita_y_no_tras_los_intervalos(self):
+        t = HandTranslator(Score(), Hand("right"))
+        salida = t.translate_measure(Measure(1, events=[
+            Chord(notes=[N("C", 4), N("E", 4), N("G", 4)], duration_type="half", dots=1)
+        ]))
+        escrita = bt.OCTAVE_SIGN[4] + bt.note_cell("G", "half") + bt.DOT
+        self.assertTrue(salida.startswith(escrita))
+        self.assertEqual(salida.count(bt.DOT), 1)
+
+
 class TestKeySignature(unittest.TestCase):
     """Armadura de la clave."""
 

@@ -73,6 +73,7 @@ def _hand_events(
     seconds_per_tick: float,
     total_ticks: int,
     per_measure: int,
+    legato: float = 0.0,
 ) -> List[Measure]:
     groups = _group_by_onset(notes, seconds_per_tick)
     onsets = sorted(groups)
@@ -126,6 +127,9 @@ def _hand_events(
         next_onset = onsets[i + 1] if i + 1 < len(onsets) else total_ticks
         if next_onset > onset:
             length = min(length, next_onset - onset)
+            gap = next_onset - onset - length
+            if 0 < gap <= legato * (next_onset - onset):
+                length += gap
         length = max(1, length)
         emit(onset, length, [p for p, _ in members])
         cursor = onset + length
@@ -163,7 +167,15 @@ def quantize(
     fifths: int = 0,
     split_pitch: int = MIDDLE_C_MIDI,
     title: str = "",
+    legato: float = 0.0,
 ) -> Score:
+    """Cuantiza a la grilla de semicorchea y arma la partitura por manos.
+
+    legato es la fraccion del intervalo entre dos ataques que puede quedar en
+    silencio y aun asi escribirse como parte de la nota. Con 0 la figura sigue
+    lo que la nota sono; con 0.5 una corchea tocada separada, que suena la
+    mitad, se escribe como corchea y no como semicorchea mas silencio.
+    """
     if tempo_bpm <= 0:
         raise ValueError("tempo_bpm debe ser positivo")
 
@@ -176,6 +188,6 @@ def quantize(
     total_ticks = max(per_measure, -(-total_ticks // per_measure) * per_measure)
 
     score = Score(title=title, beats=beats, beat_type=beat_type, fifths=fifths)
-    score.right.measures = _hand_events(right_notes, seconds_per_tick, total_ticks, per_measure)
-    score.left.measures = _hand_events(left_notes, seconds_per_tick, total_ticks, per_measure)
+    score.right.measures = _hand_events(right_notes, seconds_per_tick, total_ticks, per_measure, legato)
+    score.left.measures = _hand_events(left_notes, seconds_per_tick, total_ticks, per_measure, legato)
     return score

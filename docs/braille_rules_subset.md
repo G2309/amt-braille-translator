@@ -384,17 +384,20 @@ Correspondencia entre cada regla implementada y la clase de prueba que la verifi
 | --- | --- | --- |
 | 1-1, 1-2 | `TestBrfMapping`, `TestQuantize` | `test_translator.py`, `test_amt.py` |
 | 1-9, 1-10 | `TestOctaveRules`, `TestCompoundIntervals` | `test_translator.py` |
-| Vigencia de alteraciones (III.A) | `TestAccidentalRules` | `test_translator.py` |
+| 3-1 (colocación y vigencia de alteraciones) | `TestAccidentalRules` | `test_translator.py` |
 | 3-3 | `TestKeySignature` | `test_translator.py` |
+| 3-6 | `TestTimeSignature` | `test_translator.py` |
+| 3-8 | `TestHeaderSignatures` | `test_translator.py` |
 | 5-1 | `TestChordIntervals` | `test_translator.py` |
-| 5-2 | `TestCompoundIntervals` | `test_translator.py` |
+| 5-2, 5-6 | `TestCompoundIntervals` | `test_translator.py` |
+| 5-5 | `TestChordDots` | `test_translator.py` |
 | 5-10, 5-11, 5-12 | `TestInAccords` | `test_translator.py` |
 | 5-14 | `TestInAccordAccidentals` | `test_translator.py` |
 | 6-2, 6-3, 6-8 | `TestSlurs`, `TestMusicXMLLigaduras` | `test_translator.py` |
 | 6-9, 6-11, 6-12 | `TestTies` | `test_translator.py` |
 | 6-10 | `TestTieContinuationAccidental`, `TestQuantize` | `test_translator.py`, `test_amt.py` |
 | 9-1, Tabla 9 A | `TestBarSigns`, `TestBarOverBar` | `test_translator.py` |
-| 14-17, 14-22 | `TestBarOverBar` | `test_translator.py` |
+| 14-16, 14-17, 14-22 | `TestBarOverBar` | `test_translator.py` |
 | 14-18, 15-2, 15-3 | `TestLineBreakOctave` | `test_translator.py` |
 | Validez del BRF de salida | `TestBrfWrap`, `TestValidateBrf` | `test_translator.py`, `test_api.py` |
 

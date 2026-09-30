@@ -119,8 +119,10 @@ LOWER_DIGIT = {
 
 
 def time_signature(beats: int, beat_type: int) -> str:
-    """Numerador en posicion normal, denominador en la parte baja."""
-    return NUMBER_SIGN + UPPER_DIGIT[beats] + LOWER_DIGIT[beat_type]
+    """Numerador en posicion normal, denominador en la parte baja, cifra por cifra."""
+    upper = "".join(UPPER_DIGIT[int(d)] for d in str(beats))
+    lower = "".join(LOWER_DIGIT[int(d)] for d in str(beat_type))
+    return NUMBER_SIGN + upper + lower
 
 
 def key_signature(fifths: int) -> str:
