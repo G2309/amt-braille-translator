@@ -67,7 +67,7 @@ Cuando el contexto no basta para determinar si un símbolo representa el valor m
 | Valores menores (semicorchea, fusa, semifusa, garrapatea) | 6, 1-2-6, 2 | ⠠⠣⠂ |
 | Separación de valores | 5-6, 1-3 | ⠰⠅ |
 
-El sistema todavía no emite estos signos: el cuantizador produce una grilla de semicorchea donde el número de eventos por compás desambigua el valor. Quedan documentados como mejora pendiente para pasajes con mezcla de valores extremos (caso de la regla 1-5).
+Cada celda representa dos valores (redonda y semicorchea, blanca y fusa, negra y semifusa, corchea y garrapatea) y el lector los distingue por la suma del compás. El traductor revisa cada voz y, si otra lectura de las mismas celdas también completa el compás, coloca los signos como en el ejemplo 1-3 del Manual: separación de valores antes del primer valor pequeño que sigue a uno grande y antes del primer valor grande que sigue a uno pequeño, y valor menor si el compás empieza con valores pequeños. Con la grilla de semicorchea y compases completos el caso es poco frecuente. Implementada en `translator.value_signs`.
 
 ### Regla 1-6 — Compás de espera (silencio prolongado)
 
@@ -383,6 +383,7 @@ Correspondencia entre cada regla implementada y la clase de prueba que la verifi
 | Regla | Clase de prueba | Archivo |
 | --- | --- | --- |
 | 1-1, 1-2 | `TestBrfMapping`, `TestQuantize` | `test_translator.py`, `test_amt.py` |
+| 1-3 | `TestValueSigns`, `TestValueSignClassification` | `test_translator.py`, `test_bsa.py` |
 | 1-6 | `TestRestMeasures` | `test_translator.py` |
 | 1-9, 1-10 | `TestOctaveRules`, `TestCompoundIntervals` | `test_translator.py` |
 | 3-1 (colocación y vigencia de alteraciones) | `TestAccidentalRules` | `test_translator.py` |
@@ -405,7 +406,6 @@ Correspondencia entre cada regla implementada y la clase de prueba que la verifi
 ## 12. Fuera de alcance — Documentado para futuras iteraciones
 
 * Claves (II): el sistema asume clave de Sol para mano derecha y clave de Fa para mano izquierda por defecto; en Braille los signos de clave son informativos (regla 2-1).
-* Signos de valor mayor/menor y separación de valores (1-3): documentados arriba; aún no emitidos.
 * Grupos rítmicos con signos de agrupación (IV): tresillos y demás grupos irregulares se representan por sus notas individuales.
 * Regla 5-4 (octava entre intervalos del mismo acorde) y duplicación de intervalos (5-7, 5-8, 5-13).
 * Cópula parcial y división de compás (5-16 a 5-21); punto 5 ante alteraciones/silencios agregados en Braille (5-14, 5-15).
