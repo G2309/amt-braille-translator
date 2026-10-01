@@ -145,8 +145,12 @@ La referencia principal es la edición Braille de las Open Goldberg Variations, 
 
 | Condición | Desarrollo | Prueba |
 | --- | :---: | :---: |
-| Audio, configuración base (legato 0.5) | 24.57 % | 22.56 % |
-| Audio, configuración final (legato 0.75, armónicos, manos por continuidad, voces en mano derecha) | 29.20 % | 25.47 % |
+| Audio, configuración base (legato 0.5, tempo fijo) | 24.57 % | 22.56 % |
+| Audio, armónicos y manos por continuidad (legato 0.75) | 28.48 % | 24.47 % |
+| Audio, lo anterior con seguimiento del pulso (pipeline por omisión) | 32.29 % | 27.99 % |
+| Audio, lo anterior con voces en mano derecha (mejor en desarrollo) | 33.19 % | 30.27 % |
 | Partitura MusicXML de la misma edición, sin audio | 73.00 % | 67.12 % |
 
-La última fila es el techo del traductor. Con la transcripción correcta el sistema llega al 70.25 % de media en las 32 piezas, con octavas, ligaduras y alteraciones por encima del 83 %. La brecha que queda con el audio es de la etapa acústica y rítmica, sobre todo por las barras que se desplazan cuando la intérprete cambia el tempo y el cuantizador trabaja con uno fijo. El detalle está en `notebooks/amt-bsa-mejoras.ipynb` y en los CSV `results/oe5_*`.
+La última fila es el techo del traductor. Con la transcripción correcta el sistema llega al 70.25 % de media en las 32 piezas, con octavas, ligaduras y alteraciones por encima del 83 %. Casi todo lo que le falta son figuras escritas con otra convención, sobre todo la agrupación de semicorcheas de la sección IV del Manual, que queda fuera del subconjunto.
+
+El seguimiento del pulso es la mejora que más aporta, porque evita que las barras se desplacen cuando la intérprete cambia el tempo. En las obras externas, con la configuración del pipeline, Für Elise pasa de 35.6 a 41.6 % y el vals de Chopin de 24.1 a 36.4 %; Debussy, de tempo libre, queda en torno al 15 %. La brecha restante es de la etapa acústica y de los pulsos que el seguimiento agrega en los ritardandos de fin de sección. El detalle está en `notebooks/amt-bsa-mejoras.ipynb` y en los CSV `results/oe5_*`.

@@ -63,7 +63,7 @@ from pipeline import audio_to_brf
 audio_to_brf("nocturno.wav", "nocturno.brf", tempo_bpm=60, beats=4, beat_type=4)
 ```
 
-El modelo acústico no estima tempo, compás ni armadura, así que se pasan como parámetros. `legato` (0.75 por omisión) indica qué fracción del intervalo entre dos ataques puede quedar en silencio y aun así escribirse como parte de la nota, para que una corchea tocada separada se escriba como corchea. `cleanup` (activo por omisión) quita los armónicos de octava que el modelo confunde con notas y reparte las manos por continuidad de registro en vez de cortar en el Do central. `voices` (apagado por omisión) separa la mano derecha en dos voces escritas con in-accord, lo que conviene en música contrapuntística y no en melodía con acompañamiento.
+El modelo acústico no estima tempo, compás ni armadura, así que se pasan como parámetros. `legato` (0.75 por omisión) indica qué fracción del intervalo entre dos ataques puede quedar en silencio y aun así escribirse como parte de la nota, para que una corchea tocada separada se escriba como corchea. `cleanup` (activo por omisión) quita los armónicos de octava que el modelo confunde con notas y reparte las manos por continuidad de registro en vez de cortar en el Do central. `track` (activo por omisión) sigue el pulso de la intérprete a partir de ese tempo, para que las barras no se corran cuando acelera o frena. `voices` (apagado por omisión) separa la mano derecha en dos voces escritas con in-accord, lo que conviene en música contrapuntística y no en melodía con acompañamiento.
 
 **Como API REST.**
 
@@ -101,6 +101,7 @@ python run_demo.py examples/simple_piece.musicxml salida.brf
 | `src/amt/transcriber.py` | envoltura del modelo acústico; aísla PyTorch del resto |
 | `src/amt/events.py` | contrato de datos entre las dos etapas |
 | `src/amt/postprocess.py` | limpieza ligera de las notas transcritas, reparto de manos y separación de voces |
+| `src/amt/beats.py` | seguimiento del pulso y paso al tiempo de partitura antes de cuantizar |
 | `src/amt/quantizer.py` | tiempos continuos a figuras rítmicas, acordes y manos |
 | `src/braille_translator/model.py` | árbol de sintaxis abstracta de la partitura |
 | `src/braille_translator/fsm.py` | contexto de octavas y alteraciones |
@@ -119,7 +120,7 @@ El árbol de sintaxis abstracta cumple una función muy concreta. El formato com
 python -m unittest discover -s tests
 ```
 
-204 pruebas. Las de la API se omiten solas si FastAPI no está instalado. La correspondencia entre cada regla del Manual y la prueba que la verifica está en la sección de trazabilidad de [`docs/braille_rules_subset.md`](docs/braille_rules_subset.md), y hay pruebas que verifican que esa tabla siga siendo cierta.
+212 pruebas. Las de la API se omiten solas si FastAPI no está instalado. La correspondencia entre cada regla del Manual y la prueba que la verifica está en la sección de trazabilidad de [`docs/braille_rules_subset.md`](docs/braille_rules_subset.md), y hay pruebas que verifican que esa tabla siga siendo cierta.
 
 Cada push a `dev` o `main` dispara el workflow de GitHub Actions, que corre la suite en Python 3.10, 3.12 y 3.13, traduce la partitura de ejemplo comprobando que el BRF resultante sea válido, mide la latencia de la etapa determinista y verifica que los notebooks estén bien formados.
 
