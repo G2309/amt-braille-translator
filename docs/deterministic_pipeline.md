@@ -30,6 +30,8 @@ Archivo: `src/amt/quantizer.py`.
 
 Recibe un `TranscriptionResult` (notas con tiempos en segundos) y produce un `Score`. Hace tres cosas: separa las notas entre mano derecha e izquierda según una altura de corte, redondea los tiempos continuos a una grilla de semicorchea (`TICKS_PER_QUARTER = 4`), y agrupa en acordes las notas que comparten el mismo instante de ataque. Una nota que no cabe entera en un compás se parte en varias unidas por ligadura de prolongación, sin perder duración total.
 
+Antes de cuantizar, `src/amt/postprocess.py` limpia las notas con dos heurísticas ligeras que el pipeline activa por omisión. La primera quita armónicos de octava, notas una octava, una duodécima o dos octavas por encima de otra que empiezan casi a la vez y no suenan más fuerte. La segunda reparte las manos por continuidad de registro en lugar de cortar en el Do central, dividiendo cada acorde por el punto que deja a cada mano más cerca de su registro reciente. Como opción, el cuantizador separa la mano derecha en dos voces y escribe la segunda con in-accord, empezando por la voz aguda en la derecha y por la grave en la izquierda según la regla 5-12.
+
 ## 2. Árbol de sintaxis abstracta (AST)
 
 Archivo: `src/braille_translator/model.py`.
@@ -76,6 +78,7 @@ Convierte el texto Braille Unicode a Braille ASCII (formato BRF), corta las lín
 | Componente | Archivo de prueba |
 | --- | --- |
 | Cuantizador | `tests/test_amt.py` (clase `TestQuantize`) |
+| Limpieza, reparto de manos y voces | `tests/test_postprocess.py` |
 | Traductor, máquina de estados, renderizador, exportador | `tests/test_translator.py` |
 
 El AST no tiene un archivo de prueba propio: sus clases se ejercitan indirectamente a través de las pruebas del traductor, porque su única función es servir de dato de entrada al resto del pipeline.

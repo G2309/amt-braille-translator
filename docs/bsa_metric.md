@@ -138,3 +138,15 @@ Conviene subrayar qué valida esto y qué no: comprueba que **la métrica está 
 - **Una alineación óptima no siempre es la musicalmente evidente.** Cuando hay varios caminos de coste mínimo se toma uno de ellos, lo que puede repartir el error entre categorías de forma distinta a como lo haría un analista humano. El efecto sobre el BSA global es nulo, y sobre el desglose por categoría, marginal.
 - **Diferencias legítimas de transcripción cuentan como error.** El Manual admite alternativas en varios puntos —la ligadura larga puede escribirse de dos formas, el número de compases por paralela es decisión del transcriptor—, y una referencia que elija la otra opción penalizará al sistema aunque ambas sean correctas. Al comparar contra referencias humanas conviene registrar estos casos por separado.
 - **No mide legibilidad.** El BSA compara con una referencia; no dice si el resultado es cómodo de leer al tacto. Esa dimensión requeriría evaluación con usuarios.
+
+## 8. Evaluación contra referencias humanas
+
+La referencia principal es la edición Braille de las Open Goldberg Variations, comparada con lo que el sistema produce desde la grabación del mismo proyecto. Para no ajustar el sistema a los datos con que se evalúa, las piezas se dividen una sola vez en desarrollo (Aria, variaciones 1 a 15 y Aria da capo) y prueba (variaciones 16 a 30, sin la 25 por duración). Todo parámetro se elige con desarrollo, y prueba se mide una vez con la configuración ya fija. Tres obras externas con edición compás sobre compás de BrailleOrch (Für Elise, La fille aux cheveux de lin y el Vals en la menor B. 150 de Chopin) comprueban si lo elegido se sostiene en otros estilos.
+
+| Condición | Desarrollo | Prueba |
+| --- | :---: | :---: |
+| Audio, configuración base (legato 0.5) | 24.57 % | 22.56 % |
+| Audio, configuración final (legato 0.75, armónicos, manos por continuidad, voces en mano derecha) | 29.20 % | 25.47 % |
+| Partitura MusicXML de la misma edición, sin audio | 73.00 % | 67.12 % |
+
+La última fila es el techo del traductor. Con la transcripción correcta el sistema llega al 70.25 % de media en las 32 piezas, con octavas, ligaduras y alteraciones por encima del 83 %. La brecha que queda con el audio es de la etapa acústica y rítmica, sobre todo por las barras que se desplazan cuando la intérprete cambia el tempo y el cuantizador trabaja con uno fijo. El detalle está en `notebooks/amt-bsa-mejoras.ipynb` y en los CSV `results/oe5_*`.
