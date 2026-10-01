@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from difflib import SequenceMatcher
 from typing import Callable, Dict, List, Optional
 
+from amt.beats import follow_tempo
 from amt.events import NoteEvent, TranscriptionResult
 from amt.quantizer import quantize
 from braille_translator.translator import translate_score
@@ -107,8 +108,8 @@ def evaluate_piece(piece: Piece, notes: List[List[float]], duration_s: float,
                    repeats: Optional[bool] = None, legato: float = 0.0,
                    pre: Optional[Callable[[TranscriptionResult], TranscriptionResult]] = None,
                    hands: Optional[Callable] = None, voices: tuple = (),
-                   pickup_quarters: float = 0.0) -> PieceEvaluation:
-    # pre limpia las notas antes de cuantizar y hands reparte las manos
+                   pickup_quarters: float = 0.0, track: bool = False) -> PieceEvaluation:
+    # pre limpia las notas, hands reparte las manos y track sigue el pulso en vez de usar un tempo fijo
     result = shifted_result(notes, duration_s)
     if pre is not None:
         result = pre(result)
@@ -120,6 +121,8 @@ def evaluate_piece(piece: Piece, notes: List[List[float]], duration_s: float,
     ref = with_rep if repeats else without_rep
 
     tempo = estimate_tempo(result, piece, ref.measures_played, pickup_quarters)
+    if track:
+        result, tempo = follow_tempo(result, tempo, piece.beat_type), 60.0
     result = place_pickup(result, piece, tempo, pickup_quarters)
     score = quantize(result, tempo_bpm=tempo, beats=piece.beats,
                      beat_type=piece.beat_type, fifths=piece.fifths, legato=legato,

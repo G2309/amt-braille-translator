@@ -2,6 +2,7 @@
 from typing import Optional
 
 from amt import AMTTranscriber, TranscriptionResult, quantize
+from amt.beats import follow_tempo
 from amt.postprocess import drop_octave_ghosts, split_hands_by_continuity
 from braille_translator import braille_tables, export_brf, render_bar_over_bar, translate_score
 from braille_translator.renderer import DEFAULT_MEASURES_PER_LINE
@@ -24,12 +25,14 @@ def result_to_brf(
     legato: float = DEFAULT_LEGATO,
     cleanup: bool = True,
     voices: bool = False,
+    track: bool = True,
 ) -> str:
-    # cleanup quita armonicos de octava y reparte manos por continuidad; voices separa la derecha en dos voces
-    hands = None
+    # cleanup quita armonicos y reparte manos; voices separa la derecha en dos voces; track sigue el pulso
     if cleanup:
         result = drop_octave_ghosts(result, window_s=GHOST_WINDOW_S, ratio=GHOST_RATIO)
-        hands = split_hands_by_continuity(result.notes, memory=HAND_MEMORY)
+    if track and result.notes:
+        result, tempo_bpm = follow_tempo(result, tempo_bpm, beat_type), 60.0
+    hands = split_hands_by_continuity(result.notes, memory=HAND_MEMORY) if cleanup else None
     score = quantize(result, tempo_bpm=tempo_bpm, beats=beats, beat_type=beat_type,
                      fifths=fifths, legato=legato, hands=hands, voices=("right",) if voices else ())
     rh, lh = translate_score(score, measures_per_line)
@@ -55,6 +58,7 @@ def audio_to_brf(
     legato: float = DEFAULT_LEGATO,
     cleanup: bool = True,
     voices: bool = False,
+    track: bool = True,
 ) -> str:
     result = (transcriber or AMTTranscriber()).transcribe(audio_path)
     return result_to_brf(
@@ -68,4 +72,5 @@ def audio_to_brf(
         legato=legato,
         cleanup=cleanup,
         voices=voices,
+        track=track,
     )
