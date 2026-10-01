@@ -13,3 +13,6 @@ build/
 dist/
 *.egg-info/
 
+
+# Datos de evaluacion descargados
+data/
