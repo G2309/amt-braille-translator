@@ -1,13 +1,4 @@
-"""Lectura de una referencia Braille de piano en formato compas sobre compas.
-
-La referencia es un BRF hecho por un transcriptor: cada paralela lleva el numero
-de compas en el margen, la parte de mano derecha y la de mano izquierda en lineas
-seguidas, y un compas largo sigue en lineas sangradas sin signo de mano. Este
-modulo la separa en piezas, lee armadura y compas del encabezado de cada pieza,
-expande las repeticiones como las toca el interprete y quita los signos que
-quedan fuera del subset de 28 reglas, para compararla contra la salida del
-sistema con el BSA.
-"""
+# Lectura de referencias Braille de piano en formato compas sobre compas para medir el BSA
 import re
 from collections import Counter
 from dataclasses import dataclass, field
@@ -20,7 +11,14 @@ from .bsa import UNKNOWN, classify_cells
 _HAND_LINE = re.compile(r"^\s*([a-j]*)\s*([._])>(.*)$")
 _PAGE_NUMBER = re.compile(r'^\s*"?\d?#[a-j]+\s*$')
 _TITLE = re.compile(r"^\s+(aria4|v>i,n #[a-j]+4)\s*$")
-_SIGNATURE = re.compile(r"(?:^|\s)([%<*]*)(#[a-j]+[0-9]+|[._]c)\s*$")
+_KEY = r"(?:#[a-j][%<]|[%<*]*)"
+_TIME = r"(?:#[a-j]+[0-9]+|[._]c)"
+_SIGNATURE = re.compile(rf"(?:^|\s)({_KEY})({_TIME})\s*$")
+_TIME_ONLY = re.compile(rf"^{_KEY}{_TIME}$")
+_GUIDE_FILL = re.compile(r"'{2,}$")
+# Expresiones, matices y reguladores con signo de palabra; no son musica
+_WORDS_MULTI = re.compile(r"(?<![<._])>[a-z][a-z'=!(7]*(?: +[a-z'=!(7]+)+>")
+_WORDS_SINGLE = re.compile(r"(?<![<._])>(?:[a-z][a-z'=!]*|[34])")
 
 _UPPER = {c: i for i, c in enumerate("jabcdefghi")}
 _LOWER = {c: i for i, c in enumerate("0123456789")}
@@ -28,11 +26,12 @@ _LOWER = {c: i for i, c in enumerate("0123456789")}
 BEGIN_REPEAT = "<7"
 END_REPEAT = "<2"
 VOLTA = re.compile(r"#([12])")
+# Pedal abajo y arriba; sin ellos se leerian como alteracion y ligadura
+PEDAL_DOWN = "<c"
+PEDAL_UP = "*c"
 
-# Signos de la referencia que el sistema no escribe: repeticiones y casillas
-# de volta (ya usadas al expandir) y ornamentos o articulaciones de una celda
-# que el clasificador no reconoce.
-_STRIPPED_TOKENS = (BEGIN_REPEAT, END_REPEAT, "<1", "#1", "#2")
+# Repeticiones y casillas ya usadas al expandir; el resto de signos ajenos al subset se quita al clasificar
+_STRIPPED_TOKENS = (BEGIN_REPEAT, END_REPEAT, "<1", "#1", "#2", PEDAL_DOWN, PEDAL_UP)
 
 
 @dataclass
@@ -66,6 +65,7 @@ class Piece:
     beats: int = 4
     beat_type: int = 4
     measures: List[Measure] = field(default_factory=list)
+    expressions: int = 0
 
     @property
     def has_pickup(self) -> bool:
@@ -81,12 +81,15 @@ def _number(letters: str) -> int:
 
 
 def parse_signature(token: str) -> Tuple[int, int, int]:
-    """Armadura y compas de un encabezado como %#c4, <<#ab8, %.c o %_c."""
+    # Armadura y compas de encabezados como %#c4, *<<#b4, #f<#c4, %.c o %_c
     m = _SIGNATURE.search(token)
     if not m:
         raise ValueError(f"encabezado sin armadura ni compas: {token!r}")
-    accidentals, time = m.groups()
-    fifths = accidentals.count("%") - accidentals.count("<")
+    key, time = m.groups()
+    if key.startswith("#"):
+        fifths = _UPPER[key[1]] * (1 if key[2] == "%" else -1)
+    else:
+        fifths = key.count("%") - key.count("<")
     if time == ".c":
         return fifths, 4, 4
     if time == "_c":
@@ -96,37 +99,31 @@ def parse_signature(token: str) -> Tuple[int, int, int]:
     return fifths, _number(upper), int("".join(str(_LOWER[c]) for c in lower))
 
 
-_GUIDE_FILL = re.compile(r"'{2,}$")
+def _strip_words(content: str) -> Tuple[str, int]:
+    # Cambia las palabras por relleno nulo del mismo largo para conservar las columnas
+    count = 0
+    for pattern in (_WORDS_MULTI, _WORDS_SINGLE):
+        content, n = pattern.subn(lambda m: "\0" * len(m.group()), content)
+        count += n
+    return content, count
 
 
-_TIME_ONLY = re.compile(r"^[%<*]*(#[a-j]+[0-9]+|[._]c)$")
-
-
-def _segments(content: str) -> List[str]:
-    """Compases de una linea.
-
-    Los separa el espacio, el mas corto va rellenado con puntos guia y un
-    cambio de indicacion de compas a mitad de pieza ocupa su propio segmento.
-    """
+def _segments(content: str, offset: int = 0) -> List[Tuple[int, str]]:
+    # Compases de una linea con su columna, sin puntos guia, palabras ni punto 3 inicial
     out = []
-    for seg in content.split(" "):
-        seg = _GUIDE_FILL.sub("", seg)
+    for m in re.finditer(r"\S+", content):
+        seg = _GUIDE_FILL.sub("", m.group().replace("\0", "")).lstrip("'")
         if seg and not _TIME_ONLY.match(seg):
-            out.append(seg)
+            out.append((offset + m.start(), seg))
     return out
 
 
 def parse_reference(brf: str) -> List[Piece]:
-    """Separa el BRF en piezas con sus compases por mano, en Braille ASCII.
-
-    Cada paralela abre con la linea de mano derecha, que puede traer varios
-    compases separados por espacios; la linea de mano izquierda trae los mismos
-    compases en el mismo orden. Las lineas sangradas sin signo de mano
-    continuan el ultimo compas de la ultima mano escrita.
-    """
+    # Piezas con sus compases por mano en Braille ASCII; sin titulos de Goldberg el archivo es una sola obra
     pieces: List[Piece] = []
     current: Optional[Piece] = None
     group: List[Measure] = []
+    columns: List[int] = []
     side = "right"
     slot = 0
     for raw in brf.replace("\r", "").split("\n"):
@@ -139,28 +136,46 @@ def parse_reference(brf: str) -> List[Piece]:
             pieces.append(current)
             group = []
             continue
+        hand = _HAND_LINE.match(line)
+        if current is None and (hand or _SIGNATURE.search(line)):
+            current = Piece(index=len(pieces), title="obra")
+            pieces.append(current)
         if current is None:
             continue
-        hand = _HAND_LINE.match(line)
         if hand:
             number, sign, content = hand.groups()
-            segments = _segments(content)
+            content, words = _strip_words(content)
+            current.expressions += words
+            segments = _segments(content, hand.start(3))
             if sign == ".":
+                # Una linea con solo palabras abre un compas que se llena en la continuacion
+                segments = segments or [(hand.start(3), "")]
                 first = _number(number) if number else len(current.measures) + 1
-                group = [Measure(number=first + k, right=seg) for k, seg in enumerate(segments)]
+                group = [Measure(number=first + k, right=seg) for k, (_, seg) in enumerate(segments)]
+                columns = [col for col, _ in segments]
                 current.measures += group
                 side, slot = "right", len(group) - 1
-            else:
-                for k, seg in enumerate(segments[: len(group)]):
-                    group[k].left += seg
-                side, slot = "left", max(0, min(len(segments), len(group)) - 1)
+            elif group:
+                starts = {col for col, _ in segments}
+                if all(c in starts for c in columns[1:]):
+                    # Formato alineado; cada token va al compas de la derecha que empieza en su columna o antes
+                    for col, seg in segments:
+                        slot = max([k for k, c in enumerate(columns) if c <= col] or [0])
+                        group[slot].left += seg
+                else:
+                    for k, (_, seg) in enumerate(segments[: len(group)]):
+                        group[k].left += seg
+                    slot = max(0, min(len(segments), len(group)) - 1)
+                side = "left"
             continue
         if not current.measures and _SIGNATURE.search(line):
             current.fifths, current.beats, current.beat_type = parse_signature(line)
             continue
         if group and raw.startswith("  "):
-            segments = _segments(line.strip())
-            for k, seg in enumerate(segments):
+            content, words = _strip_words(line.strip())
+            current.expressions += words
+            segments = _segments(content)
+            for k, (_, seg) in enumerate(segments):
                 if k > 0 and side == "right":
                     group.append(Measure(number=group[-1].number + 1, right=seg))
                     current.measures.append(group[-1])
@@ -174,12 +189,7 @@ def parse_reference(brf: str) -> List[Piece]:
 
 
 def expand_repeats(measures: List[Measure]) -> List[Measure]:
-    """Orden en que suenan los compases si se tocan todas las repeticiones.
-
-    Una seccion va desde el inicio o desde un signo de inicio de repeticion
-    hasta el signo de fin. En la segunda vuelta se salta la casilla 1 y en la
-    primera la casilla 2.
-    """
+    # Orden en que suenan los compases tocando las repeticiones; la casilla 1 solo en la primera vuelta
     played: List[Measure] = []
     start = 0
     for i, m in enumerate(measures):
@@ -195,7 +205,7 @@ def expand_repeats(measures: List[Measure]) -> List[Measure]:
 
 
 def clean(content: str, removed: Counter) -> str:
-    """Braille ASCII de un compas a Unicode sin los signos fuera del subset."""
+    # Braille ASCII de un compas a Unicode sin los signos fuera del subset
     for token in _STRIPPED_TOKENS:
         if token in content:
             removed[token] += content.count(token)
@@ -216,12 +226,13 @@ class HandStreams:
     left: str
     measures_played: int
     removed: Dict[str, int]
+    played: List[Measure] = field(default_factory=list)
 
 
 def reference_streams(piece: Piece, repeats: bool = True) -> HandStreams:
-    """Secuencias Braille por mano de una pieza, lista para compute_bsa."""
+    # Secuencias Braille por mano de una pieza, listas para compute_bsa
     measures = expand_repeats(piece.measures) if repeats else piece.measures
     removed: Counter = Counter()
     right = "".join(clean(m.right, removed) for m in measures)
     left = "".join(clean(m.left, removed) for m in measures)
-    return HandStreams(right, left, len(measures), dict(removed))
+    return HandStreams(right, left, len(measures), dict(removed), measures)

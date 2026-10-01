@@ -187,3 +187,11 @@ class TestBsaSobreSalidaReal(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestValueSignClassification(unittest.TestCase):
+    def test_signos_de_valor_cuentan_como_notas(self):
+        from braille_translator import braille_tables as tabla
+        for signo in (tabla.LARGER_VALUES, tabla.SMALLER_VALUES, tabla.VALUE_SEPARATION):
+            categorias = {c for _, c in classify_cells(signo)}
+            self.assertEqual(categorias, {"notas"})

@@ -1,18 +1,7 @@
-"""BSA del pipeline completo contra una referencia Braille humana.
-
-Recibe las notas que el modelo acustico transcribio de una grabacion y la pieza
-correspondiente de la referencia (evaluation.reference). Con la armadura y el
-compas de la edicion y un tempo estimado de la propia grabacion, pasa las notas
-por el cuantizador y el traductor, y compara el Braille resultante con la
-referencia mano por mano.
-
-La comparacion es un alineamiento global por mano y no compas por compas: el
-interprete cambia el tempo dentro de la obra y el cuantizador trabaja con un
-tempo fijo, asi que las barras generadas no caen donde caen en la partitura.
-"""
+# BSA del pipeline completo contra una referencia Braille humana, alineando cada mano completa
 from dataclasses import dataclass
 from difflib import SequenceMatcher
-from typing import Dict, List, Optional
+from typing import Callable, Dict, List, Optional
 
 from amt.events import NoteEvent, TranscriptionResult
 from amt.quantizer import quantize
@@ -25,7 +14,7 @@ MAX_CELLS = 40_000_000
 
 
 def merge(a: BsaResult, b: BsaResult) -> BsaResult:
-    """Suma dos resultados, por ejemplo las dos manos de una misma pieza."""
+    # Suma dos resultados, por ejemplo las dos manos de una pieza
     out = BsaResult(
         total_ref=a.total_ref + b.total_ref, total_hyp=a.total_hyp + b.total_hyp,
         matches=a.matches + b.matches, substitutions=a.substitutions + b.substitutions,
@@ -44,13 +33,13 @@ def merge(a: BsaResult, b: BsaResult) -> BsaResult:
 
 
 def note_count(streams: HandStreams) -> int:
-    """Notas que suenan segun la referencia: cada nota o intervalo es una."""
+    # Notas que suenan segun la referencia; cada nota o intervalo cuenta una
     cells = classify_cells(streams.right + streams.left)
     return sum(1 for _, cat in cells if cat in ("notas", "intervalos"))
 
 
 def shifted_result(notes: List[List[float]], duration_s: float) -> TranscriptionResult:
-    """Notas desplazadas para que el primer ataque caiga en el tiempo cero."""
+    # Desplaza las notas para que el primer ataque caiga en cero
     start = min(n[0] for n in notes)
     events = [
         NoteEvent(onset_s=n[0] - start, offset_s=max(n[1], n[0] + 1e-3) - start,
@@ -60,15 +49,23 @@ def shifted_result(notes: List[List[float]], duration_s: float) -> Transcription
     return TranscriptionResult(notes=events, duration_s=duration_s - start)
 
 
-def estimate_tempo(result: TranscriptionResult, piece: Piece, measures_played: int) -> float:
-    """Negras por minuto entre el primer y el ultimo ataque.
-
-    Supone que el ultimo ataque cae en el primer tiempo del ultimo compas,
-    como en el acorde final de estas piezas.
-    """
+def estimate_tempo(result: TranscriptionResult, piece: Piece, measures_played: int,
+                   pickup_quarters: float = 0.0) -> float:
+    # Negras por minuto suponiendo que el ultimo ataque cae en el primer tiempo del ultimo compas
     span = max(n.onset_s for n in result.notes)
-    quarters = (measures_played - 1) * piece.quarters_per_measure
+    full = measures_played - 1 - (1 if pickup_quarters else 0)
+    quarters = full * piece.quarters_per_measure + pickup_quarters
     return 60.0 * quarters / span
+
+
+def place_pickup(result: TranscriptionResult, piece: Piece, tempo_bpm: float,
+                 pickup_quarters: float) -> TranscriptionResult:
+    # Retrasa las notas para que la anacrusa ocupe el final de su compas
+    if not pickup_quarters:
+        return result
+    delay = (piece.quarters_per_measure - pickup_quarters) * 60.0 / tempo_bpm
+    notes = [NoteEvent(n.onset_s + delay, n.offset_s + delay, n.midi_pitch, n.velocity) for n in result.notes]
+    return TranscriptionResult(notes=notes, duration_s=result.duration_s + delay)
 
 
 @dataclass
@@ -107,19 +104,27 @@ class PieceEvaluation:
 
 
 def evaluate_piece(piece: Piece, notes: List[List[float]], duration_s: float,
-                   repeats: Optional[bool] = None, legato: float = 0.0) -> PieceEvaluation:
+                   repeats: Optional[bool] = None, legato: float = 0.0,
+                   pre: Optional[Callable[[TranscriptionResult], TranscriptionResult]] = None,
+                   hands: Optional[Callable] = None, voices: tuple = (),
+                   pickup_quarters: float = 0.0) -> PieceEvaluation:
+    # pre limpia las notas antes de cuantizar y hands reparte las manos
     result = shifted_result(notes, duration_s)
+    if pre is not None:
+        result = pre(result)
     with_rep, without_rep = reference_streams(piece, True), reference_streams(piece, False)
     if repeats is None:
-        # las dos hipotesis difieren en un factor cercano a dos, asi que la
-        # frontera es la media geometrica y no la aritmetica
+        # Las dos hipotesis difieren casi al doble, por eso la frontera es la media geometrica
         frontera = (note_count(with_rep) * note_count(without_rep)) ** 0.5
         repeats = len(result.notes) >= frontera
     ref = with_rep if repeats else without_rep
 
-    tempo = estimate_tempo(result, piece, ref.measures_played)
+    tempo = estimate_tempo(result, piece, ref.measures_played, pickup_quarters)
+    result = place_pickup(result, piece, tempo, pickup_quarters)
     score = quantize(result, tempo_bpm=tempo, beats=piece.beats,
-                     beat_type=piece.beat_type, fifths=piece.fifths, legato=legato)
+                     beat_type=piece.beat_type, fifths=piece.fifths, legato=legato,
+                     hands=hands(result.notes) if hands is not None else None,
+                     voices=voices)
     right, left = translate_score(score, measures_per_line=1)
     hyp_right, hyp_left = "".join(right), "".join(left)
 
@@ -141,16 +146,12 @@ def evaluate_piece(piece: Piece, notes: List[List[float]], duration_s: float,
 
 
 def _step(cell: str) -> str:
-    """Nota sin su valor: se quitan los puntos 3 y 6 de la celda."""
+    # Nota sin su valor, quitando los puntos 3 y 6
     return chr(0x2800 + ((ord(cell) - 0x2800) & ~0x24))
 
 
 def pitch_agreement(reference: str, hypothesis: str) -> float:
-    """Coincidencia de la secuencia de notas ignorando su duracion.
-
-    Diagnostico para separar el error de altura del error ritmico: compara
-    solo las celdas de nota, sin los puntos que codifican el valor.
-    """
+    # Coincidencia de alturas ignorando la duracion, para separar el error de altura del ritmico
     ref = [_step(c) for c, cat in classify_cells(reference) if cat == "notas"]
     hyp = [_step(c) for c, cat in classify_cells(hypothesis) if cat == "notas"]
     if not ref and not hyp:

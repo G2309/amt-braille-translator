@@ -11,7 +11,7 @@ from braille_translator.translator import translate_score
 from evaluation.reference import (
     Measure, clean, expand_repeats, parse_reference, parse_signature, reference_streams,
 )
-from evaluation.reference_eval import evaluate_piece, shifted_result
+from evaluation.reference_eval import estimate_tempo, evaluate_piece, place_pickup, shifted_result
 
 LETTERS = "jabcdefghi"
 
@@ -72,6 +72,53 @@ class TestParseReference(unittest.TestCase):
         self.assertEqual(pieza.measures[3].right, ".f\"5zcd\"5)c['%.g")
 
 
+# Formato de BrailleOrch: obra unica, columnas alineadas y palabras de expresion
+class TestFormatoAlineado(unittest.TestCase):
+    BRF = (
+        "     ,poco moto4 #c8\r\n"
+        "j .>'<7>pp.&%z &%ef\"j*ed\r\n"
+        "  _>'<7   x    m\r\n"
+        "b .>'>un peu anim=> \"p#*0\r\n"
+        "  _>^p'<>^j)\r\n"
+        "c .>'>mouvt 7sans lourdeuir7>\r\n"
+        "     >pp;b\"j'9--\r\n"
+        "  _>;b^h'9\r\n"
+    )
+
+    def setUp(self):
+        (self.pieza,) = parse_reference(self.BRF)
+
+    def test_obra_unica_con_anacrusa(self):
+        self.assertEqual(self.pieza.title, "obra")
+        self.assertEqual((self.pieza.beats, self.pieza.beat_type), (3, 8))
+        self.assertTrue(self.pieza.has_pickup)
+        self.assertEqual([m.number for m in self.pieza.measures], [0, 1, 2, 3])
+
+    def test_mano_izquierda_por_columna(self):
+        self.assertEqual(self.pieza.measures[0].left, "<7x")
+        self.assertEqual(self.pieza.measures[1].left, "m")
+
+    def test_palabras_y_matices_fuera(self):
+        self.assertEqual(self.pieza.measures[0].right, "<7.&%z")
+        self.assertEqual(self.pieza.measures[2].right, "\"p#*0")
+        self.assertEqual(self.pieza.expressions, 4)
+
+    def test_linea_solo_con_palabras_abre_compas(self):
+        self.assertEqual(self.pieza.measures[3].right, ";b\"j'9--")
+        self.assertEqual(self.pieza.measures[3].left, ";b^h'9")
+
+    def test_armadura_numerica(self):
+        self.assertEqual(parse_signature("?7#ff #f<#c4"), (-6, 3, 4))
+        self.assertEqual(parse_signature("#d%.c"), (4, 4, 4))
+
+
+class TestPedal(unittest.TestCase):
+    def test_signos_de_pedal_se_quitan(self):
+        quitadas = Counter()
+        self.assertEqual(clean("<c^!*c", quitadas), clean("^!", Counter()))
+        self.assertEqual(quitadas["<c"] + quitadas["*c"], 2)
+
+
 class TestRepeticiones(unittest.TestCase):
     def test_dos_secciones_repetidas(self):
         ms = [Measure(1, "a"), Measure(2, "b<2"), Measure(3, "<7c"), Measure(4, "d<2")]
@@ -95,6 +142,26 @@ class TestLimpieza(unittest.TestCase):
         self.assertEqual(quitados["<2"], 1)
         self.assertEqual(quitados["8"], 1)
         self.assertNotIn("⠦", limpio)
+
+
+# Anacrusa de una negra en 3/4 a 60 negras por minuto
+class TestAnacrusa(unittest.TestCase):
+    def setUp(self):
+        from amt.events import NoteEvent, TranscriptionResult
+        from evaluation.reference import Piece
+        self.pieza = Piece(index=0, title="obra", beats=3, beat_type=4)
+        notas = [NoteEvent(0.0, 0.9, 64), NoteEvent(1.0, 1.9, 69), NoteEvent(4.0, 4.9, 69)]
+        self.resultado = TranscriptionResult(notes=notas, duration_s=5.0)
+
+    def test_tempo_cuenta_solo_la_anacrusa(self):
+        self.assertAlmostEqual(estimate_tempo(self.resultado, self.pieza, 3, pickup_quarters=1.0), 60.0)
+
+    def test_anacrusa_ocupa_el_final_del_compas(self):
+        movido = place_pickup(self.resultado, self.pieza, 60.0, 1.0)
+        self.assertEqual([n.onset_s for n in movido.notes], [2.0, 3.0, 6.0])
+
+    def test_sin_anacrusa_no_mueve(self):
+        self.assertIs(place_pickup(self.resultado, self.pieza, 60.0, 0.0), self.resultado)
 
 
 class TestIdaYVuelta(unittest.TestCase):

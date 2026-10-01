@@ -1,16 +1,52 @@
-"""Traductor AST -> celdas Braille por compas
-
-Serializa cada compas de cada mano aplicando la FSM de octavas y alteraciones.
-El resultado es una lista de cadenas Braille Unicode, una por compas, que el
-renderizador Bar-over-bar alinea despues.
-"""
+# Traduce el AST a celdas Braille por compas aplicando la FSM de octavas y alteraciones
 import copy
-from typing import List
+from typing import Dict, List
 
 from . import braille_tables as bt
 from .fsm import AccidentalState, OctaveState
 from .model import Chord, Hand, Measure, MultiRest, Note, Rest, Score
 from .renderer import DEFAULT_MEASURES_PER_LINE
+
+
+# Duracion en cuartos de garrapatea; cada celda vale lo mismo para el par grande y el pequeno
+_UNITS = {"whole": 512, "half": 256, "quarter": 128, "eighth": 64,
+          "16th": 32, "32nd": 16, "64th": 8, "128th": 4}
+_PAIR = {"whole": "16th", "half": "32nd", "quarter": "64th", "eighth": "128th"}
+_PAIR.update({small: large for large, small in list(_PAIR.items())})
+_LARGE = {"whole", "half", "quarter", "eighth"}
+
+
+def _duration(dtype: str, dots: int) -> int:
+    return sum(_UNITS[dtype] >> k for k in range(dots + 1))
+
+
+def _ambiguous(events) -> bool:
+    # Hay ambiguedad si otra lectura grande o pequena de las mismas celdas completa igual el compas
+    target = sum(_duration(ev.duration_type, ev.dots) for ev in events)
+    states = {(0, False)}
+    for ev in events:
+        real = _duration(ev.duration_type, ev.dots)
+        alt = _duration(_PAIR[ev.duration_type], ev.dots)
+        states = {(s + d, c or changed) for s, c in states for d, changed in ((real, False), (alt, True))
+                  if s + d <= target}
+    return (target, True) in states
+
+
+def value_signs(events) -> Dict[int, str]:
+    # Signos de valor por indice de evento segun el ejemplo 1-3 del Manual
+    timed = [(i, ev) for i, ev in enumerate(events) if isinstance(ev, (Note, Chord, Rest))]
+    if not timed or not _ambiguous([ev for _, ev in timed]):
+        return {}
+    signs: Dict[int, str] = {}
+    previous = None
+    for i, ev in timed:
+        large = ev.duration_type in _LARGE
+        if previous is None and not large:
+            signs[i] = bt.SMALLER_VALUES
+        elif previous is not None and large != previous:
+            signs[i] = bt.VALUE_SEPARATION
+        previous = large
+    return signs
 
 
 class HandTranslator:
@@ -97,8 +133,7 @@ class HandTranslator:
 
     @staticmethod
     def _multi_rest(count: int) -> str:
-        """Hasta tres compases se repite el silencio de redonda; desde cuatro
-        se escribe el numero de compases antes de un solo silencio."""
+        # Hasta tres compases se repite el silencio; desde cuatro va el numero de compases
         if count <= 3:
             return bt.REST["whole"] * count
         digits = "".join(bt.UPPER_DIGIT[int(d)] for d in str(count))
@@ -107,7 +142,9 @@ class HandTranslator:
     def _emit_voice(self, events, force_first_octave: bool) -> str:
         parts: List[str] = []
         first = force_first_octave
-        for ev in events:
+        signs = value_signs(events)
+        for i, ev in enumerate(events):
+            parts.append(signs.get(i, ""))
             if isinstance(ev, MultiRest):
                 parts.append(self._multi_rest(ev.count))
             elif isinstance(ev, Rest):
@@ -135,10 +172,7 @@ class HandTranslator:
         return bt.IN_ACCORD.join(rendered)
 
     def translate(self, measures_per_line: int = DEFAULT_MEASURES_PER_LINE) -> List[str]:
-        """Devuelve la lista de compases traducidos de esta mano.
-        measures_per_line debe coincidir con el del renderizador: marca donde
-        empieza cada renglon Bar-over-bar.
-        """
+        # measures_per_line debe coincidir con el del renderizador para saber donde empieza cada renglon
         result = []
         for i, measure in enumerate(self.hand.measures):
             new_line = i % measures_per_line == 0
@@ -154,13 +188,7 @@ def _rest_only(measure: Measure) -> bool:
 
 
 def merge_rest_measures(score: Score) -> Score:
-    """Compases de silencio segun el Manual.
-
-    Un compas que en una mano es solo silencio se escribe con el silencio de
-    redonda, sin importar la indicacion de compas. Si las dos manos callan
-    varios compases seguidos, se agrupan en una sola paralela para que las
-    barras de ambas manos sigan alineadas.
-    """
+    # Silencio de redonda por compas callado y compases agrupados si callan ambas manos
     rh, lh = score.right.measures, score.left.measures
     new_rh, new_lh = [], []
     i = 0
@@ -183,7 +211,7 @@ def merge_rest_measures(score: Score) -> Score:
 
 def translate_score(score: Score, measures_per_line: int = DEFAULT_MEASURES_PER_LINE,
                     merge_rests: bool = True):
-    """Traduce ambas manos. Devuelve (compases_md, compases_mi)."""
+    # Devuelve los compases traducidos de la mano derecha y de la izquierda
     if merge_rests:
         score = merge_rest_measures(score)
     rh = HandTranslator(score, score.right).translate(measures_per_line)

@@ -43,6 +43,9 @@ _MULTI: List[Tuple[str, str]] = sorted(
         (bt.CHORD_TIE, "ligaduras"),
         (bt.SLUR_OPEN, "ligaduras"),
         (bt.SLUR_CLOSE, "ligaduras"),
+        (bt.LARGER_VALUES, "notas"),
+        (bt.SMALLER_VALUES, "notas"),
+        (bt.VALUE_SEPARATION, "notas"),
     ],
     key=lambda pair: -len(pair[0]),
 )

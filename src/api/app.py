@@ -77,6 +77,8 @@ def create_app(transcriber_factory: Optional[Callable[[], object]] = None) -> Fa
         fifths: int = Form(0),
         measures_per_line: int = Form(4),
         legato: float = Form(DEFAULT_LEGATO),
+        cleanup: bool = Form(True),
+        voices: bool = Form(False),
     ):
         suffix = Path(file.filename or "").suffix.lower()
         if suffix not in ALLOWED_EXTENSIONS:
@@ -96,7 +98,8 @@ def create_app(transcriber_factory: Optional[Callable[[], object]] = None) -> Fa
                 out.write(chunk)
 
         params = {"tempo_bpm": tempo_bpm, "beats": beats, "beat_type": beat_type,
-                  "fifths": fifths, "measures_per_line": measures_per_line, "legato": legato}
+                  "fifths": fifths, "measures_per_line": measures_per_line, "legato": legato,
+                  "cleanup": cleanup, "voices": voices}
         store.submit(job, audio_path, params)
         return {"id": job.id, "status": job.status}
 

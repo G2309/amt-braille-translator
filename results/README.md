@@ -11,6 +11,10 @@ Datos que respaldan el capítulo de Resultados, uno o más archivos por objetivo
 | `oe4_latencia_e2e.csv` | OE4 | Kaggle `amt-latency-e2e`, versión 1 |
 | `oe5_notas/` | OE5 | Kaggle `amt-goldberg-transcribe`, versión 1 |
 | `oe5_bsa_por_pieza.csv`, `oe5_bsa_por_categoria.csv` | OE5 | `notebooks/amt-bsa-goldberg.ipynb`, local |
+| `oe5_externo_notas/` | OE5 | Kaggle `amt-externo-transcribe`, versión 1 |
+| `oe5_ablacion_desarrollo.csv`, `oe5_prueba_y_externo.csv`, `oe5_techo_traductor.csv` | OE5 | `notebooks/amt-bsa-mejoras.ipynb`, local |
 | `figuras/` | todos | `notebooks/resultados-figuras.ipynb`, local |
 
 La referencia Braille del quinto objetivo es la edición en musicografía Braille de las Open Goldberg Variations, y el audio es la grabación de Kimiko Ishizaka del mismo proyecto, publicadas bajo licencia Creative Commons Zero. La referencia no se guarda en el repositorio: el notebook la descarga de https://opengoldbergvariations.org.
+
+Las mejoras del quinto objetivo se eligen solo con la partición de desarrollo de Goldberg (Aria, variaciones 1 a 15 y Aria da capo) y se miden una vez en la de prueba (variaciones 16 a 30 sin la 25) y en tres obras externas. Las referencias externas son ediciones compás sobre compás de la biblioteca BrailleOrch (Bor001, Bor195 y Bor343) y las grabaciones son de dominio público o CC0 en Internet Archive. El techo del traductor usa la partitura MusicXML de las Open Goldberg Variations, de la misma edición que la referencia Braille, descargada de http://open-goldberg.oankali.net.

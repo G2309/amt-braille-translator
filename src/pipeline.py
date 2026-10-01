@@ -1,19 +1,16 @@
-"""Pipeline completo audio -> BRF.
-
-Une el modulo AMT con el traductor Braille. Vive fuera de ambos para que
-ninguno dependa del otro.
-"""
+# Pipeline completo de audio a BRF; vive fuera de AMT y del traductor para que ninguno dependa del otro
 from typing import Optional
 
 from amt import AMTTranscriber, TranscriptionResult, quantize
+from amt.postprocess import drop_octave_ghosts, split_hands_by_continuity
 from braille_translator import braille_tables, export_brf, render_bar_over_bar, translate_score
 from braille_translator.renderer import DEFAULT_MEASURES_PER_LINE
 
-# Fraccion del intervalo entre ataques que puede quedar en silencio y aun asi
-# escribirse como parte de la nota. Con 0.5 una corchea tocada separada se
-# escribe como corchea; en la evaluacion contra la edicion Braille de las
-# Variaciones Goldberg subio el BSA de 21.9 a 23.9 %.
-DEFAULT_LEGATO = 0.5
+# Valores elegidos con la particion de desarrollo de las Goldberg
+DEFAULT_LEGATO = 0.75
+GHOST_RATIO = 1.0
+GHOST_WINDOW_S = 0.05
+HAND_MEMORY = 0.2
 
 
 def result_to_brf(
@@ -25,9 +22,16 @@ def result_to_brf(
     fifths: int = 0,
     measures_per_line: int = DEFAULT_MEASURES_PER_LINE,
     legato: float = DEFAULT_LEGATO,
+    cleanup: bool = True,
+    voices: bool = False,
 ) -> str:
+    # cleanup quita armonicos de octava y reparte manos por continuidad; voices separa la derecha en dos voces
+    hands = None
+    if cleanup:
+        result = drop_octave_ghosts(result, window_s=GHOST_WINDOW_S, ratio=GHOST_RATIO)
+        hands = split_hands_by_continuity(result.notes, memory=HAND_MEMORY)
     score = quantize(result, tempo_bpm=tempo_bpm, beats=beats, beat_type=beat_type,
-                     fifths=fifths, legato=legato)
+                     fifths=fifths, legato=legato, hands=hands, voices=("right",) if voices else ())
     rh, lh = translate_score(score, measures_per_line)
     # armadura y compas van juntos en la cabecera
     header = braille_tables.key_signature(score.fifths) + braille_tables.time_signature(
@@ -49,6 +53,8 @@ def audio_to_brf(
     measures_per_line: int = DEFAULT_MEASURES_PER_LINE,
     transcriber: Optional[AMTTranscriber] = None,
     legato: float = DEFAULT_LEGATO,
+    cleanup: bool = True,
+    voices: bool = False,
 ) -> str:
     result = (transcriber or AMTTranscriber()).transcribe(audio_path)
     return result_to_brf(
@@ -60,4 +66,6 @@ def audio_to_brf(
         fifths=fifths,
         measures_per_line=measures_per_line,
         legato=legato,
+        cleanup=cleanup,
+        voices=voices,
     )

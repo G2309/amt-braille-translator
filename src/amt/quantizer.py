@@ -3,6 +3,7 @@ from typing import Dict, List, Optional, Sequence, Tuple
 from braille_translator.model import Chord, Measure, Note, Rest, Score
 
 from .events import MIDDLE_C_MIDI, NoteEvent, TranscriptionResult
+from .postprocess import split_voices
 
 TICKS_PER_QUARTER = 4   # grilla de semicorchea
 
@@ -168,26 +169,41 @@ def quantize(
     split_pitch: int = MIDDLE_C_MIDI,
     title: str = "",
     legato: float = 0.0,
+    hands: Optional[Tuple[List[NoteEvent], List[NoteEvent]]] = None,
+    voices: Tuple[str, ...] = (),
 ) -> Score:
-    """Cuantiza a la grilla de semicorchea y arma la partitura por manos.
-
-    legato es la fraccion del intervalo entre dos ataques que puede quedar en
-    silencio y aun asi escribirse como parte de la nota. Con 0 la figura sigue
-    lo que la nota sono; con 0.5 una corchea tocada separada, que suena la
-    mitad, se escribe como corchea y no como semicorchea mas silencio.
-    """
+    # legato es la fraccion del intervalo entre ataques que puede quedar en silencio y seguir siendo nota
     if tempo_bpm <= 0:
         raise ValueError("tempo_bpm debe ser positivo")
 
     seconds_per_tick = 60.0 / (tempo_bpm * TICKS_PER_QUARTER)
     per_measure = ticks_per_measure(beats, beat_type)
 
-    right_notes, left_notes = result.split_hands(split_pitch)
+    # hands permite un reparto propio; si no, se corta en split_pitch
+    right_notes, left_notes = hands if hands is not None else result.split_hands(split_pitch)
     end_s = max((n.offset_s for n in result.notes), default=0.0)
     total_ticks = int(round(end_s / seconds_per_tick))
     total_ticks = max(per_measure, -(-total_ticks // per_measure) * per_measure)
 
     score = Score(title=title, beats=beats, beat_type=beat_type, fifths=fifths)
-    score.right.measures = _hand_events(right_notes, seconds_per_tick, total_ticks, per_measure, legato)
-    score.left.measures = _hand_events(left_notes, seconds_per_tick, total_ticks, per_measure, legato)
+    args = (seconds_per_tick, total_ticks, per_measure, legato)
+    # voices nombra las manos que se separan en dos voces, ordenadas segun la regla 5-12
+    score.right.measures = (_voiced_events(right_notes, args, lower_first=False) if "right" in voices
+                            else _hand_events(right_notes, *args))
+    score.left.measures = (_voiced_events(left_notes, args, lower_first=True) if "left" in voices
+                           else _hand_events(left_notes, *args))
     return score
+
+
+def _voiced_events(notes: Sequence[NoteEvent], args: tuple, lower_first: bool) -> List[Measure]:
+    # La segunda voz se escribe con in-accord solo en los compases donde tiene notas
+    upper, lower = split_voices(notes)
+    first, second = (lower, upper) if lower_first else (upper, lower)
+    measures = _hand_events(first, *args)
+    for m, other in zip(measures, _hand_events(second, *args)):
+        if any(not isinstance(e, Rest) for e in other.events):
+            if all(isinstance(e, Rest) for e in m.events):
+                m.events = other.events
+            else:
+                m.extra_voices.append(other.events)
+    return measures

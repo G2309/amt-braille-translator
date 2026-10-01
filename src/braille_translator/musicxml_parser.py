@@ -1,16 +1,4 @@
-"""Parser MusicXML -> AST
-
-Implementacion minima con xml.etree, soporta:
-- partwise MusicXML
-- dos pentagramas de piano staff 1 = mano derecha, staff 2 = mano izquierda
-- notas, silencios, acordes (<chord/>), puntillos, alteraciones
-- armadura (<fifths>) e indicacion de compas (<time>)
-- ligaduras de prolongacion (<tie>) y de expresion (<notations><slur>)
-
-Las ligaduras de expresion se agrupan por longitud: hasta cuatro notas va el
-signo simple tras cada nota menos la ultima, y de ahi en adelante los signos de
-apertura y cierre. No hay ligaduras anidadas: una sola activa por mano.
-"""
+# Parser MusicXML de piano a AST; pentagrama 1 es mano derecha, 2 izquierda, y cada voz extra va como in-accord
 import xml.etree.ElementTree as ET
 from typing import List, Optional, Union
 
@@ -20,13 +8,12 @@ Container = Union[Note, Chord]
 
 
 def _octave_musicxml_to_braille(octave_xml: int) -> int:
-    """MusicXML usa octavas cientificas (C4 = Do central); el Manual numera
-    las octavas Braille del 1 al 7 con la 4a como central."""
+    # Las octavas cientificas coinciden con las Braille del Manual, limitadas a 1..7
     return max(1, min(7, octave_xml))
 
 
 def _close_slur_group(group: List[Container]) -> None:
-    """Marca los signos de expresion de un grupo de notas ligadas."""
+    # Hasta cuatro notas va el signo simple; mas largas llevan apertura y cierre
     if len(group) < 2:
         return
     if len(group) <= 4:
@@ -71,6 +58,11 @@ def parse_musicxml(path: str) -> Score:
 
         pending_chord: Optional[Chord] = None
         pending_staff = 1
+        pending_voice = "1"
+        voices = {1: {}, 2: {}}
+
+        def voice_events(staff: int, voice: str) -> list:
+            return voices[staff].setdefault(voice, [])
         pending_slur_start = False
         pending_slur_stop = False
 
@@ -78,7 +70,6 @@ def parse_musicxml(path: str) -> Score:
             nonlocal pending_chord, pending_slur_start, pending_slur_stop
             if pending_chord is None:
                 return
-            target = rh_measure if pending_staff == 1 else lh_measure
             if len(pending_chord.notes) == 1:
                 obj: Container = pending_chord.notes[0]
                 obj.duration_type = pending_chord.duration_type
@@ -89,7 +80,7 @@ def parse_musicxml(path: str) -> Score:
                 # con todas las notas ligadas basta la ligadura de acorde
                 if all(n.tie for n in obj.notes):
                     obj.tie = True
-            target.events.append(obj)
+            voice_events(pending_staff, pending_voice).append(obj)
 
             group = active_slur[pending_staff]
             if group is None and pending_slur_start:
@@ -105,8 +96,14 @@ def parse_musicxml(path: str) -> Score:
             pending_slur_stop = False
 
         for n_el in m_el.findall("note"):
+            # Las notas de adorno y los silencios ocultos no ocupan tiempo escrito
+            if n_el.find("grace") is not None or n_el.find("cue") is not None:
+                continue
+            if n_el.find("rest") is not None and n_el.get("print-object") == "no":
+                continue
             staff_el = n_el.find("staff")
             staff = int(staff_el.text) if staff_el is not None else 1
+            voice = n_el.findtext("voice", "1")
 
             dtype_el = n_el.find("type")
             dtype = dtype_el.text if dtype_el is not None else "quarter"
@@ -114,9 +111,8 @@ def parse_musicxml(path: str) -> Score:
 
             if n_el.find("rest") is not None:
                 flush_chord()
-                pending_staff = staff
-                target = rh_measure if staff == 1 else lh_measure
-                target.events.append(Rest(dtype, n_dots))
+                pending_staff, pending_voice = staff, voice
+                voice_events(staff, voice).append(Rest(dtype, n_dots))
                 continue
 
             pitch = n_el.find("pitch")
@@ -143,22 +139,28 @@ def parse_musicxml(path: str) -> Score:
             )
 
             is_chord_member = n_el.find("chord") is not None
-            if is_chord_member and pending_chord is not None and staff == pending_staff:
+            if is_chord_member and pending_chord is not None and (staff, voice) == (pending_staff, pending_voice):
                 pending_chord.notes.append(note)
                 pending_slur_start = pending_slur_start or slur_start
                 pending_slur_stop = pending_slur_stop or slur_stop
             else:
                 flush_chord()
-                pending_staff = staff
+                pending_staff, pending_voice = staff, voice
                 pending_chord = Chord(notes=[note], duration_type=dtype, dots=n_dots)
                 pending_slur_start = slur_start
                 pending_slur_stop = slur_stop
 
         flush_chord()
+        for staff, measure in ((1, rh_measure), (2, lh_measure)):
+            # Regla 5-12 sobre la numeracion de la tinta, donde la voz 1 es la superior
+            lists = [voices[staff][v] for v in sorted(voices[staff], key=int, reverse=staff == 2)]
+            if lists:
+                measure.events = lists[0]
+                measure.extra_voices = lists[1:]
         score.right.measures.append(rh_measure)
         score.left.measures.append(lh_measure)
 
-    # Ligadura sin cierre al terminar la obra: se cierra con lo acumulado.
+    # Una ligadura sin cierre al final se cierra con lo acumulado
     for staff in (1, 2):
         if active_slur[staff]:
             _close_slur_group(active_slur[staff])

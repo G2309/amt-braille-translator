@@ -14,7 +14,7 @@ from braille_translator.brf_exporter import wrap_line
 from braille_translator.fsm import AccidentalState, OctaveState
 from braille_translator.model import Chord, Hand, Measure, Note, Rest, Score
 from braille_translator.renderer import render_bar_over_bar
-from braille_translator.translator import HandTranslator, translate_score
+from braille_translator.translator import HandTranslator, translate_score, value_signs
 
 
 def N(step, octave, dtype="quarter", alter=0, dots=0):
@@ -350,6 +350,45 @@ class TestTieContinuationAccidental(unittest.TestCase):
         self.assertNotIn(bt.ACCIDENTAL[1], rh[1])
 
 
+# Signos de valor mayor, menor y separacion de valores
+class TestValueSigns(unittest.TestCase):
+
+    def semis(self, n):
+        return [N(step, 5, "16th") for step in "CDEF"[:n]]
+
+    def test_compas_ambiguo_lleva_separacion_entre_grande_y_pequeno(self):
+        # en 3/2 una semicorchea leida como redonda y dos blancas como fusas suman lo mismo
+        eventos = [N("C", 4, "half"), N("D", 4, "half"), N("E", 4, "quarter")] + self.semis(4)
+        signos = value_signs(eventos)
+        self.assertEqual(signos, {3: bt.VALUE_SEPARATION})
+
+    def test_compas_que_empieza_con_valores_pequenos_lleva_valor_menor(self):
+        eventos = self.semis(4) + [N("C", 4, "quarter"), N("D", 4, "half"), N("E", 4, "half")]
+        signos = value_signs(eventos)
+        self.assertEqual(signos[0], bt.SMALLER_VALUES)
+        self.assertEqual(signos[4], bt.VALUE_SEPARATION)
+
+    def test_compas_sin_ambiguedad_no_lleva_signos(self):
+        eventos = [N("C", 4, "quarter"), N("D", 4, "quarter")] + self.semis(4) + [N("E", 4, "quarter")]
+        self.assertEqual(value_signs(eventos), {})
+
+    def test_el_signo_va_antes_de_la_nota_en_la_salida(self):
+        eventos = [N("C", 4, "half"), N("D", 4, "half"), N("E", 4, "quarter")] + self.semis(4)
+        t = HandTranslator(Score(beats=3, beat_type=2), Hand("right"))
+        salida = t.translate_measure(Measure(1, events=eventos))
+        indice = salida.index(bt.VALUE_SEPARATION)
+        self.assertEqual(salida[indice + len(bt.VALUE_SEPARATION)], bt.OCTAVE_SIGN[5])
+
+    def test_cada_voz_de_copula_se_analiza_por_separado(self):
+        ambigua = [N("C", 4, "half"), N("D", 4, "half"), N("E", 4, "quarter")] + self.semis(4)
+        clara = [N("C", 3, "whole", dots=1)]
+        t = HandTranslator(Score(beats=3, beat_type=2), Hand("right"))
+        salida = t.translate_measure(Measure(1, events=ambigua, extra_voices=[clara]))
+        primera, segunda = salida.split(bt.IN_ACCORD)
+        self.assertIn(bt.VALUE_SEPARATION, primera)
+        self.assertNotIn(bt.VALUE_SEPARATION, segunda)
+
+
 class TestRestMeasures(unittest.TestCase):
     """Compases de silencio con el silencio de redonda."""
 
@@ -510,6 +549,31 @@ class TestMusicXMLLigaduras(unittest.TestCase):
         self.assertTrue(eventos[0].slur_open)
         self.assertTrue(eventos[-1].slur_close)
         self.assertFalse(any(e.slur for e in eventos))
+
+
+# Voces de la tinta como in-accord y notas de adorno fuera
+class TestMusicXMLVoces(unittest.TestCase):
+    HEADER = TestMusicXMLLigaduras.HEADER
+    _parse = TestMusicXMLLigaduras._parse
+
+    def _voz(self, step, voice, staff=1, extra=""):
+        return (f"<note>{extra}<pitch><step>{step}</step><octave>4</octave></pitch><duration>4</duration>"
+                f"<voice>{voice}</voice><type>whole</type><staff>{staff}</staff></note>")
+
+    def test_segunda_voz_va_como_in_accord(self):
+        compas = self._parse(self._voz("E", 1) + "<backup><duration>4</duration></backup>" + self._voz("C", 2)).right.measures[0]
+        self.assertEqual(compas.events[0].step, "E")
+        self.assertEqual(compas.extra_voices[0][0].step, "C")
+
+    def test_mano_izquierda_empieza_por_la_voz_grave(self):
+        notas = self._voz("E", 5, 2) + "<backup><duration>4</duration></backup>" + self._voz("C", 6, 2)
+        compas = self._parse(notas).left.measures[0]
+        self.assertEqual(compas.events[0].step, "C")
+        self.assertEqual(compas.extra_voices[0][0].step, "E")
+
+    def test_nota_de_adorno_no_se_escribe(self):
+        compas = self._parse(self._voz("D", 1, extra="<grace/>") + self._voz("C", 1)).right.measures[0]
+        self.assertEqual([e.step for e in compas.events], ["C"])
 
 
 class TestBrfWrap(unittest.TestCase):
