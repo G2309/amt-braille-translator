@@ -14,7 +14,7 @@ from braille_translator.brf_exporter import wrap_line
 from braille_translator.fsm import AccidentalState, OctaveState
 from braille_translator.model import Chord, Hand, Measure, Note, Rest, Score
 from braille_translator.renderer import render_bar_over_bar
-from braille_translator.translator import HandTranslator, translate_score, value_signs
+from braille_translator.translator import HandTranslator, group_values, translate_score, value_signs
 
 
 def N(step, octave, dtype="quarter", alter=0, dots=0):
@@ -574,6 +574,67 @@ class TestMusicXMLVoces(unittest.TestCase):
     def test_nota_de_adorno_no_se_escribe(self):
         compas = self._parse(self._voz("D", 1, extra="<grace/>") + self._voz("C", 1)).right.measures[0]
         self.assertEqual([e.step for e in compas.events], ["C"])
+
+
+# Agrupacion de la seccion IV del Manual
+class TestAgrupacion(unittest.TestCase):
+    def S(self, step="C"):
+        return N(step, 4, "16th")
+
+    def test_cuatro_semicorcheas_por_negra(self):
+        eventos = [self.S("C"), self.S("D"), self.S("E"), self.S("F"), N("G", 4, "quarter")]
+        self.assertEqual(group_values(eventos, 2, 4), ({1, 2, 3}, set()))
+
+    def test_se_escriben_como_corcheas(self):
+        compas = Measure(1, events=[self.S("C"), self.S("D"), self.S("E"), self.S("F"), N("G", 4, "quarter")])
+        score = Score(beats=2, beat_type=4)
+        score.right.measures = [compas]
+        score.left.measures = [Measure(1, events=[Rest("half")])]
+        rh, _ = translate_score(score, grouping=True)
+        celdas = rh[0].replace(bt.OCTAVE_SIGN[4], "")
+        esperado = bt.note_cell("C", "16th") + "".join(bt.note_cell(p, "eighth") for p in "DEF") + bt.note_cell("G", "quarter")
+        self.assertEqual(celdas, esperado)
+
+    def test_corchea_despues_impide_agrupar(self):
+        eventos = [self.S(), self.S(), self.S(), self.S(), N("G", 4, "eighth"), N("A", 4, "eighth")]
+        self.assertEqual(group_values(eventos, 2, 4)[0], set())
+
+    def test_silencio_solo_al_inicio(self):
+        con_silencio = [Rest("16th"), self.S(), self.S(), self.S(), N("G", 4, "quarter")]
+        self.assertEqual(group_values(con_silencio, 2, 4)[0], {1, 2, 3})
+        en_medio = [self.S(), Rest("16th"), self.S(), self.S(), N("G", 4, "quarter")]
+        self.assertEqual(group_values(en_medio, 2, 4)[0], set())
+
+    def test_tres_por_ocho_agrupa_el_compas_completo(self):
+        eventos = [self.S() for _ in range(6)]
+        self.assertEqual(group_values(eventos, 3, 8)[0], {1, 2, 3, 4, 5})
+
+    def test_grupo_debe_empezar_en_el_tiempo(self):
+        eventos = [N("C", 4, "eighth"), self.S(), self.S(), self.S(), self.S(), N("G", 4, "eighth")]
+        self.assertEqual(group_values(eventos, 2, 4)[0], set())
+
+    def test_fusas_de_cuatro_en_cuatro_por_corchea(self):
+        eventos = [N("C", 4, "32nd") for _ in range(8)] + [N("G", 4, "quarter")]
+        self.assertEqual(group_values(eventos, 2, 4)[0], {1, 2, 3, 5, 6, 7})
+
+    def test_corchea_con_puntillo_despues_tambien_impide(self):
+        eventos = [N("C", 4, "32nd") for _ in range(4)] + [N("G", 4, "eighth", dots=1)]
+        self.assertEqual(group_values(eventos, 2, 8)[0], set())
+
+    def test_valor_mayor_ante_corcheas_confundibles(self):
+        eventos = [self.S(), N("D", 4, "eighth"), N("E", 4, "eighth"), N("F", 4, "eighth"), self.S(),
+                   self.S("G"), self.S("A"), self.S("B"), self.S("C"), N("D", 4, "quarter")]
+        shown, larger = group_values(eventos, 3, 4)
+        self.assertEqual(shown, {6, 7, 8})
+        self.assertEqual(larger, {1})
+
+    def test_apagado_por_omision(self):
+        compas = Measure(1, events=[self.S(), self.S("D"), self.S("E"), self.S("F")])
+        score = Score(beats=1, beat_type=4)
+        score.right.measures = [compas]
+        score.left.measures = [Measure(1, events=[Rest("quarter")])]
+        rh, _ = translate_score(score)
+        self.assertEqual(rh[0].count(bt.note_cell("D", "16th")), 1)
 
 
 class TestBrfWrap(unittest.TestCase):

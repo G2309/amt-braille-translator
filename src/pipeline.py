@@ -26,6 +26,7 @@ def result_to_brf(
     cleanup: bool = True,
     voices: bool = False,
     track: bool = True,
+    grouping: bool = True,
 ) -> str:
     # cleanup quita armonicos y reparte manos; voices separa la derecha en dos voces; track sigue el pulso
     if cleanup:
@@ -35,7 +36,7 @@ def result_to_brf(
     hands = split_hands_by_continuity(result.notes, memory=HAND_MEMORY) if cleanup else None
     score = quantize(result, tempo_bpm=tempo_bpm, beats=beats, beat_type=beat_type,
                      fifths=fifths, legato=legato, hands=hands, voices=("right",) if voices else ())
-    rh, lh = translate_score(score, measures_per_line)
+    rh, lh = translate_score(score, measures_per_line, grouping=grouping)
     # armadura y compas van juntos en la cabecera
     header = braille_tables.key_signature(score.fifths) + braille_tables.time_signature(
         score.beats, score.beat_type
@@ -59,6 +60,7 @@ def audio_to_brf(
     cleanup: bool = True,
     voices: bool = False,
     track: bool = True,
+    grouping: bool = True,
 ) -> str:
     result = (transcriber or AMTTranscriber()).transcribe(audio_path)
     return result_to_brf(
@@ -73,4 +75,5 @@ def audio_to_brf(
         cleanup=cleanup,
         voices=voices,
         track=track,
+        grouping=grouping,
     )

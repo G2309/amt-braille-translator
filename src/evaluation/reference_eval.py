@@ -108,7 +108,8 @@ def evaluate_piece(piece: Piece, notes: List[List[float]], duration_s: float,
                    repeats: Optional[bool] = None, legato: float = 0.0,
                    pre: Optional[Callable[[TranscriptionResult], TranscriptionResult]] = None,
                    hands: Optional[Callable] = None, voices: tuple = (),
-                   pickup_quarters: float = 0.0, track: bool = False) -> PieceEvaluation:
+                   pickup_quarters: float = 0.0, track: bool = False,
+                   grouping: bool = False) -> PieceEvaluation:
     # pre limpia las notas, hands reparte las manos y track sigue el pulso en vez de usar un tempo fijo
     result = shifted_result(notes, duration_s)
     if pre is not None:
@@ -128,7 +129,7 @@ def evaluate_piece(piece: Piece, notes: List[List[float]], duration_s: float,
                      beat_type=piece.beat_type, fifths=piece.fifths, legato=legato,
                      hands=hands(result.notes) if hands is not None else None,
                      voices=voices)
-    right, left = translate_score(score, measures_per_line=1)
+    right, left = translate_score(score, measures_per_line=1, grouping=grouping)
     hyp_right, hyp_left = "".join(right), "".join(left)
 
     alturas = pitch_agreement(ref.right + ref.left, hyp_right + hyp_left)

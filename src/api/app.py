@@ -80,6 +80,7 @@ def create_app(transcriber_factory: Optional[Callable[[], object]] = None) -> Fa
         cleanup: bool = Form(True),
         voices: bool = Form(False),
         track: bool = Form(True),
+        grouping: bool = Form(True),
     ):
         suffix = Path(file.filename or "").suffix.lower()
         if suffix not in ALLOWED_EXTENSIONS:
@@ -100,7 +101,7 @@ def create_app(transcriber_factory: Optional[Callable[[], object]] = None) -> Fa
 
         params = {"tempo_bpm": tempo_bpm, "beats": beats, "beat_type": beat_type,
                   "fifths": fifths, "measures_per_line": measures_per_line, "legato": legato,
-                  "cleanup": cleanup, "voices": voices, "track": track}
+                  "cleanup": cleanup, "voices": voices, "track": track, "grouping": grouping}
         store.submit(job, audio_path, params)
         return {"id": job.id, "status": job.status}
 

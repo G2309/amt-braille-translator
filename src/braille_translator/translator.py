@@ -49,9 +49,58 @@ def value_signs(events) -> Dict[int, str]:
     return signs
 
 
+def _span(dtype: str, beats: int, beat_type: int) -> int:
+    # Tramo que completa un grupo segun la regla 4-5; cero si la figura no se agrupa en ese compas
+    if dtype == "32nd":
+        return _UNITS["eighth"]
+    if dtype != "16th" or beat_type == 16:
+        return 0
+    if beat_type == 8 and beats % 3 == 0:
+        return 3 * _UNITS["eighth"]
+    return _UNITS["quarter"]
+
+
+def group_values(events, beats: int, beat_type: int):
+    # Reglas 4-2 a 4-7: indices que se escriben como corchea y los que llevan signo de valor mayor
+    shown, larger = set(), set()
+    pos, starts = 0, []
+    for ev in events:
+        starts.append(pos)
+        pos += _duration(ev.duration_type, ev.dots) if isinstance(ev, (Note, Chord, Rest)) else 0
+    grouped = set()
+    i = 0
+    while i < len(events):
+        ev = events[i]
+        dtype = getattr(ev, "duration_type", "")
+        span = _span(dtype, beats, beat_type) if isinstance(ev, (Note, Chord, Rest)) and not ev.dots else 0
+        n = span // _UNITS[dtype] if span else 0
+        group = events[i:i + n]
+        ok = (n > 1 and len(group) == n and starts[i] % span == 0
+              and all(isinstance(x, (Note, Chord)) and x.duration_type == dtype and not x.dots for x in group[1:])
+              and not any(isinstance(x, (Note, Chord, Rest)) and x.duration_type == "eighth" for x in events[i + n:]))
+        if ok:
+            shown.update(range(i + 1, i + n))
+            grouped.update(range(i, i + n))
+            i += n
+        else:
+            i += 1
+    if shown:
+        for k, ev in enumerate(events[:-1]):
+            if k in grouped or not isinstance(ev, (Note, Chord)) or ev.dots:
+                continue
+            span = _span(ev.duration_type, beats, beat_type)
+            n = span // _UNITS[ev.duration_type] if span else 0
+            run = events[k + 1:k + n]
+            if n > 1 and len(run) == n - 1 and all(isinstance(x, (Note, Chord)) and x.duration_type == "eighth" and not x.dots for x in run):
+                larger.add(k + 1)
+    return shown, larger
+
+
 class HandTranslator:
-    def __init__(self, score: Score, hand: Hand) -> None:
+    def __init__(self, score: Score, hand: Hand, grouping: bool = False) -> None:
         self.hand = hand
+        self.meter = (score.beats, score.beat_type)
+        self.grouping = grouping
         self.octave_state = OctaveState()
         self.accidental_state = AccidentalState(score.key_signature_alterations())
         self._new_line = False
@@ -66,7 +115,7 @@ class HandTranslator:
         return bt.ACCIDENTAL[alter]
 
     def _emit_note(self, note: Note, force_octave: bool = False,
-                   suppress_tie: bool = False) -> str:
+                   suppress_tie: bool = False, shown: str = "") -> str:
         out = []
         if note.slur_open:
             out.append(bt.SLUR_OPEN)
@@ -79,7 +128,7 @@ class HandTranslator:
         elif self.octave_state.needs_octave_sign(note):
             out.append(bt.OCTAVE_SIGN[note.octave])
 
-        out.append(bt.note_cell(note.step, note.duration_type))
+        out.append(bt.note_cell(note.step, shown or note.duration_type))
         out.append(bt.DOT * note.dots)
         # la ligadura de expresion va antes que la de prolongacion
         if note.slur:
@@ -90,7 +139,7 @@ class HandTranslator:
             out.append(bt.TIE)
         return "".join(out)
 
-    def _emit_chord(self, chord: Chord) -> str:
+    def _emit_chord(self, chord: Chord, shown: str = "") -> str:
         # se escribe la nota mas aguda en la derecha y la mas grave en la
         # izquierda; el resto del acorde va como intervalos
         principal = chord.principal(self.hand.side)
@@ -102,7 +151,7 @@ class HandTranslator:
             out.append(bt.SLUR_OPEN)
         # si solo una nota se prolonga, la ligadura va tras ella o su
         # intervalo; si se prolonga el acorde entero, basta el signo de acorde
-        out.append(self._emit_note(principal, suppress_tie=chord.tie))
+        out.append(self._emit_note(principal, suppress_tie=chord.tie, shown=shown))
         # la ligadura de expresion va tras la nota escrita, antes de los intervalos
         if chord.slur:
             out.append(bt.SLUR)
@@ -143,17 +192,19 @@ class HandTranslator:
         parts: List[str] = []
         first = force_first_octave
         signs = value_signs(events)
+        shown, larger = group_values(events, *self.meter) if self.grouping else (set(), set())
         for i, ev in enumerate(events):
-            parts.append(signs.get(i, ""))
+            parts.append(signs.get(i, "") or (bt.LARGER_VALUES if i in larger else ""))
+            as_eighth = "eighth" if i in shown else ""
             if isinstance(ev, MultiRest):
                 parts.append(self._multi_rest(ev.count))
             elif isinstance(ev, Rest):
                 parts.append(bt.REST[ev.duration_type] + bt.DOT * ev.dots)
             elif isinstance(ev, Chord):
-                parts.append(self._emit_chord(ev))
+                parts.append(self._emit_chord(ev, shown=as_eighth))
                 first = False
             elif isinstance(ev, Note):
-                parts.append(self._emit_note(ev, force_octave=first))
+                parts.append(self._emit_note(ev, force_octave=first, shown=as_eighth))
                 first = False
         return "".join(parts)
 
@@ -210,10 +261,10 @@ def merge_rest_measures(score: Score) -> Score:
 
 
 def translate_score(score: Score, measures_per_line: int = DEFAULT_MEASURES_PER_LINE,
-                    merge_rests: bool = True):
-    # Devuelve los compases traducidos de la mano derecha y de la izquierda
+                    merge_rests: bool = True, grouping: bool = False):
+    # Devuelve los compases de cada mano; grouping aplica la agrupacion de la seccion IV del Manual
     if merge_rests:
         score = merge_rest_measures(score)
-    rh = HandTranslator(score, score.right).translate(measures_per_line)
-    lh = HandTranslator(score, score.left).translate(measures_per_line)
+    rh = HandTranslator(score, score.right, grouping).translate(measures_per_line)
+    lh = HandTranslator(score, score.left, grouping).translate(measures_per_line)
     return rh, lh
