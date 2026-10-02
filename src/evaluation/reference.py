@@ -8,7 +8,7 @@ from braille_translator import braille_tables as bt
 
 from .bsa import UNKNOWN, classify_cells
 
-_HAND_LINE = re.compile(r"^\s*([a-j]*)\s*([._])>(.*)$")
+_HAND_LINE = re.compile(r"^\s*([a-j]*)'?\s*([._])>(.*)$")
 _PAGE_NUMBER = re.compile(r'^\s*"?\d?#[a-j]+\s*$')
 _TITLE = re.compile(r"^\s+(aria4|v>i,n #[a-j]+4)\s*$")
 _KEY = r"(?:#[a-j][%<]|[%<*]*)"
@@ -16,6 +16,10 @@ _TIME = r"(?:#[a-j]+[0-9]+|[._]c)"
 _SIGNATURE = re.compile(rf"(?:^|\s)({_KEY})({_TIME})\s*$")
 _TIME_ONLY = re.compile(rf"^{_KEY}{_TIME}$")
 _GUIDE_FILL = re.compile(r"'{2,}$")
+# Encabezado de movimiento sin titulos de Goldberg: palabra con mayuscula tras una linea en blanco
+_MOVEMENT = re.compile(r"^\s+,[a-z]")
+_FINE = re.compile(r">fine\b")
+_DA_CAPO = re.compile(r"d'c' al fine")
 # Expresiones, matices y reguladores con signo de palabra; no son musica
 _WORDS_MULTI = re.compile(r"(?<![<._])>[a-z][a-z'=!(7]*(?: +[a-z'=!(7]+)+>")
 _WORDS_SINGLE = re.compile(r"(?<![<._])>(?:[a-z][a-z'=!]*|[34])")
@@ -39,6 +43,7 @@ class Measure:
     number: int
     right: str = ""
     left: str = ""
+    fine: bool = False
 
     def _head(self) -> str:
         return self.right[:6]
@@ -66,6 +71,7 @@ class Piece:
     beat_type: int = 4
     measures: List[Measure] = field(default_factory=list)
     expressions: int = 0
+    da_capo: bool = False
 
     @property
     def has_pickup(self) -> bool:
@@ -126,9 +132,13 @@ def parse_reference(brf: str) -> List[Piece]:
     columns: List[int] = []
     side = "right"
     slot = 0
+    after_blank = True
     for raw in brf.replace("\r", "").split("\n"):
         line = raw.rstrip()
-        if not line.strip() or _PAGE_NUMBER.match(line):
+        if line.strip() and _PAGE_NUMBER.match(line):
+            continue
+        blank_before, after_blank = after_blank, not line.strip()
+        if not line.strip():
             continue
         title = _TITLE.match(line)
         if title:
@@ -142,8 +152,16 @@ def parse_reference(brf: str) -> List[Piece]:
             pieces.append(current)
         if current is None:
             continue
+        if not hand and current.measures and _MOVEMENT.match(line) and (blank_before or _SIGNATURE.search(line)):
+            # Un encabezado sin compas en su linea conserva la armadura del movimiento anterior
+            inherited = 0 if _SIGNATURE.search(line) else current.fifths
+            current = Piece(index=len(pieces), title=line.split()[0].strip(",4"), fifths=inherited)
+            pieces.append(current)
+            group = []
         if hand:
             number, sign, content = hand.groups()
+            current.da_capo |= bool(_DA_CAPO.search(content))
+            marks_fine = bool(_FINE.search(content))
             content, words = _strip_words(content)
             current.expressions += words
             segments = _segments(content, hand.start(3))
@@ -155,6 +173,8 @@ def parse_reference(brf: str) -> List[Piece]:
                 columns = [col for col, _ in segments]
                 current.measures += group
                 side, slot = "right", len(group) - 1
+                if marks_fine:
+                    group[-1].fine = True
             elif group:
                 starts = {col for col, _ in segments}
                 if all(c in starts for c in columns[1:]):
@@ -169,7 +189,9 @@ def parse_reference(brf: str) -> List[Piece]:
                 side = "left"
             continue
         if not current.measures and _SIGNATURE.search(line):
-            current.fifths, current.beats, current.beat_type = parse_signature(line)
+            fifths, current.beats, current.beat_type = parse_signature(line)
+            if _SIGNATURE.search(line).group(1):
+                current.fifths = fifths
             continue
         if group and raw.startswith("  "):
             content, words = _strip_words(line.strip())
@@ -231,7 +253,11 @@ class HandStreams:
 
 def reference_streams(piece: Piece, repeats: bool = True) -> HandStreams:
     # Secuencias Braille por mano de una pieza, listas para compute_bsa
-    measures = expand_repeats(piece.measures) if repeats else piece.measures
+    measures = expand_repeats(piece.measures) if repeats else list(piece.measures)
+    if repeats and piece.da_capo:
+        # Da capo al fine: vuelve al inicio sin repeticiones hasta el compas marcado con fine
+        end = next((k for k, m in enumerate(piece.measures) if m.fine), len(piece.measures) - 1)
+        measures += [m for m in piece.measures[:end + 1] if m.volta != 1]
     removed: Counter = Counter()
     right = "".join(clean(m.right, removed) for m in measures)
     left = "".join(clean(m.left, removed) for m in measures)

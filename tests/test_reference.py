@@ -112,6 +112,54 @@ class TestFormatoAlineado(unittest.TestCase):
         self.assertEqual(parse_signature("#d%.c"), (4, 4, 4))
 
 
+# Obras con varios movimientos y da capo al fine, como en las sonatinas y el minueto de BrailleOrch
+class TestMovimientos(unittest.TestCase):
+    BRF = (
+        "    ,moderato  %.c\r\n"
+        "a .>\"r5jich\r\n"
+        "  _>_r+q9\r\n"
+        "b .>.dfc$<2\r\n"
+        "  _>_s9<2\r\n"
+        "\r\n"
+        "                ,romanze \r\n"
+        "\r\n"
+        "    #f8\r\n"
+        "a .>\"jcdcec\r\n"
+        "  _>_hc8j\r\n"
+        "\r\n"
+        "     ,vivace4  #c8\r\n"
+        "a .>.dbc8\r\n"
+        "  _>_d1fbh\r\n"
+        "b'.>'<7.i\"1x\r\n"
+        "  _>_r+q9\r\n"
+    )
+
+    def setUp(self):
+        self.piezas = parse_reference(self.BRF)
+
+    def test_un_movimiento_por_encabezado(self):
+        self.assertEqual([p.title for p in self.piezas], ["obra", "romanze", "vivace"])
+        self.assertEqual([(p.beats, p.beat_type) for p in self.piezas], [(4, 4), (6, 8), (3, 8)])
+
+    def test_armadura_heredada_solo_sin_compas_en_el_encabezado(self):
+        self.assertEqual([p.fifths for p in self.piezas], [1, 1, 0])
+
+    def test_numero_de_compas_con_apostrofo(self):
+        self.assertEqual(len(self.piezas[2].measures), 2)
+        self.assertTrue(self.piezas[2].measures[1].begins_repeat)
+
+    def test_da_capo_al_fine(self):
+        brf = ("    ,allegretto  %#c4\r\n"
+               "a .>\"r5j\r\n  _>_r+\r\n"
+               "b .>.dfc$>fine\r\n  _>_s9\r\n"
+               "c .>\"jcd\r\n  _>_hc\r\n"
+               "d .>.ech>d'c' al fine>\r\n  _>_d1\r\n")
+        (pieza,) = parse_reference(brf)
+        self.assertTrue(pieza.da_capo)
+        self.assertEqual([m.number for m in reference_streams(pieza).played], [1, 2, 3, 4, 1, 2])
+        self.assertEqual(len(reference_streams(pieza, repeats=False).played), 4)
+
+
 class TestPedal(unittest.TestCase):
     def test_signos_de_pedal_se_quitan(self):
         quitadas = Counter()
