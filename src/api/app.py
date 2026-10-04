@@ -8,7 +8,9 @@ Endpoints:
 
 Ejecutar con:  uvicorn api.app:app --app-dir src
 """
+import os
 import shutil
+import subprocess
 import tempfile
 import time
 from contextlib import asynccontextmanager
@@ -16,6 +18,7 @@ from pathlib import Path
 from typing import Callable, Optional
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
 from amt import AMTTranscriber
@@ -24,7 +27,10 @@ from pipeline import DEFAULT_LEGATO, result_to_brf
 
 from .jobs import MAX_SCOPE_DURATION_S, Job, JobStore
 
-ALLOWED_EXTENSIONS = {".mp3", ".wav", ".flac"}
+DIRECT_EXTENSIONS = {".mp3", ".wav", ".flac"}
+# Formatos de grabadoras de telefono que se convierten a WAV con ffmpeg si esta instalado
+CONVERTED_EXTENSIONS = {".m4a", ".aac", ".ogg", ".opus", ".webm"}
+ALLOWED_EXTENSIONS = DIRECT_EXTENSIONS | (CONVERTED_EXTENSIONS if shutil.which("ffmpeg") else set())
 MAX_UPLOAD_BYTES = 100 * 1024 * 1024
 
 
@@ -37,6 +43,9 @@ def create_app(transcriber_factory: Optional[Callable[[], object]] = None) -> Fa
         shutil.rmtree(workdir, ignore_errors=True)
 
     app = FastAPI(title="amt-braille-translator", version="0.1.0", lifespan=lifespan)
+    # Origenes permitidos para el cliente web, separados por coma; por omision cualquiera, porque la API no usa credenciales
+    origins = [o.strip() for o in os.environ.get("AMT_CORS_ORIGINS", "*").split(",") if o.strip()]
+    app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["GET", "POST"], allow_headers=["*"])
     workdir = Path(tempfile.mkdtemp(prefix="amt_api_"))
     factory = transcriber_factory or AMTTranscriber
     transcriber_holder = {}
@@ -49,6 +58,10 @@ def create_app(transcriber_factory: Optional[Callable[[], object]] = None) -> Fa
     def process(job: Job, audio_path: Path, params: dict) -> None:
         brf_path = workdir / f"{job.id}.brf"
         t0 = time.time()
+        if audio_path.suffix.lower() not in DIRECT_EXTENSIONS:
+            wav = audio_path.with_suffix(".wav")
+            subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", str(audio_path), "-ac", "1", "-ar", "44100", str(wav)], check=True)
+            audio_path = wav
         result = get_transcriber().transcribe(str(audio_path))
         result_to_brf(result, output_path=str(brf_path), **params)
         job.latency_s = round(time.time() - t0, 3)

@@ -18,6 +18,8 @@ Datos que respaldan el capítulo de Resultados, uno o más archivos por objetivo
 | `oe5_desglose.csv` | objetivo general | `scripts/desglose_bsa.py`, local |
 | `oe5_telefono_notas/` | objetivo general | `scripts/transcribir_local.py`, local en CPU con el modelo ajustado, sobre 18 grabaciones propias con teléfono |
 | `oe5_telefono.csv` | objetivo general | `scripts/evaluar_telefono.py`, local |
+| `cliente_accesibilidad.json` | OE5 | `cliente/test/accesibilidad_test.dart` (`flutter test`), local y en GitHub Actions |
+| `cliente_web_auditoria.json` | OE5 | `cliente/auditoria/auditar.mjs` (`npm run auditar`), local con Chromium 153 |
 | `figuras/` | todos | `notebooks/resultados-figuras.ipynb`, local |
 
 La referencia Braille del quinto objetivo es la edición en musicografía Braille de las Open Goldberg Variations, y el audio es la grabación de Kimiko Ishizaka del mismo proyecto, publicadas bajo licencia Creative Commons Zero. La referencia no se guarda en el repositorio: el notebook la descarga de https://opengoldbergvariations.org.
@@ -29,3 +31,5 @@ La latencia en CPU complementa la medida en GPU. Se usaron cortes de 30, 60, 120
 El desglose del BSA separa, para cada pieza y con la configuración base y la del pipeline, el BSA, el BSA sin ligaduras de expresión, la F1 de alturas por compás (sin importar el orden ni la figura), la exactitud de alturas tras alinear cada mano y la proporción de esas alturas que también tiene la figura correcta. Las medidas salen de `src/evaluation/components.py`.
 
 Las grabaciones con teléfono se hicieron con un Xiaomi 12 en formato M4A y se convirtieron a WAV mono de 44.1 kHz antes de transcribir. Nueve de ellas repiten obras del repertorio intermedio y de las obras externas, lo que permite comparar la misma obra grabada en estudio y con teléfono contra la misma referencia; las otras nueve son obras sencillas (Czerny Op. 777 n.º 1 a 5 y Stravinsky, Les Cinq Doigts n.º 1 a 3 y Valse pour les enfants). Los audios no se publican en el repositorio.
+
+La accesibilidad del cliente se evalúa sin participantes, siguiendo la metodología WCAG-EM con herramientas automáticas. La prueba de widgets recorre 42 configuraciones (pantalla de selección, conversión inicial y conversión con resultado, en los tres modos, con anchos de 320, 768 y 1280 px y escala de texto de 1.0 y 2.0). En cada una mide las guías de Flutter de tamaño de objetivo (48 dp en Android y 44 pt en iOS), las etiquetas de los objetivos y el contraste de texto, además de los desbordes, los nodos interactivos con etiqueta y los controles que se alcanzan con Tab. La auditoría web corre axe-core (WCAG 2.0 a 2.2 A y AA y buenas prácticas) sobre la compilación de la PWA, con cuatro estados y tres anchos. También corre Lighthouse en móvil y escritorio y consulta los errores de instalabilidad que reporta Chrome.

@@ -1,0 +1,8 @@
+data/
+results/
+notebooks/
+docs/
+tests/
+cliente/
+.git/
+**/__pycache__/

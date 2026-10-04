@@ -1,0 +1,60 @@
+name: cliente
+
+on:
+  push:
+    branches: [dev, main]
+    paths: ["cliente/**", ".github/workflows/cliente.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  pruebas:
+    name: análisis, accesibilidad y compilación web
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cliente
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+      - run: flutter analyze
+      # Escribe results/cliente_accesibilidad.json, que se guarda como artefacto
+      - run: flutter test
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cliente-accesibilidad
+          path: results/cliente_accesibilidad.json
+
+      # La URL de la API sale de la variable del repositorio API_URL
+      - run: flutter build web --release --base-href /${{ github.event.repository.name }}/ --dart-define=API_URL=${{ vars.API_URL }}
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: cliente/build/web
+
+  publicar:
+    name: GitHub Pages
+    if: github.ref == 'refs/heads/main'
+    needs: pruebas
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - id: despliegue
+        uses: actions/deploy-pages@v4

@@ -50,6 +50,10 @@ class TestApi(unittest.TestCase):
         from api.app import create_app
         self.client = TestClient(create_app(transcriber_factory=FakeTranscriber))
 
+    def test_cors_permite_al_cliente_web(self):
+        r = self.client.get("/health", headers={"Origin": "https://g2309.github.io"})
+        self.assertIn(r.headers.get("access-control-allow-origin"), ("*", "https://g2309.github.io"))
+
     def _upload(self, name="audio.wav", **form):
         return self.client.post(
             "/transcriptions",

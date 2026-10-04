@@ -1,0 +1,215 @@
+{
+  "axe": [
+    {
+      "modo": "sin_elegir",
+      "ancho": 320,
+      "reglas_aprobadas": 28,
+      "violaciones": 0,
+      "nodos_con_violacion": 0,
+      "revisar_a_mano": 1,
+      "detalle": [],
+      "elementos_con_nombre": 5
+    },
+    {
+      "modo": "sin_elegir",
+      "ancho": 768,
+      "reglas_aprobadas": 28,
+      "violaciones": 0,
+      "nodos_con_violacion": 0,
+      "revisar_a_mano": 1,
+      "detalle": [],
+      "elementos_con_nombre": 5
+    },
+    {
+      "modo": "sin_elegir",
+      "ancho": 1280,
+      "reglas_aprobadas": 28,
+      "violaciones": 0,
+      "nodos_con_violacion": 0,
+      "revisar_a_mano": 1,
+      "detalle": [],
+      "elementos_con_nombre": 5
+    },
+    {
+      "modo": "tutor",
+      "ancho": 320,
+      "reglas_aprobadas": 38,
+      "violaciones": 0,
+      "nodos_con_violacion": 0,
+      "revisar_a_mano": 1,
+      "detalle": [],
+      "elementos_con_nombre": 8
+    },
+    {
+      "modo": "tutor",
+      "ancho": 768,
+      "reglas_aprobadas": 37,
+      "violaciones": 0,
+      "nodos_con_violacion": 0,
+      "revisar_a_mano": 1,
+      "detalle": [],
+      "elementos_con_nombre": 8
+    },
+    {
+      "modo": "tutor",
+      "ancho": 1280,
+      "reglas_aprobadas": 37,
+      "violaciones": 0,
+      "nodos_con_violacion": 0,
+      "revisar_a_mano": 1,
+      "detalle": [],
+      "elementos_con_nombre": 8
+    },
+    {
+      "modo": "bajaVision",
+      "ancho": 320,
+      "reglas_aprobadas": 38,
+      "violaciones": 0,
+      "nodos_con_violacion": 0,
+      "revisar_a_mano": 1,
+      "detalle": [],
+      "elementos_con_nombre": 8
+    },
+    {
+      "modo": "bajaVision",
+      "ancho": 768,
+      "reglas_aprobadas": 37,
+      "violaciones": 0,
+      "nodos_con_violacion": 0,
+      "revisar_a_mano": 1,
+      "detalle": [],
+      "elementos_con_nombre": 8
+    },
+    {
+      "modo": "bajaVision",
+      "ancho": 1280,
+      "reglas_aprobadas": 38,
+      "violaciones": 0,
+      "nodos_con_violacion": 0,
+      "revisar_a_mano": 1,
+      "detalle": [],
+      "elementos_con_nombre": 8
+    },
+    {
+      "modo": "nulaVision",
+      "ancho": 320,
+      "reglas_aprobadas": 38,
+      "violaciones": 0,
+      "nodos_con_violacion": 0,
+      "revisar_a_mano": 1,
+      "detalle": [],
+      "elementos_con_nombre": 8
+    },
+    {
+      "modo": "nulaVision",
+      "ancho": 768,
+      "reglas_aprobadas": 37,
+      "violaciones": 0,
+      "nodos_con_violacion": 0,
+      "revisar_a_mano": 1,
+      "detalle": [],
+      "elementos_con_nombre": 8
+    },
+    {
+      "modo": "nulaVision",
+      "ancho": 1280,
+      "reglas_aprobadas": 37,
+      "violaciones": 0,
+      "nodos_con_violacion": 0,
+      "revisar_a_mano": 1,
+      "detalle": [],
+      "elementos_con_nombre": 8
+    }
+  ],
+  "lighthouse": [
+    {
+      "modo": "sin_elegir",
+      "formato": "mobile",
+      "accesibilidad": 100,
+      "buenas_practicas": 81,
+      "seo": 100,
+      "auditorias_fallidas": [
+        "deprecations",
+        "valid-source-maps"
+      ]
+    },
+    {
+      "modo": "sin_elegir",
+      "formato": "desktop",
+      "accesibilidad": 100,
+      "buenas_practicas": 81,
+      "seo": 100,
+      "auditorias_fallidas": [
+        "deprecations",
+        "valid-source-maps"
+      ]
+    },
+    {
+      "modo": "tutor",
+      "formato": "mobile",
+      "accesibilidad": 100,
+      "buenas_practicas": 81,
+      "seo": 100,
+      "auditorias_fallidas": [
+        "deprecations",
+        "valid-source-maps"
+      ]
+    },
+    {
+      "modo": "tutor",
+      "formato": "desktop",
+      "accesibilidad": 100,
+      "buenas_practicas": 81,
+      "seo": 100,
+      "auditorias_fallidas": [
+        "deprecations",
+        "valid-source-maps"
+      ]
+    },
+    {
+      "modo": "bajaVision",
+      "formato": "mobile",
+      "accesibilidad": 100,
+      "buenas_practicas": 81,
+      "seo": 100,
+      "auditorias_fallidas": [
+        "deprecations",
+        "valid-source-maps"
+      ]
+    },
+    {
+      "modo": "bajaVision",
+      "formato": "desktop",
+      "accesibilidad": 100,
+      "buenas_practicas": 81,
+      "seo": 100,
+      "auditorias_fallidas": [
+        "deprecations",
+        "valid-source-maps"
+      ]
+    },
+    {
+      "modo": "nulaVision",
+      "formato": "mobile",
+      "accesibilidad": 100,
+      "buenas_practicas": 81,
+      "seo": 100,
+      "auditorias_fallidas": [
+        "deprecations",
+        "valid-source-maps"
+      ]
+    },
+    {
+      "modo": "nulaVision",
+      "formato": "desktop",
+      "accesibilidad": 100,
+      "buenas_practicas": 81,
+      "seo": 100,
+      "auditorias_fallidas": [
+        "deprecations",
+        "valid-source-maps"
+      ]
+    }
+  ],
+  "instalable": []
+}
