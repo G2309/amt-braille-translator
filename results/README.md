@@ -20,6 +20,7 @@ Datos que respaldan el capítulo de Resultados, uno o más archivos por objetivo
 | `oe5_telefono.csv` | objetivo general | `scripts/evaluar_telefono.py`, local |
 | `cliente_accesibilidad.json` | OE5 | `cliente/test/accesibilidad_test.dart` (`flutter test`), local y en GitHub Actions |
 | `cliente_web_auditoria.json` | OE5 | `cliente/auditoria/auditar.mjs` (`npm run auditar`), local con Chromium 153 |
+| `cliente_web_auditoria_desplegada.json` | OE5 | `cliente/auditoria/auditar.mjs` con `AUDITAR_URL` sobre la PWA publicada en GitHub Pages |
 | `figuras/` | todos | `notebooks/resultados-figuras.ipynb`, local |
 
 La referencia Braille del quinto objetivo es la edición en musicografía Braille de las Open Goldberg Variations, y el audio es la grabación de Kimiko Ishizaka del mismo proyecto, publicadas bajo licencia Creative Commons Zero. La referencia no se guarda en el repositorio: el notebook la descarga de https://opengoldbergvariations.org.
