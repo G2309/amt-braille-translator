@@ -73,7 +73,7 @@ class AMTTranscriber:
                 from piano_transcription_inference import PianoTranscription, sample_rate
             except ImportError as exc:
                 raise ImportError(
-                    "Falta piano_transcription_inference. Instalar con "
+                    f"No se pudo importar piano_transcription_inference ({exc}). Instalar con "
                     "'pip install -r requirements.txt'."
                 ) from exc
             self._model = PianoTranscription(device=self.device,

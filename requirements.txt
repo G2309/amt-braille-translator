@@ -1,6 +1,8 @@
 torch>=1.13
 librosa>=0.10
 piano_transcription_inference>=0.0.6
+# Lo importa piano_transcription_inference sin declararlo y librosa ya no lo instala
+audioread>=3.0
 numpy>=1.23
 fastapi>=0.110
 uvicorn>=0.29

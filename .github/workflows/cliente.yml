@@ -40,8 +40,8 @@ jobs:
           name: cliente-accesibilidad
           path: results/cliente_accesibilidad.json
 
-      # La URL de la API sale de la variable del repositorio API_URL
-      - run: flutter build web --release --base-href /${{ github.event.repository.name }}/ --dart-define=API_URL=${{ vars.API_URL }}
+      # La variable del repositorio API_URL tiene prioridad sobre la API publicada en Railway
+      - run: flutter build web --release --base-href /${{ github.event.repository.name }}/ --dart-define=API_URL=${{ vars.API_URL || 'https://api-production-a3fc.up.railway.app' }}
 
       - uses: actions/upload-pages-artifact@v3
         with:
