@@ -4,7 +4,7 @@ import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from amt.beats import beat_unit_quarters, follow_tempo, track_beats, warp_to_score
+from amt.beats import beat_unit_quarters, follow_tempo, prune_beats, track_beats, warp_to_score
 from amt.events import NoteEvent, TranscriptionResult
 from amt.quantizer import quantize
 
@@ -75,6 +75,25 @@ class TestDeformacion(unittest.TestCase):
         r = TranscriptionResult(notes=ataques([1.0 + 0.5 * k for k in range(8)]), duration_s=5.0)
         w = follow_tempo(r, 120.0, 4)
         self.assertAlmostEqual(w.notes[0].onset_s, 2.0, places=1)
+
+
+class TestPulsosDeMas(unittest.TestCase):
+    def notas(self, fuertes):
+        return [NoteEvent(t, t + 0.4, 40 if k in fuertes else 72, 110 if k in fuertes else 50) for k, t in enumerate(self.t)]
+
+    def setUp(self):
+        self.t = [0.5 * k for k in range(13)]
+
+    def test_quita_el_pulso_que_corre_el_tiempo_fuerte(self):
+        # Tres por compas, con un pulso intruso despues del primer compas
+        fuertes = {0, 3, 7, 10}
+        pulsos = prune_beats(self.notas(fuertes), self.t, 3, drop_penalty=0.5)
+        self.assertEqual(len(pulsos), 12)
+        self.assertNotIn(self.t[4], pulsos)
+
+    def test_sin_conflicto_no_quita_nada(self):
+        fuertes = {0, 3, 6, 9, 12}
+        self.assertEqual(prune_beats(self.notas(fuertes), self.t, 3, drop_penalty=0.5), self.t)
 
 
 if __name__ == "__main__":

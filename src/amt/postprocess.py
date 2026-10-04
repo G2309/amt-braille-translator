@@ -118,3 +118,43 @@ def split_voices(notes: Sequence[NoteEvent], chord_s: float = 0.03, overlap_s: f
             last_end[v] = max(n.offset_s for n in part)
         i = j
     return voices
+
+
+def split_hands_viterbi(notes: Sequence[NoteEvent], chord_s: float = 0.03, memory: float = 0.2,
+                        span: int = 16, span_weight: float = 4.0, beam: int = 8,
+                        right_start: float = 67.0, left_start: float = 50.0) -> Tuple[List[NoteEvent], List[NoteEvent]]:
+    # Igual que la continuidad, pero el corte de cada acorde se elige mirando toda la obra con busqueda en haz
+    ordered = sorted(notes, key=lambda n: (n.onset_s, n.midi_pitch))
+    groups: List[List[NoteEvent]] = []
+    i = 0
+    while i < len(ordered):
+        j = i + 1
+        while j < len(ordered) and ordered[j].onset_s - ordered[i].onset_s <= chord_s:
+            j += 1
+        groups.append(sorted(ordered[i:j], key=lambda n: n.midi_pitch))
+        i = j
+
+    def stretch(part: List[NoteEvent]) -> float:
+        return max(0, part[-1].midi_pitch - part[0].midi_pitch - span) if part else 0
+
+    # Cada hipotesis guarda costo, registro suavizado de cada mano y la lista de cortes
+    hyps = [(0.0, left_start, right_start, [])]
+    for group in groups:
+        nxt = []
+        for cost, lc, rc, cuts in hyps:
+            for cut in range(len(group) + 1):
+                left, right = group[:cut], group[cut:]
+                c = cost + sum(abs(n.midi_pitch - lc) for n in left) + sum(abs(n.midi_pitch - rc) for n in right)
+                c += span_weight * (stretch(left) + stretch(right))
+                nl = lc + memory * (sum(n.midi_pitch for n in left) / len(left) - lc) if left else lc
+                nr = rc + memory * (sum(n.midi_pitch for n in right) / len(right) - rc) if right else rc
+                nxt.append((c, nl, nr, cuts + [cut]))
+        nxt.sort(key=lambda h: h[0])
+        hyps = nxt[:beam]
+    cuts = hyps[0][3] if hyps else []
+    right_out: List[NoteEvent] = []
+    left_out: List[NoteEvent] = []
+    for group, cut in zip(groups, cuts):
+        left_out += group[:cut]
+        right_out += group[cut:]
+    return right_out, left_out

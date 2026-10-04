@@ -1,9 +1,9 @@
 # BSA del pipeline completo contra una referencia Braille humana, alineando cada mano completa
 from dataclasses import dataclass
 from difflib import SequenceMatcher
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, List, Optional, Tuple
 
-from amt.beats import follow_tempo
+from amt.beats import beat_unit_quarters, follow_tempo
 from amt.events import NoteEvent, TranscriptionResult
 from amt.quantizer import quantize
 from braille_translator.translator import translate_score
@@ -81,6 +81,9 @@ class PieceEvaluation:
     left: BsaResult
     both: BsaResult
     pitch_agreement: float = 0.0
+    # Compases generados por mano y la referencia tocada, para el desglose en alturas, ritmo y fraseo
+    hyp_measures: Tuple[List[str], List[str]] = ((), ())
+    reference: Optional[HandStreams] = None
 
     def row(self) -> Dict[str, float]:
         return {
@@ -109,7 +112,8 @@ def evaluate_piece(piece: Piece, notes: List[List[float]], duration_s: float,
                    pre: Optional[Callable[[TranscriptionResult], TranscriptionResult]] = None,
                    hands: Optional[Callable] = None, voices: tuple = (),
                    pickup_quarters: float = 0.0, track: bool = False,
-                   grouping: bool = False) -> PieceEvaluation:
+                   grouping: bool = False, drop_penalty: Optional[float] = None,
+                   voice_threshold: float = 0.0, slur_ratio: Optional[float] = None) -> PieceEvaluation:
     # pre limpia las notas, hands reparte las manos y track sigue el pulso en vez de usar un tempo fijo
     result = shifted_result(notes, duration_s)
     if pre is not None:
@@ -123,12 +127,17 @@ def evaluate_piece(piece: Piece, notes: List[List[float]], duration_s: float,
 
     tempo = estimate_tempo(result, piece, ref.measures_played, pickup_quarters)
     if track:
-        result, tempo = follow_tempo(result, tempo, piece.beat_type), 60.0
+        unit = beat_unit_quarters(piece.beat_type)
+        per_bar = int(round(piece.quarters_per_measure / unit))
+        start = int(round((piece.quarters_per_measure - pickup_quarters) / unit)) % per_bar if pickup_quarters else 0
+        result = follow_tempo(result, tempo, piece.beat_type, beats_per_bar=per_bar,
+                              drop_penalty=drop_penalty, start_position=start)
+        tempo = 60.0
     result = place_pickup(result, piece, tempo, pickup_quarters)
     score = quantize(result, tempo_bpm=tempo, beats=piece.beats,
                      beat_type=piece.beat_type, fifths=piece.fifths, legato=legato,
                      hands=hands(result.notes) if hands is not None else None,
-                     voices=voices)
+                     voices=voices, voice_threshold=voice_threshold, slur_ratio=slur_ratio)
     right, left = translate_score(score, measures_per_line=1, grouping=grouping)
     hyp_right, hyp_left = "".join(right), "".join(left)
 
@@ -146,6 +155,8 @@ def evaluate_piece(piece: Piece, notes: List[List[float]], duration_s: float,
         left=left_bsa,
         both=merge(right_bsa, left_bsa),
         pitch_agreement=alturas,
+        hyp_measures=(right, left),
+        reference=ref,
     )
 
 

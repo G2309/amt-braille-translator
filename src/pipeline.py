@@ -2,8 +2,8 @@
 from typing import Optional
 
 from amt import AMTTranscriber, TranscriptionResult, quantize
-from amt.beats import follow_tempo
-from amt.postprocess import drop_octave_ghosts, split_hands_by_continuity
+from amt.beats import beat_unit_quarters, follow_tempo
+from amt.postprocess import drop_octave_ghosts, split_hands_viterbi
 from braille_translator import braille_tables, export_brf, render_bar_over_bar, translate_score
 from braille_translator.renderer import DEFAULT_MEASURES_PER_LINE
 
@@ -12,6 +12,9 @@ DEFAULT_LEGATO = 0.75
 GHOST_RATIO = 1.0
 GHOST_WINDOW_S = 0.05
 HAND_MEMORY = 0.2
+HAND_SPAN_WEIGHT = 4.0
+VOICE_THRESHOLD = 0.5
+BEAT_DROP_PENALTY = 2.0
 
 
 def result_to_brf(
@@ -27,15 +30,20 @@ def result_to_brf(
     voices: bool = False,
     track: bool = True,
     grouping: bool = True,
+    slurs: bool = False,
 ) -> str:
-    # cleanup quita armonicos y reparte manos; voices separa la derecha en dos voces; track sigue el pulso
+    # cleanup quita armonicos y reparte manos; voices (opcional) usa in-accord en compases polifonicos; track sigue el pulso
     if cleanup:
         result = drop_octave_ghosts(result, window_s=GHOST_WINDOW_S, ratio=GHOST_RATIO)
     if track and result.notes:
-        result, tempo_bpm = follow_tempo(result, tempo_bpm, beat_type), 60.0
-    hands = split_hands_by_continuity(result.notes, memory=HAND_MEMORY) if cleanup else None
-    score = quantize(result, tempo_bpm=tempo_bpm, beats=beats, beat_type=beat_type,
-                     fifths=fifths, legato=legato, hands=hands, voices=("right",) if voices else ())
+        per_bar = int(round(beats * 4 / beat_type / beat_unit_quarters(beat_type)))
+        result = follow_tempo(result, tempo_bpm, beat_type, beats_per_bar=per_bar, drop_penalty=BEAT_DROP_PENALTY)
+        tempo_bpm = 60.0
+    hands = split_hands_viterbi(result.notes, memory=HAND_MEMORY, span_weight=HAND_SPAN_WEIGHT, beam=1) if cleanup else None
+    # slurs infiere ligaduras del legato; queda apagado porque en desarrollo bajo el BSA
+    score = quantize(result, tempo_bpm=tempo_bpm, beats=beats, beat_type=beat_type, fifths=fifths, legato=legato,
+                     hands=hands, voices=("right", "left") if voices else (), voice_threshold=VOICE_THRESHOLD,
+                     slur_ratio=0.0 if slurs else None)
     rh, lh = translate_score(score, measures_per_line, grouping=grouping)
     # armadura y compas van juntos en la cabecera
     header = braille_tables.key_signature(score.fifths) + braille_tables.time_signature(
@@ -61,6 +69,7 @@ def audio_to_brf(
     voices: bool = False,
     track: bool = True,
     grouping: bool = True,
+    slurs: bool = False,
 ) -> str:
     result = (transcriber or AMTTranscriber()).transcribe(audio_path)
     return result_to_brf(
@@ -76,4 +85,5 @@ def audio_to_brf(
         voices=voices,
         track=track,
         grouping=grouping,
+        slurs=slurs,
     )

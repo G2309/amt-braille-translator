@@ -1,6 +1,6 @@
 # Seguimiento simbolico del pulso para que las barras no se corran cuando el interprete cambia el tempo
 import math
-from typing import List, Sequence
+from typing import List, Optional, Sequence
 
 from .events import NoteEvent, TranscriptionResult
 
@@ -98,9 +98,59 @@ def warp_to_score(result: TranscriptionResult, beats: Sequence[float], unit_quar
                                source=result.source, model_name=result.model_name)
 
 
+def downbeat_strength(notes: Sequence[NoteEvent], beats: Sequence[float]) -> List[float]:
+    # Peso de tiempo fuerte de cada pulso: ataques cercanos, con mas peso en el bajo y en notas largas
+    out = []
+    for j, b in enumerate(beats):
+        period = (beats[min(j + 1, len(beats) - 1)] - beats[max(j - 1, 0)]) / (2 if 0 < j < len(beats) - 1 else 1)
+        window = 0.15 * period
+        w = 0.0
+        for n in notes:
+            if abs(n.onset_s - b) <= window:
+                w += n.velocity / 127.0 * (2.0 if n.midi_pitch < BASS_PITCH else 1.0) * (1.0 + min(n.duration_s / max(period, 1e-3), 2.0))
+        out.append(w)
+    mean = sum(out) / len(out) if out else 1.0
+    return [x / mean if mean else 0.0 for x in out]
+
+
+def prune_beats(notes: Sequence[NoteEvent], beats: Sequence[float], per_bar: int,
+                drop_penalty: float, start_position: int = 0) -> List[float]:
+    # Quita pulsos sobrantes cuando hacerlo deja los ataques fuertes sobre el primer tiempo del compas
+    if per_bar < 2 or len(beats) < 3:
+        return list(beats)
+    strength = downbeat_strength(notes, beats)
+    score = [-math.inf] * per_bar
+    score[start_position % per_bar] = 0.0
+    back = []
+    for j in range(1, len(beats)):
+        nxt, arg = [-math.inf] * per_bar, [None] * per_bar
+        for pos, value in enumerate(score):
+            if value == -math.inf:
+                continue
+            keep = (pos + 1) % per_bar
+            gain = value + (strength[j] if keep == 0 else 0.0)
+            if gain > nxt[keep]:
+                nxt[keep], arg[keep] = gain, (pos, True)
+            if j < len(beats) - 1 and value - drop_penalty > nxt[pos]:
+                nxt[pos], arg[pos] = value - drop_penalty, (pos, False)
+        back.append(arg)
+        score = nxt
+    pos = max(range(per_bar), key=lambda p: score[p])
+    kept = []
+    for j in range(len(beats) - 1, 0, -1):
+        prev, keep = back[j - 1][pos]
+        if keep:
+            kept.append(beats[j])
+        pos = prev
+    return [beats[0]] + kept[::-1]
+
+
 def follow_tempo(result: TranscriptionResult, tempo_bpm: float, beat_type: int,
-                 **kwargs) -> TranscriptionResult:
+                 beats_per_bar: int = 0, drop_penalty: Optional[float] = None,
+                 start_position: int = 0, **kwargs) -> TranscriptionResult:
     # Sigue el pulso desde el tempo indicado y devuelve las notas en tiempo de partitura a 60 negras por minuto
     unit = beat_unit_quarters(beat_type)
     beats = track_beats(result.notes, unit * 60.0 / tempo_bpm, **kwargs)
+    if drop_penalty is not None and beats_per_bar:
+        beats = prune_beats(result.notes, beats, beats_per_bar, drop_penalty, start_position)
     return warp_to_score(result, beats, unit, origin_quarters=beats[0] * tempo_bpm / 60.0)

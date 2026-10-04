@@ -16,8 +16,8 @@ _TIME = r"(?:#[a-j]+[0-9]+|[._]c)"
 _SIGNATURE = re.compile(rf"(?:^|\s)({_KEY})({_TIME})\s*$")
 _TIME_ONLY = re.compile(rf"^{_KEY}{_TIME}$")
 _GUIDE_FILL = re.compile(r"'{2,}$")
-# Encabezado de movimiento sin titulos de Goldberg: palabra con mayuscula tras una linea en blanco
-_MOVEMENT = re.compile(r"^\s+,[a-z]")
+# Encabezado de movimiento sin titulos de Goldberg: palabra con mayuscula, a veces tras el numero de pieza, despues de una linea en blanco
+_MOVEMENT = re.compile(r"^\s+(?:#[a-j]+4\s+)?,[a-z]")
 _FINE = re.compile(r">fine\b")
 _DA_CAPO = re.compile(r"d'c' al fine")
 # Expresiones, matices y reguladores con signo de palabra; no son musica

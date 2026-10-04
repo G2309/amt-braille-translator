@@ -148,6 +148,10 @@ class TestMovimientos(unittest.TestCase):
         self.assertEqual(len(self.piezas[2].measures), 2)
         self.assertTrue(self.piezas[2].measures[1].begins_repeat)
 
+    def test_encabezado_con_numero_de_pieza(self):
+        brf = ("    #b4\r\na .>\"r5j\r\n  _>_r+\r\n\r\n          #b4 ,allegro\r\n\r\n    #b4\r\na .>.dfc\r\n  _>_s9\r\n")
+        self.assertEqual(len(parse_reference(brf)), 2)
+
     def test_da_capo_al_fine(self):
         brf = ("    ,allegretto  %#c4\r\n"
                "a .>\"r5j\r\n  _>_r+\r\n"

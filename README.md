@@ -65,6 +65,14 @@ audio_to_brf("nocturno.wav", "nocturno.brf", tempo_bpm=60, beats=4, beat_type=4)
 
 El modelo acústico no estima tempo, compás ni armadura, así que se pasan como parámetros. `legato` (0.75 por omisión) indica qué fracción del intervalo entre dos ataques puede quedar en silencio y aun así escribirse como parte de la nota, para que una corchea tocada separada se escriba como corchea. `cleanup` (activo por omisión) quita los armónicos de octava que el modelo confunde con notas y reparte las manos por continuidad de registro en vez de cortar en el Do central. `track` (activo por omisión) sigue el pulso de la intérprete a partir de ese tempo, para que las barras no se corran cuando acelera o frena. `voices` (apagado por omisión) separa la mano derecha en dos voces escritas con in-accord, lo que conviene en música contrapuntística y no en melodía con acompañamiento.
 
+**Desde la terminal**, con cualquier grabación, incluido el M4A de un teléfono (los formatos distintos de MP3, WAV y FLAC necesitan ffmpeg).
+
+```bash
+python convertir.py grabacion.m4a salida.brf --tempo 120 --compas 3/4 --armadura 1
+```
+
+Las opciones `--voces`, `--ligaduras` y `--tempo-fijo` activan o desactivan las heurísticas descritas arriba, y `--modelo original` usa el checkpoint publicado de Kong.
+
 **Como API REST.**
 
 ```bash
