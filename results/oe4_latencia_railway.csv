@@ -1,0 +1,5 @@
+duracion_audio_s,servidor_s,cociente_servidor,extremo_a_extremo_s,cociente_extremo,dentro_de_umbral,brf_valido,estado
+30,21.51,0.717,29.98,0.999,True,True,done
+60,32.74,0.546,40.39,0.673,True,True,done
+120,69.65,0.581,76.67,0.639,True,True,done
+300,184.47,0.615,191.64,0.639,True,True,done

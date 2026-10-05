@@ -10,17 +10,19 @@ Datos que respaldan el capítulo de Resultados, uno o más archivos por objetivo
 | `oe2_ajuste_validacion.json` | OE2 | Kaggle `amt-finetune`, versión 3 |
 | `oe4_latencia_e2e.csv` | OE4 | Kaggle `amt-latency-e2e`, versión 1 |
 | `oe4_latencia_cpu.csv` | OE4 | `scripts/latencia_cpu.py`, local en CPU (Ryzen 7 5700X) con 2, 4 y 8 núcleos |
+| `oe4_latencia_railway.csv` | OE4 | `scripts/latencia_railway.py`, contra la API publicada en Railway (Intel Xeon Platinum 8581C, cuota de 2 vCPU) |
 | `oe5_notas/` | OE5 | Kaggle `amt-goldberg-transcribe`, versión 1 |
 | `oe5_bsa_por_pieza.csv`, `oe5_bsa_por_categoria.csv` | OE5 | `notebooks/amt-bsa-goldberg.ipynb`, local |
 | `oe5_externo_notas/` | OE5 | Kaggle `amt-externo-transcribe`, versión 1 |
 | `oe5_ablacion_desarrollo.csv`, `oe5_prueba_y_externo.csv`, `oe5_techo_traductor.csv` | OE5 | `notebooks/amt-bsa-mejoras.ipynb`, local |
 | `oe5_intermedio_notas/` | OE5 | Kaggle `amt-intermedio-transcribe`, versión 2 |
-| `oe5_desglose.csv` | objetivo general | `scripts/desglose_bsa.py`, local |
-| `oe5_telefono_notas/` | objetivo general | `scripts/transcribir_local.py`, local en CPU con el modelo ajustado, sobre 18 grabaciones propias con teléfono |
-| `oe5_telefono.csv` | objetivo general | `scripts/evaluar_telefono.py`, local |
-| `cliente_accesibilidad.json` | OE5 | `cliente/test/accesibilidad_test.dart` (`flutter test`), local y en GitHub Actions |
-| `cliente_web_auditoria.json` | OE5 | `cliente/auditoria/auditar.mjs` (`npm run auditar`), local con Chromium 153 |
-| `cliente_web_auditoria_desplegada.json` | OE5 | `cliente/auditoria/auditar.mjs` con `AUDITAR_URL` sobre la PWA publicada en GitHub Pages |
+| `oe5_desglose.csv` | OE5 | `scripts/desglose_bsa.py`, local |
+| `oe5_telefono_notas/` | OE5 | `scripts/transcribir_local.py`, local en CPU con el modelo ajustado, sobre 18 grabaciones propias con teléfono |
+| `oe5_telefono.csv` | OE5 | `scripts/evaluar_telefono.py`, local |
+| `oe5_categorias_pipeline.csv` | OE5 | `scripts/categorias_bsa.py`, local; BSA por categoría con la configuración del pipeline |
+| `cliente_accesibilidad.json` | OE6 | `cliente/test/accesibilidad_test.dart` (`flutter test`), local y en GitHub Actions |
+| `cliente_web_auditoria.json` | OE6 | `cliente/auditoria/auditar.mjs` (`npm run auditar`), local con Chromium 153 |
+| `cliente_web_auditoria_desplegada.json` | OE6 | `cliente/auditoria/auditar.mjs` con `AUDITAR_URL` sobre la PWA publicada en GitHub Pages |
 | `figuras/` | todos | `notebooks/resultados-figuras.ipynb`, local |
 
 La referencia Braille del quinto objetivo es la edición en musicografía Braille de las Open Goldberg Variations, y el audio es la grabación de Kimiko Ishizaka del mismo proyecto, publicadas bajo licencia Creative Commons Zero. La referencia no se guarda en el repositorio: el notebook la descarga de https://opengoldbergvariations.org.
@@ -34,3 +36,7 @@ El desglose del BSA separa, para cada pieza y con la configuración base y la de
 Las grabaciones con teléfono se hicieron con un Xiaomi 12 en formato M4A y se convirtieron a WAV mono de 44.1 kHz antes de transcribir. Nueve de ellas repiten obras del repertorio intermedio y de las obras externas, lo que permite comparar la misma obra grabada en estudio y con teléfono contra la misma referencia; las otras nueve son obras sencillas (Czerny Op. 777 n.º 1 a 5 y Stravinsky, Les Cinq Doigts n.º 1 a 3 y Valse pour les enfants). Los audios no se publican en el repositorio.
 
 La accesibilidad del cliente se evalúa sin participantes, siguiendo la metodología WCAG-EM con herramientas automáticas. La prueba de widgets recorre 42 configuraciones (pantalla de selección, conversión inicial y conversión con resultado, en los tres modos, con anchos de 320, 768 y 1280 px y escala de texto de 1.0 y 2.0). En cada una mide las guías de Flutter de tamaño de objetivo (48 dp en Android y 44 pt en iOS), las etiquetas de los objetivos y el contraste de texto, además de los desbordes, los nodos interactivos con etiqueta y los controles que se alcanzan con Tab. La auditoría web corre axe-core (WCAG 2.0 a 2.2 A y AA y buenas prácticas) sobre la compilación de la PWA, con cuatro estados y tres anchos. También corre Lighthouse en móvil y escritorio y consulta los errores de instalabilidad que reporta Chrome.
+
+La latencia en Railway se midió con los mismos cortes de 30, 60, 120 y 300 segundos que la de CPU local. El cociente del servidor quedó entre 0.55 y 0.72 y el medido desde el cliente, con la subida del archivo, entre 0.64 y 1.00. El contenedor tiene `OMP_NUM_THREADS=2`; sin ese límite PyTorch abre un hilo por cada uno de los 32 procesadores visibles y una grabación de 31 segundos tardó 17 veces su duración.
+
+Las figuras del quinto objetivo usan el prefijo `oe5_` y las del cliente `oe6_`; `oe6_cliente.png` se arma con las capturas de `cliente/auditoria/capturas.mjs`.

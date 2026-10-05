@@ -61,7 +61,12 @@ class _OpcionModo extends StatelessWidget {
       onTap: alElegir,
       child: OutlinedButton(
         onPressed: alElegir,
-        style: OutlinedButton.styleFrom(padding: const EdgeInsets.all(16), alignment: Alignment.centerLeft),
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.all(16),
+          alignment: Alignment.centerLeft,
+          // Rectángulo redondeado: la píldora por omisión recorta el texto de varias líneas
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
