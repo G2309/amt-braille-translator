@@ -1,0 +1,9 @@
+paso,configuracion,bsa_desarrollo,incluida_en_pipeline
+1,"Base: corte en el Do central, tempo fijo, legato 0.5",24.6,si
+2,Legato 0.75,25.2,si
+3,Limpieza de armónicos y reparto de manos por continuidad,28.5,si
+4,Seguimiento del pulso,32.3,si
+5,Agrupación de la sección IV,37.8,si
+6,Eliminación de pulsos sobrantes y penalización de extensión,38.3,si
+7,"Opcional: voces en compases polifónicos",40.9,no
+8,"Opcional: ligaduras inferidas del legato",35.0,no
