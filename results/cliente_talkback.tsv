@@ -1,0 +1,27 @@
+paso	pantalla	accion	lo_que_dijo_talkback	interactivo	resultado
+1	seleccion	siguiente	Música en Braille, heading 2	no	correcto
+2	seleccion	siguiente	Elija cómo quiere usar la aplicación. Puede cambiarlo después.	no	correcto
+3	seleccion	siguiente	Usar modo Lector de pantalla (sugerido). Flujo lineal pensado para TalkBack, VoiceOver, NVDA y otros lectores de pantalla., button	si	correcto
+4	seleccion	siguiente	Usar modo Tutor. Interfaz estándar con todos los parámetros y la vista previa del Braille, para docentes y personas videntes., button	si	correcto
+5	seleccion	siguiente	Usar modo Baja visión. Alto contraste, texto grande y botones amplios para personas con visibilidad reducida., button	si	correcto
+6	seleccion	activar modo lector	Música en Braille, banner, Música en Braille, heading 2, main, 1. Grabación, heading 2, Formatos MP3, WAV, FLAC o la grabación del teléfono (M4A, AAC, OGG), de hasta cinco minutos., 2. Datos de la obra, heading 2, Un valor aproximado basta; el sistema sigue el pulso de la grabación., 3. Conversión, heading 2, Estado Todavía no ha elegido una grabación.	no	correcto
+7	conversion	siguiente	Modo Lector de pantalla. Cambiar modo, button	si	correcto
+8	conversion	siguiente	1. Grabación, heading 2	no	correcto
+9	conversion	siguiente	Formatos MP3, WAV, FLAC o la grabación del teléfono (M4A, AAC, OGG), de hasta cinco minutos.	no	correcto
+10	conversion	siguiente	Elegir grabación, button	si	correcto
+11	conversion	siguiente	2. Datos de la obra, heading 2	no	correcto
+12	conversion	siguiente	Tempo en negras por minuto, Edit box	si	correcto sin leer el valor 60
+13	conversion	siguiente	Un valor aproximado basta; el sistema sigue el pulso de la grabación.	no	correcto
+14	conversion	siguiente	collapsed, Compás 4 por 4, button	si	correcto
+15	conversion	siguiente	collapsed, Armadura Sin alteraciones, Do mayor, button	si	correcto
+16	conversion	siguiente	3. Conversión, heading 2	no	correcto
+17	conversion	siguiente	Convertir a Braille, button, disabled	si	correcto
+18	conversion	siguiente	Estado Todavía no ha elegido una grabación.	no	correcto
+19	selector	activar Elegir grabación	Recent. Show roots, Button	sistema	correcto
+20	selector	activar Downloads y el archivo	fur_elise_30s.wav, 2.65 MB	sistema	correcto
+21	conversion	region viva	Estado Grabación elegida: fur_elise_30s.wav, 2.5 megabytes.	no	correcto
+22	conversion	activar Convertir a Braille	Convertir a Braille, button, disabled	si	correcto
+23	conversion	region viva	Estado Grabación recibida. En espera de procesamiento.	no	correcto
+24	conversion	region viva	Estado Transcribiendo la grabación y traduciendo a Braille. Esto puede tardar unos minutos.	no	correcto
+25	conversion	region viva	Estado Listo. La partitura en Braille está disponible para descargar.	no	correcto
+26	conversion	activar Descargar archivo BRF	Descargar archivo BRF, button. Estado Archivo fur_elise_30s.brf guardado en descargas.	si	correcto
