@@ -141,16 +141,20 @@ Conviene subrayar qué valida esto y qué no: comprueba que **la métrica está 
 
 ## 8. Evaluación contra referencias humanas
 
-La referencia principal es la edición Braille de las Open Goldberg Variations, comparada con lo que el sistema produce desde la grabación del mismo proyecto. Para no ajustar el sistema a los datos con que se evalúa, las piezas se dividen una sola vez en desarrollo (Aria, variaciones 1 a 15 y Aria da capo) y prueba (variaciones 16 a 30, sin la 25 por duración). Todo parámetro se elige con desarrollo, y prueba se mide una vez con la configuración ya fija. Tres obras externas con edición compás sobre compás de BrailleOrch (Für Elise, La fille aux cheveux de lin y el Vals en la menor B. 150 de Chopin) comprueban si lo elegido se sostiene en otros estilos.
+La referencia principal es la edición Braille de las Open Goldberg Variations, comparada con lo que el sistema produce desde la grabación del mismo proyecto. Para no ajustar el sistema a los datos con que se evalúa, dividí las piezas una sola vez en desarrollo (Aria, variaciones 1 a 15 y Aria da capo) y prueba (variaciones 16 a 30, sin la 25 por duración). Elegí todos los parámetros con desarrollo y medí prueba una sola vez con la configuración ya fija. Tres obras externas y cinco movimientos de nivel intermedio de BrailleOrch, más 18 grabaciones propias hechas con teléfono, comprueban si lo elegido se sostiene en otros estilos y otras condiciones.
 
-| Condición | Desarrollo | Prueba |
-| --- | :---: | :---: |
-| Audio, configuración base (legato 0.5, tempo fijo) | 24.57 % | 22.56 % |
-| Audio, armónicos y manos por continuidad (legato 0.75) | 28.48 % | 24.47 % |
-| Audio, lo anterior con seguimiento del pulso (pipeline por omisión) | 32.29 % | 27.99 % |
-| Audio, lo anterior con voces en mano derecha (mejor en desarrollo) | 33.19 % | 30.27 % |
-| Partitura MusicXML de la misma edición, sin audio | 73.00 % | 67.12 % |
+| Conjunto | BSA base | BSA del pipeline | F1 de notas por compás | Alturas | Ritmo |
+| --- | :---: | :---: | :---: | :---: | :---: |
+| Goldberg, desarrollo (17) | 24.6 % | 38.3 % | 71.8 % | 51.7 % | 57.9 % |
+| Goldberg, prueba (14) | 22.6 % | 33.2 % | 62.9 % | 43.2 % | 56.1 % |
+| Obras externas (3) | 24.8 % | 33.6 % | 52.7 % | 30.9 % | 53.7 % |
+| Repertorio intermedio (5) | 30.8 % | 46.5 % | 65.7 % | 64.4 % | 74.6 % |
+| Grabaciones con teléfono (18) | 16.6 % | 21.8 % | 32.4 % | 21.0 % | 47.5 % |
 
-La última fila es el techo del traductor. Con la transcripción correcta el sistema llega al 70.25 % de media en las 32 piezas, con octavas, ligaduras y alteraciones por encima del 83 %. Casi todo lo que le falta son figuras escritas con otra convención, sobre todo la agrupación de semicorcheas de la sección IV del Manual, que queda fuera del subconjunto.
+La configuración base corta las manos en el Do central, usa tempo fijo y legato 0.5. La del pipeline agrega la limpieza de armónicos, el reparto de manos por continuidad con penalización de extensión, el seguimiento del pulso con eliminación de pulsos sobrantes, legato 0.75 y la agrupación de semicorcheas de la sección IV.
 
-El seguimiento del pulso es la mejora que más aporta, porque evita que las barras se desplacen cuando la intérprete cambia el tempo. En las obras externas, con la configuración del pipeline, Für Elise pasa de 35.6 a 41.6 % y el vals de Chopin de 24.1 a 36.4 %; Debussy, de tempo libre, queda en torno al 15 %. La brecha restante es de la etapa acústica y de los pulsos que el seguimiento agrega en los ritardandos de fin de sección. El detalle está en `notebooks/amt-bsa-mejoras.ipynb` y en los CSV `results/oe5_*`.
+### Techo del traductor
+
+Para separar el error del traductor del error de la transcripción, traduje la partitura MusicXML de la misma edición de las Goldberg con el mismo traductor. Sin la agrupación de la sección IV obtuve 73.0 % en desarrollo y 66.3 % en prueba, y con ella 89.1 % y 78.8 %. Doce de las catorce piezas de prueba superan el 70 %. La brecha entre 78.8 % con partitura y 33.2 % con audio es la parte del error que se origina entre el audio y la partitura que arma el cuantizador.
+
+Los scripts que generan estas cifras son `scripts/desglose_bsa.py`, `scripts/techo_traductor.py`, `scripts/bsa_por_pieza.py` y `scripts/categorias_bsa.py`, y los datos quedan en `results/oe5_*`. El análisis pieza por pieza está en [Resultados](03_resultados.md).
