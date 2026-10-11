@@ -129,14 +129,12 @@ classDiagram
         beats
         beat_type
         fifths
-        key_signature_alterations()
     }
     class Hand {
         side
     }
     class Measure {
         number
-        voices()
     }
     class Note {
         step
@@ -150,8 +148,6 @@ classDiagram
     class Chord {
         duration_type
         dots
-        principal()
-        secondary()
     }
     class Rest {
         duration_type
@@ -161,12 +157,12 @@ classDiagram
         count
     }
     Score "1" *-- "2" Hand : mano derecha y mano izquierda
-    Hand "1" *-- "many" Measure : compases
-    Measure "1" o-- "many" Note : eventos
-    Measure "1" o-- "many" Chord : eventos
-    Measure "1" o-- "many" Rest : eventos
+    Hand "1" *-- "1..*" Measure : compases
+    Measure "1" o-- "1..*" Note : eventos
+    Measure "1" o-- "1..*" Chord : eventos
+    Measure "1" o-- "1..*" Rest : eventos
     Measure "1" o-- "1" MultiRest : compases de espera
-    Chord "1" *-- "many" Note : notas del acorde
+    Chord "1" *-- "1..*" Note : notas del acorde
 ```
 
 Las clases del árbol son solo datos. Toda la lógica de traducción está en el traductor, que consulta la máquina de estados mientras recorre los compases. Necesité el árbol completo porque el formato compás sobre compás exige que las barras de ambas manos queden alineadas en vertical, y para saber cuánto relleno poner en una mano hay que conocer de antemano cuánto mide el mismo compás en la otra.
