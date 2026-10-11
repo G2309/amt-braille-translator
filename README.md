@@ -8,6 +8,8 @@ El problema que resuelve está en el hueco entre dos tecnologías maduras que nu
 
 Trabajo de graduación · Universidad del Valle de Guatemala · Gustavo Cruz Bardales
 
+**Pruébalo en línea:** https://g2309.github.io/amt-braille-translator/ — aplicación web progresiva con modos tutor, baja visión y lector de pantalla, conectada a la API publicada en Railway. El sistema también corre completo en una computadora local, sin GPU; ver [`docs/05_instalacion_y_despliegue.md`](docs/05_instalacion_y_despliegue.md).
+
 ## El pipeline
 
 ```mermaid
@@ -128,18 +130,20 @@ El árbol de sintaxis abstracta cumple una función muy concreta. El formato com
 python -m unittest discover -s tests
 ```
 
-212 pruebas. Las de la API se omiten solas si FastAPI no está instalado. La correspondencia entre cada regla del Manual y la prueba que la verifica está en la sección de trazabilidad de [`docs/braille_rules_subset.md`](docs/braille_rules_subset.md), y hay pruebas que verifican que esa tabla siga siendo cierta.
+249 pruebas en Python. Las de la API se omiten solas si FastAPI no está instalado. La correspondencia entre cada regla del Manual y la prueba que la verifica está en la sección de trazabilidad de [`docs/braille_rules_subset.md`](docs/braille_rules_subset.md), y hay pruebas que verifican que esa tabla siga siendo cierta.
 
 Cada push a `dev` o `main` dispara el workflow de GitHub Actions, que corre la suite en Python 3.10, 3.12 y 3.13, traduce la partitura de ejemplo comprobando que el BRF resultante sea válido, mide la latencia de la etapa determinista y verifica que los notebooks estén bien formados.
 
 ## Documentación
+
+La documentación completa empieza en [`docs/README.md`](docs/README.md): visión general, arquitectura con diagramas, resultados, pivotes, instalación y despliegue, presupuesto, escalabilidad, operación y seguridad, y preguntas frecuentes.
 
 - [`docs/braille_rules_subset.md`](docs/braille_rules_subset.md) — las veintiocho reglas implementadas, con su numeración original del Manual y su trazabilidad con el código y las pruebas.
 - [`docs/deterministic_pipeline.md`](docs/deterministic_pipeline.md) — las seis etapas del módulo determinista de traducción (cuantizador, AST, máquina de estados, traductor, renderizador, exportador BRF), con diagrama.
 - [`docs/bsa_metric.md`](docs/bsa_metric.md) — procedimiento de medición de la Exactitud de Símbolo Braille.
 - [`docs/literature_review_amt.md`](docs/literature_review_amt.md) — revisión de modelos de transcripción y benchmark comparativo.
 - [`notebooks/amt-benchmark-full.ipynb`](notebooks/amt-benchmark-full.ipynb) — benchmark reproducible sobre veinte obras completas de MAESTRO v3.0.0.
-- [`notebooks/latency-e2e.ipynb`](notebooks/latency-e2e.ipynb) — medición de latencia del pipeline completo, de audio a BRF.
+- [`notebooks/amt-latency-e2e.ipynb`](notebooks/amt-latency-e2e.ipynb) — medición de latencia del pipeline completo, de audio a BRF.
 
 ## Selección del modelo acústico
 
