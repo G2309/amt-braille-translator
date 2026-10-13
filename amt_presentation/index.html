@@ -39,14 +39,14 @@
       <a class="pildora" href="https://g2309.github.io/amt-braille-translator/">Probar la aplicación</a>
       <a class="pildora clara" href="https://github.com/G2309/amt-braille-translator">Código y documentación</a>
     </div>
-    <p class="meta">Gustavo Adolfo Cruz Bardales · Asesor: Luis Alberto Suriano Saravia</p>
-    <div class="dispositivos" aria-hidden="true">
-      <div class="telefono"><img src="assets/telefono_seleccion.png" alt=""></div>
-      <div class="telefono"><img src="assets/telefono_tutor_resultado.png" alt=""></div>
-      <div class="telefono"><img src="assets/telefono_nulaVision.png" alt=""></div>
+    <p class="meta">Gustavo Adolfo Cruz Bardales</p>
+    <div class="dispositivos">
+      <div class="telefono" aria-hidden="true"><img src="assets/telefono_seleccion.png" alt=""></div>
+      <div class="telefono central"><div class="pantalla" tabindex="0" role="region" aria-label="Captura del modo tutor con una conversión terminada, desplazable"><img src="assets/telefono_tutor_resultado.png" alt="Modo tutor con la grabación elegida, los datos de la obra, el aviso de conversión lista y la vista previa del Braille"></div></div>
+      <div class="telefono" aria-hidden="true"><img src="assets/telefono_nulaVision.png" alt=""></div>
     </div>
   </div>
-  <aside class="notas"><b>Presentación, 1 minuto.</b> Me presento, nombro a mi asesor y digo en una frase qué hice: un sistema que escucha una grabación de piano y escribe la partitura en Braille. Muestro que la aplicación está publicada y que al final haré la demo en vivo.</aside>
+  <aside class="notas"><b>Presentación, 1 minuto.</b> Me presento y digo en una frase qué hice: un sistema que escucha una grabación de piano y escribe la partitura en Braille. El teléfono del centro es la aplicación publicada con una conversión terminada; se puede desplazar para mostrar la vista previa completa.</aside>
 </section>
 
 <!-- 2. Introducción -->
@@ -213,46 +213,222 @@
   <aside class="notas"><b>Pivotes, 1 minuto.</b> Tres ejemplos: dos por tiempo y uno por los resultados. Si preguntan, el resto está en docs/04_pivotes.md: MAESTRO degradado en lugar de MAPS, Kaggle en lugar de Colab, despacho por tipo en lugar de Visitor.</aside>
 </section>
 
-<!-- 6. Resultados -->
-<section class="slide" id="resultados" data-peso="5" data-titulo="Resultados del sistema">
+<!-- 6. Resultados: carrusel objetivo y resultado -->
+<section class="slide" id="resultados" data-peso="10" data-titulo="Resultados">
   <div class="contenido centrado">
-    <span class="etiqueta">Resultados</span>
-    <h2>El sistema funciona de punta a punta</h2>
-    <div class="anillos">
-      <div class="anillo" data-valor="95.9" data-color="#415eee" data-texto="95.9%"><p class="pie">F1 de inicio de nota del modelo elegido</p></div>
-      <div class="anillo" data-valor="28" data-max="28" data-color="#31ce01" data-texto="28/28"><p class="pie">Reglas del Manual implementadas y probadas</p></div>
-      <div class="anillo" data-valor="0.72" data-max="1.5" data-color="#b9a6ff" data-texto="0.72×"><p class="pie">Peor tiempo en la nube frente al límite de 1.5</p></div>
-      <div class="anillo" data-valor="10" data-max="10" data-color="#31ce01" data-texto="10/10"><p class="pie">Controles leídos correctamente por TalkBack</p></div>
-    </div>
-    <div class="barras" data-max="1.6" data-meta="1.5">
-      <div class="barra" data-valor="0.084"><div class="nombre">GPU T4 en Kaggle</div><div class="pista"><span class="relleno"></span></div><div class="valor">0.08×</div></div>
-      <div class="barra" data-valor="0.72"><div class="nombre">Railway, 2 vCPU</div><div class="pista"><span class="relleno lila"></span></div><div class="valor">0.72×</div></div>
-      <div class="barra" data-valor="0.885"><div class="nombre">Ryzen 7 5700X, 8 núcleos</div><div class="pista"><span class="relleno"></span></div><div class="valor">0.89×</div></div>
-      <div class="barra" data-valor="1.206"><div class="nombre">Ryzen 7 5700X, 2 núcleos</div><div class="pista"><span class="relleno coral"></span></div><div class="valor">1.21×</div></div>
-    </div>
-    <p class="leyenda-meta">Tiempo de conversión entre duración del audio, peor caso de cada entorno. La línea marca el límite de 1.5.</p>
-  </div>
-  <aside class="notas"><b>Resultados del sistema, 1 minuto.</b> Objetivos 1, 3, 4 y 6 cumplidos. El modelo de Kong superó los umbrales; el traductor tiene sus 28 reglas probadas; en todos los entornos la conversión tarda menos de 1.5 veces la duración del audio; TalkBack lee los diez controles del flujo.</aside>
-</section>
+    <span class="etiqueta">Resultados · esto encontramos</span>
+    <h2>Cada objetivo con su resultado</h2>
+    <div class="carrusel" role="region" aria-roledescription="carrusel" aria-label="Objetivos y resultados">
+      <div class="pista-carrusel">
 
-<section class="slide" id="resultados-bsa" data-peso="5" data-titulo="Resultados de fidelidad">
-  <div class="contenido centrado">
-    <span class="etiqueta">Resultados · fidelidad</span>
-    <h2>La meta del 70 % no se alcanzó</h2>
-    <div class="barras" data-max="100" data-meta="70">
-      <div class="barra" data-valor="46.5"><div class="nombre">Repertorio intermedio<small>5 movimientos</small></div><div class="pista"><span class="relleno"></span></div><div class="valor">46.5%</div></div>
-      <div class="barra" data-valor="38.3"><div class="nombre">Goldberg, desarrollo<small>17 piezas</small></div><div class="pista"><span class="relleno"></span></div><div class="valor">38.3%</div></div>
-      <div class="barra" data-valor="33.6"><div class="nombre">Obras externas<small>3 obras</small></div><div class="pista"><span class="relleno"></span></div><div class="valor">33.6%</div></div>
-      <div class="barra" data-valor="33.2"><div class="nombre">Goldberg, prueba<small>14 piezas no vistas</small></div><div class="pista"><span class="relleno tinta"></span></div><div class="valor">33.2%</div></div>
-      <div class="barra" data-valor="21.8"><div class="nombre">Grabaciones con teléfono<small>18 grabaciones propias</small></div><div class="pista"><span class="relleno coral"></span></div><div class="valor">21.8%</div></div>
-    </div>
-    <p class="leyenda-meta">Exactitud de Símbolo Braille frente a ediciones humanas. La línea marca la meta de 70 %.</p>
-    <div class="cifras">
-      <div><div class="cifra">+9 a +16</div><p class="pie">puntos que subieron las mejoras del cuantizador en todos los conjuntos.</p></div>
-      <div><div class="cifra">57</div><p class="pie">grabaciones evaluadas contra Braille hecho por personas.</p></div>
+        <div class="paso-oe" role="group" aria-roledescription="paso" aria-label="Objetivo específico 1 de 6">
+          <div class="cara objetivo">
+            <div class="encabezado"><span class="etiqueta">Objetivo específico 1</span></div>
+            <h3>Seleccionar la arquitectura de transcripción</h3>
+            <p class="enunciado">Contrastar al menos tres familias de Transcripción Musical Automática de código abierto sobre obras completas de piano polifónico y elegir la que sirva de base al sistema.</p>
+            <div class="metas"><span class="chip">F1 de inicio ≥ 80 %</span><span class="chip">F1 a nivel de nota ≥ 75 %</span><span class="chip">Error de nota ≤ 25 %</span><span class="chip">20 obras de prueba de MAESTRO</span></div>
+          </div>
+          <div class="cara resultado">
+            <div class="encabezado"><span class="etiqueta">Resultado 1</span><span class="chip estado ok">Cumplido</span></div>
+            <h3>Dos familias cumplen y se eligió Kong</h3>
+            <div class="datos">
+              <div>
+                <div class="barras" data-max="100" data-meta="75">
+                  <div class="barra" data-valor="83.74"><div class="nombre">Kong et al., 2021</div><div class="pista"><span class="relleno"></span></div><div class="valor">83.7%</div></div>
+                  <div class="barra" data-valor="89.30"><div class="nombre">hFT-Transformer</div><div class="pista"><span class="relleno lila"></span></div><div class="valor">89.3%</div></div>
+                  <div class="barra" data-valor="19.46"><div class="nombre">Basic Pitch</div><div class="pista"><span class="relleno coral"></span></div><div class="valor">19.5%</div></div>
+                </div>
+                <p class="leyenda-meta">F1 a nivel de nota en 20 obras y 134 minutos de audio. La línea marca la meta de 75 %.</p>
+              </div>
+              <div class="cifras">
+                <div><div class="cifra">95.9<small>%</small></div><p class="pie">F1 de inicio de nota del modelo elegido</p></div>
+                <div><div class="cifra">8.0<small>%</small></div><p class="pie">tasa de error de nota</p></div>
+              </div>
+            </div>
+            <p class="lectura">El hFT-Transformer obtuvo 5.6 puntos más, pero no estima el pedal y era más difícil de integrar. Kong quedó a 0.58 puntos de lo que publican sus autores.</p>
+          </div>
+        </div>
+
+        <div class="paso-oe" role="group" aria-roledescription="paso" aria-label="Objetivo específico 2 de 6" hidden>
+          <div class="cara objetivo">
+            <div class="encabezado"><span class="etiqueta">Objetivo específico 2</span></div>
+            <h3>Ajustar el modelo al dominio de uso</h3>
+            <p class="enunciado">Hacer un fine-tuning con grabaciones degradadas por compresión, ruido, reverberación y micrófono de teléfono, y cuantificar la robustez frente al modelo original.</p>
+            <div class="metas"><span class="chip">+5 puntos de F1 fuera de distribución</span><span class="chip">Pérdida ≤ 2 puntos en audio limpio</span></div>
+          </div>
+          <div class="cara resultado">
+            <div class="encabezado"><span class="etiqueta">Resultado 2</span><span class="chip estado parcial">Cumplido en estudio, no con teléfono</span></div>
+            <h3>+5.79 puntos en estudio, pero el teléfono resta</h3>
+            <div class="datos">
+              <div>
+                <div class="barras" data-max="100">
+                  <div class="barra" data-antes="44.14" data-valor="59.58"><div class="nombre">Micrófono de celular</div><div class="pista"><span class="relleno par"></span><span class="relleno"></span></div><div class="valor">59.6%</div></div>
+                  <div class="barra" data-antes="62.58" data-valor="68.66"><div class="nombre">Reverberación</div><div class="pista"><span class="relleno par"></span><span class="relleno"></span></div><div class="valor">68.7%</div></div>
+                  <div class="barra" data-antes="75.24" data-valor="76.81"><div class="nombre">Ruido de fondo</div><div class="pista"><span class="relleno par"></span><span class="relleno"></span></div><div class="valor">76.8%</div></div>
+                  <div class="barra" data-antes="83.81" data-valor="82.81"><div class="nombre">Audio limpio</div><div class="pista"><span class="relleno par"></span><span class="relleno"></span></div><div class="valor">82.8%</div></div>
+                </div>
+                <p class="leyenda-meta">F1 a nivel de nota. Gris el modelo original, azul el ajustado.</p>
+              </div>
+              <div class="cifras">
+                <div><div class="cifra">40.0<small>%</small></div><p class="pie">BSA de 9 obras grabadas en estudio</p></div>
+                <div><div class="cifra">26.7<small>%</small></div><p class="pie">BSA de las mismas obras grabadas con teléfono</p></div>
+              </div>
+            </div>
+            <p class="lectura">En una habitación con ventilador y lluvia el modelo parte las notas sostenidas: los reataques pasan de 1.2 % a 9 %. La simulación de celular no reproduce ese efecto.</p>
+          </div>
+        </div>
+
+        <div class="paso-oe" role="group" aria-roledescription="paso" aria-label="Objetivo específico 3 de 6" hidden>
+          <div class="cara objetivo">
+            <div class="encabezado"><span class="etiqueta">Objetivo específico 3</span></div>
+            <h3>Traducir con un módulo determinista</h3>
+            <p class="enunciado">Cuantizador rítmico, máquina de estados, árbol de sintaxis, renderizado compás sobre compás y exportador BRF que cubran las reglas del Manual de Aller Pérez.</p>
+            <div class="metas"><span class="chip">28 reglas de 9 secciones</span><span class="chip">Cada regla con su prueba</span></div>
+          </div>
+          <div class="cara resultado">
+            <div class="encabezado"><span class="etiqueta">Resultado 3</span><span class="chip estado ok">Cumplido</span></div>
+            <h3>28 de 28 reglas trazadas y probadas</h3>
+            <div class="datos">
+              <div>
+                <div class="barras" data-max="25">
+                  <div class="barra" data-valor="25"><div class="nombre">Notas, figuras y silencios</div><div class="pista"><span class="relleno"></span></div><div class="valor">25</div></div>
+                  <div class="barra" data-valor="15"><div class="nombre">Ligaduras</div><div class="pista"><span class="relleno"></span></div><div class="valor">15</div></div>
+                  <div class="barra" data-valor="12"><div class="nombre">Signos de octava</div><div class="pista"><span class="relleno"></span></div><div class="valor">12</div></div>
+                  <div class="barra" data-valor="12"><div class="nombre">Alteraciones y compás</div><div class="pista"><span class="relleno"></span></div><div class="valor">12</div></div>
+                  <div class="barra" data-valor="10"><div class="nombre">Intervalos armónicos</div><div class="pista"><span class="relleno"></span></div><div class="valor">10</div></div>
+                  <div class="barra" data-valor="10"><div class="nombre">Agrupación, extensión</div><div class="pista"><span class="relleno lila"></span></div><div class="valor">10</div></div>
+                </div>
+                <p class="leyenda-meta">Pruebas por sección del Manual, las seis secciones con más pruebas.</p>
+              </div>
+              <div class="cifras">
+                <div><div class="cifra">249</div><p class="pie">pruebas en 73 clases</p></div>
+                <div><div class="cifra">100<small>%</small></div><p class="pie">de las reglas con salida Braille esperada</p></div>
+              </div>
+            </div>
+            <p class="lectura">La suite pasa en integración continua con Python 3.10, 3.12 y 3.13. Se agregó la agrupación de la sección IV porque las ediciones humanas la usan siempre.</p>
+          </div>
+        </div>
+
+        <div class="paso-oe" role="group" aria-roledescription="paso" aria-label="Objetivo específico 4 de 6" hidden>
+          <div class="cara objetivo">
+            <div class="encabezado"><span class="etiqueta">Objetivo específico 4</span></div>
+            <h3>Integrar el sistema de punta a punta</h3>
+            <p class="enunciado">Un servicio asíncrono que reciba un audio de hasta cinco minutos y entregue un BRF válido sin intervención humana.</p>
+            <div class="metas"><span class="chip">Tiempo ≤ 1.5 veces la duración del audio</span><span class="chip">En ≥ 90 % de las ejecuciones</span></div>
+          </div>
+          <div class="cara resultado">
+            <div class="encabezado"><span class="etiqueta">Resultado 4</span><span class="chip estado ok">Cumplido</span></div>
+            <h3>Todas las ejecuciones bajo el límite</h3>
+            <div class="datos">
+              <div>
+                <div class="barras" data-max="1.6" data-meta="1.5">
+                  <div class="barra" data-valor="0.084"><div class="nombre">GPU T4, Kaggle</div><div class="pista"><span class="relleno"></span></div><div class="valor">0.08×</div></div>
+                  <div class="barra" data-valor="0.717"><div class="nombre">Railway, 2 vCPU</div><div class="pista"><span class="relleno lila"></span></div><div class="valor">0.72×</div></div>
+                  <div class="barra" data-valor="0.885"><div class="nombre">Ryzen 7 5700X, 8 núcleos</div><div class="pista"><span class="relleno"></span></div><div class="valor">0.89×</div></div>
+                  <div class="barra" data-valor="1.206"><div class="nombre">Ryzen 7 5700X, 2 núcleos</div><div class="pista"><span class="relleno coral"></span></div><div class="valor">1.21×</div></div>
+                </div>
+                <p class="leyenda-meta">Peor cociente entre tiempo de proceso y duración del audio. La línea marca 1.5.</p>
+              </div>
+              <div class="cifras">
+                <div><div class="cifra">100<small>%</small></div><p class="pie">de ejecuciones bajo 1.5 y con BRF válido</p></div>
+                <div><div class="cifra">0.42<small>s</small></div><p class="pie">tarda la etapa determinista con 5 minutos de audio</p></div>
+              </div>
+            </div>
+            <p class="lectura">El modelo acústico concentra casi todo el tiempo. En Railway fijar los hilos en 2 bajó una grabación de 17 veces su duración a 0.77.</p>
+          </div>
+        </div>
+
+        <div class="paso-oe" role="group" aria-roledescription="paso" aria-label="Objetivo específico 5 de 6" hidden>
+          <div class="cara objetivo">
+            <div class="encabezado"><span class="etiqueta">Objetivo específico 5</span></div>
+            <h3>Medir la fidelidad frente a un transcriptor</h3>
+            <p class="enunciado">Comparar las partituras generadas con ediciones Braille hechas por personas y clasificar todas las desviaciones por categoría sintáctica.</p>
+            <div class="metas"><span class="chip">Exactitud de Símbolo Braille ≥ 70 %</span><span class="chip">Desviaciones clasificadas</span></div>
+          </div>
+          <div class="cara resultado">
+            <div class="encabezado"><span class="etiqueta">Resultado 5</span><span class="chip estado no">No cumplido</span></div>
+            <h3>Entre 33.2 % y 46.5 % frente a la meta de 70 %</h3>
+            <div class="datos">
+              <div>
+                <div class="barras" data-max="100" data-meta="70">
+                  <div class="barra" data-valor="46.5"><div class="nombre">Repertorio intermedio</div><div class="pista"><span class="relleno"></span></div><div class="valor">46.5%</div></div>
+                  <div class="barra" data-valor="38.3"><div class="nombre">Goldberg, desarrollo</div><div class="pista"><span class="relleno"></span></div><div class="valor">38.3%</div></div>
+                  <div class="barra" data-valor="33.6"><div class="nombre">Obras externas</div><div class="pista"><span class="relleno"></span></div><div class="valor">33.6%</div></div>
+                  <div class="barra" data-valor="33.2"><div class="nombre">Goldberg, prueba</div><div class="pista"><span class="relleno tinta"></span></div><div class="valor">33.2%</div></div>
+                  <div class="barra" data-valor="21.8"><div class="nombre">Con teléfono</div><div class="pista"><span class="relleno coral"></span></div><div class="valor">21.8%</div></div>
+                </div>
+                <p class="leyenda-meta">BSA medio de 57 grabaciones en cinco conjuntos. La línea marca 70 %.</p>
+              </div>
+              <div class="cifras">
+                <div><div class="cifra">78.8<small>%</small></div><p class="pie">el mismo traductor con la partitura como entrada</p></div>
+                <div><div class="cifra">+9 a +16</div><p class="pie">puntos que sumaron las mejoras del cuantizador</p></div>
+              </div>
+            </div>
+            <p class="lectura">Ninguna de las 39 piezas de estudio llegó a 70 %; la mejor fue la Variación 7 con 61.1 %. Se clasificaron 45 557 de 45 558 desviaciones.</p>
+          </div>
+        </div>
+
+        <div class="paso-oe" role="group" aria-roledescription="paso" aria-label="Objetivo específico 6 de 6" hidden>
+          <div class="cara objetivo">
+            <div class="encabezado"><span class="etiqueta">Objetivo específico 6</span></div>
+            <h3>Dar acceso autónomo al usuario</h3>
+            <p class="enunciado">Una aplicación web progresiva instalable en computadoras y dispositivos móviles, cuyo flujo de carga, seguimiento y descarga sea operable con lector de pantalla.</p>
+            <div class="metas"><span class="chip">100 % de elementos con etiqueta</span><span class="chip">Flujo completo con lector de pantalla</span></div>
+          </div>
+          <div class="cara resultado">
+            <div class="encabezado"><span class="etiqueta">Resultado 6</span><span class="chip estado ok">Cumplido</span></div>
+            <h3>Una persona con TalkBack llega sola al BRF</h3>
+            <div class="datos">
+              <div class="anillos" style="margin-top:0;gap:24px">
+                <div class="anillo" data-valor="226" data-max="226" data-color="#31ce01" data-texto="226"><p class="pie">de 226 elementos etiquetados en 42 configuraciones</p></div>
+                <div class="anillo" data-valor="10" data-max="10" data-color="#31ce01" data-texto="10/10"><p class="pie">controles leídos bien por TalkBack</p></div>
+              </div>
+              <div class="cifras">
+                <div><div class="cifra">0</div><p class="pie">violaciones de axe en 12 auditorías WCAG A y AA</p></div>
+                <div><div class="cifra">100</div><p class="pie">puntaje de accesibilidad de Lighthouse</p></div>
+              </div>
+            </div>
+            <p class="lectura">El recorrido se hizo solo con atajos de teclado y sin mirar la pantalla: elegir el audio, escuchar el estado y descargar el archivo de 388 bytes.</p>
+          </div>
+        </div>
+
+        <div class="paso-oe" role="group" aria-roledescription="paso" aria-label="Objetivo general" hidden>
+          <div class="cara objetivo">
+            <div class="encabezado"><span class="etiqueta">Objetivo general</span></div>
+            <h3>Construir el sistema y saber qué tan cerca queda</h3>
+            <p class="enunciado">Un sistema de código abierto, operable por personas con discapacidad visual, que convierta grabaciones de piano de hasta cinco minutos en partituras Braille, y determinar en qué medida se aproximan a las de un transcriptor humano.</p>
+            <div class="metas"><span class="chip">Sistema publicado</span><span class="chip">Cada etapa medida</span><span class="chip">Exactitud determinada</span></div>
+          </div>
+          <div class="cara resultado">
+            <div class="encabezado"><span class="etiqueta">Resultado general</span><span class="chip estado ok">Cumplido</span></div>
+            <h3>Cuatro objetivos cumplidos, uno parcial y uno no</h3>
+            <div class="datos">
+              <div class="anillos" style="margin-top:0;gap:24px">
+                <div class="anillo" data-valor="4" data-max="6" data-color="#31ce01" data-texto="4/6"><p class="pie">objetivos específicos cumplidos</p></div>
+                <div class="anillo" data-valor="57" data-max="57" data-color="#415eee" data-texto="57"><p class="pie">grabaciones medidas contra Braille hecho por personas</p></div>
+              </div>
+              <div class="cifras">
+                <div><div class="cifra">33.2<small>%</small></div><p class="pie">BSA en piezas nunca vistas</p></div>
+                <div><div class="cifra">78.8<small>%</small></div><p class="pie">BSA con la partitura correcta</p></div>
+              </div>
+            </div>
+            <p class="lectura">La respuesta a la pregunta de investigación: el sistema funciona de punta a punta y su distancia al transcriptor está medida y localizada antes del traductor.</p>
+          </div>
+        </div>
+
+      </div>
+      <div class="controles">
+        <div class="flechas">
+          <button class="pildora clara" type="button" data-carrusel="anterior">Anterior</button>
+          <button class="pildora" type="button" data-carrusel="alternar" aria-describedby="carrusel-estado">Ver resultado</button>
+          <button class="pildora clara" type="button" data-carrusel="siguiente">Siguiente</button>
+        </div>
+        <div class="puntos" role="group" aria-label="Ir a un objetivo"></div>
+      </div>
+      <p id="carrusel-estado" class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><b>Resultados de fidelidad, 1 minuto.</b> Lo digo directo: no alcancé el 70 %. El dato a recordar es la partición de prueba, 33.2 %, porque son piezas que no usé para ajustar nada. Las mejoras subieron entre 9 y 16 puntos en todos los conjuntos, incluidos los no vistos.</aside>
+  <aside class="notas"><b>Resultados, 2 minutos.</b> Recorro el carrusel en orden con la flecha derecha: objetivo y luego su resultado, unos 15 segundos por paso. Cumplidos el 1, 3, 4 y 6. El 2 se cumple en estudio y con degradaciones simuladas, no con teléfono en casa. El 5 no se cumple: 33.2 % en piezas no vistas. Cierro con el objetivo general: el sistema existe y su exactitud quedó medida.</aside>
 </section>
 
 <section class="slide" id="demo" data-peso="3" data-titulo="Demo">
@@ -264,13 +440,14 @@
         <img class="qr" src="assets/qr_demo.svg" alt="Código QR hacia la aplicación publicada">
         <a class="pildora" href="https://g2309.github.io/amt-braille-translator/">g2309.github.io/amt-braille-translator</a>
       </div>
-      <div class="tarjetas dos" style="margin-top:0">
-        <div class="tarjeta"><h3>En vivo</h3><p>Elijo una grabación, convierto en la nube y descargo el BRF, con el lector de pantalla encendido.</p></div>
-        <div class="tarjeta"><h3>Evidencias</h3><p>Recorrido completo con TalkBack registrado frase por frase y capturas de los tres modos.</p></div>
+      <div class="tarjetas" style="margin-top:0">
+        <div class="tarjeta"><h3>Demostración</h3><p>Conversión de una grabación de 30 segundos de Für Elise con TalkBack activo, desde elegir el audio hasta guardar el BRF.</p></div>
+        <div class="tarjeta"><h3>Materiales</h3><p>Aplicación web instalable, API publicada, código, manuales del sistema y las mediciones de las 57 grabaciones evaluadas.</p></div>
+        <div class="tarjeta"><h3>Evidencias</h3><p>Registro frase por frase de lo que dijo TalkBack, auditorías de accesibilidad y video de la conversión de menos de tres minutos.</p></div>
       </div>
     </div>
   </div>
-  <aside class="notas"><b>Demo, 1 minuto en vivo o el video de respaldo.</b> Antes de la defensa: despertar la API abriendo la aplicación unos minutos antes, porque el contenedor duerme sin tráfico y tarda unos segundos en arrancar. Tener una grabación corta en el teléfono.</aside>
+  <aside class="notas"><b>Demo, 1 minuto.</b> Antes de la defensa abro la aplicación unos minutos antes para despertar la API, porque el contenedor duerme sin tráfico y tarda unos segundos en arrancar. Tengo una grabación corta en el teléfono y el video como respaldo si falla la red.</aside>
 </section>
 
 <!-- 7. Análisis -->

@@ -27,10 +27,64 @@
     const max = Number(grupo.dataset.max);
     grupo.querySelectorAll('.barra').forEach((b) => {
       const v = Number(b.dataset.valor);
-      b.querySelector('.relleno').style.width = `${(v / max) * 100}%`;
+      const rellenos = b.querySelectorAll('.relleno');
+      // Con data-antes la primera barra es la referencia y la segunda el valor nuevo
+      if (b.dataset.antes) rellenos[0].style.width = `${(Number(b.dataset.antes) / max) * 100}%`;
+      rellenos[rellenos.length - 1].style.width = `${(v / max) * 100}%`;
       const meta = grupo.dataset.meta;
       if (meta) b.querySelector('.pista').insertAdjacentHTML('beforeend', `<span class="meta" style="left:${(Number(meta) / max) * 100}%"></span>`);
     });
+  });
+
+  // Carrusel de resultados: cada paso muestra el objetivo y luego su resultado
+  const carruseles = [...document.querySelectorAll('.carrusel')].map((raiz) => {
+    const pasos = [...raiz.querySelectorAll('.paso-oe')];
+    const alternar = raiz.querySelector('[data-carrusel="alternar"]');
+    const anterior = raiz.querySelector('[data-carrusel="anterior"]');
+    const siguiente = raiz.querySelector('[data-carrusel="siguiente"]');
+    const estado = raiz.querySelector('[aria-live]');
+    const puntos = raiz.querySelector('.puntos');
+    let i = 0, resultado = false;
+    pasos.forEach((paso, k) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = k < pasos.length - 1 ? k + 1 : 'G';
+      b.setAttribute('aria-label', paso.getAttribute('aria-label'));
+      b.addEventListener('click', () => mostrar(k, false));
+      puntos.append(b);
+    });
+    function mostrar(k, verResultado, anunciar = true) {
+      i = Math.max(0, Math.min(k, pasos.length - 1));
+      resultado = verResultado;
+      pasos.forEach((paso, n) => {
+        paso.hidden = n !== i;
+        paso.classList.toggle('ver-resultado', n === i && resultado);
+      });
+      [...puntos.children].forEach((b, n) => (n === i ? b.setAttribute('aria-current', 'step') : b.removeAttribute('aria-current')));
+      alternar.textContent = resultado ? 'Ver objetivo' : 'Ver resultado';
+      anterior.disabled = i === 0 && !resultado;
+      siguiente.disabled = i === pasos.length - 1 && resultado;
+      const cara = pasos[i].querySelector(resultado ? '.cara.resultado' : '.cara.objetivo');
+      if (anunciar) estado.textContent = `${cara.querySelector('.etiqueta').textContent}. ${cara.querySelector('h3').textContent}`;
+    }
+    // Avanza de objetivo a resultado y de resultado al siguiente objetivo; devuelve false en los extremos
+    function paso(dir) {
+      if (dir > 0) {
+        if (!resultado) mostrar(i, true);
+        else if (i < pasos.length - 1) mostrar(i + 1, false);
+        else return false;
+      } else {
+        if (resultado) mostrar(i, false);
+        else if (i > 0) mostrar(i - 1, true);
+        else return false;
+      }
+      return true;
+    }
+    alternar.addEventListener('click', () => mostrar(i, !resultado));
+    anterior.addEventListener('click', () => paso(-1));
+    siguiente.addEventListener('click', () => paso(1));
+    mostrar(0, false, false);
+    return { raiz, paso };
   });
 
   const principales = () => [...document.querySelectorAll('.slide')].filter((s) => cuerpo.classList.contains('ver-respaldo') || !s.classList.contains('respaldo'));
@@ -70,7 +124,7 @@
   function ajustar() {
     document.querySelectorAll('.slide').forEach((s) => {
       const caja = s.querySelector(':scope > .contenido, :scope > .campo');
-      if (!caja) return;
+      if (!caja || s.classList.contains('hero')) return;
       caja.style.setProperty('--escala', 1);
       if (!cuerpo.classList.contains('presentando')) return;
       const disponible = window.innerHeight - 128;
@@ -87,15 +141,22 @@
 
   document.querySelectorAll('[data-accion="presentar"]').forEach((b) => b.addEventListener('click', alternarPresentacion));
 
+  // En modo presentación las flechas recorren primero el carrusel de la sección actual
+  function pasoCarrusel(dir) {
+    const actual = principales()[indice];
+    const c = carruseles.find((x) => actual && actual.contains(x.raiz));
+    return c ? c.paso(dir) : false;
+  }
+
   document.addEventListener('keydown', (e) => {
-    if (e.target.closest('input, textarea')) return;
+    if (e.target.closest('input, textarea') || (e.key === ' ' && e.target.closest('button, a'))) return;
     const k = e.key;
     if (k === 'p' || k === 'P') alternarPresentacion();
     else if (k === 'n' || k === 'N') cuerpo.classList.toggle('con-notas');
     else if (k === 'r' || k === 'R') { cuerpo.classList.toggle('ver-respaldo'); marcar(indice); }
     else if (!cuerpo.classList.contains('presentando')) return;
-    else if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(k)) { e.preventDefault(); ir(indice + 1); }
-    else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(k)) { e.preventDefault(); ir(indice - 1); }
+    else if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(k)) { e.preventDefault(); if (!pasoCarrusel(1)) ir(indice + 1); }
+    else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(k)) { e.preventDefault(); if (!pasoCarrusel(-1)) ir(indice - 1); }
     else if (k === 'Home') ir(0);
     else if (k === 'End') ir(principales().length - 1);
   });

@@ -7,7 +7,7 @@ Página de la defensa del trabajo de graduación. Funciona como página que se r
 | Tecla | Acción |
 | --- | --- |
 | P | Entrar o salir del modo presentación |
-| Flechas, espacio, Re Pág y Av Pág | Avanzar o retroceder una sección |
+| Flechas, espacio, Re Pág y Av Pág | Avanzar o retroceder una sección; en Resultados recorren primero el carrusel, objetivo y luego resultado |
 | N | Mostrar u ocultar las notas del orador |
 | R | Mostrar u ocultar las diapositivas de respaldo para las preguntas del jurado |
 
