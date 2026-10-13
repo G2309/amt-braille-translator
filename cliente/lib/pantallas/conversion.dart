@@ -185,7 +185,9 @@ class _ConversionState extends State<Conversion> {
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     decoration: const InputDecoration(
                       labelText: 'Tempo en negras por minuto',
-                      helperText: 'Un valor aproximado basta; el sistema sigue el pulso de la grabación.',
+                      helperText: 'Largo 50, Adagio 70, Andante 90, Moderato 110, Allegro 130, Presto 170. '
+                          'Basta un valor aproximado; el sistema sigue el pulso de la grabación.',
+                      helperMaxLines: 4,
                     ),
                   ),
                   const SizedBox(height: 16),
