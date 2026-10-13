@@ -153,6 +153,8 @@
   document.addEventListener('keydown', (e) => {
     if (e.target.closest('input, textarea') || (e.key === ' ' && e.target.closest('button, a'))) return;
     const k = e.key;
+    // El control de KDE Connect inicia con F5; aquí entra al modo presentación en lugar de recargar
+    if (k === 'F5') { e.preventDefault(); if (!cuerpo.classList.contains('presentando')) alternarPresentacion(); return; }
     if (k === 'p' || k === 'P' || (k === 'Escape' && cuerpo.classList.contains('presentando'))) alternarPresentacion();
     else if (k === 'n' || k === 'N') cuerpo.classList.toggle('con-notas');
     else if (k === 'r' || k === 'R') { cuerpo.classList.toggle('ver-respaldo'); marcar(indice); }

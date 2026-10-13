@@ -1,0 +1,6 @@
+# Sirve el sitio estático y obliga al navegador a revalidar cada archivo para no mezclar versiones
+:{$PORT:8080} {
+	root * /srv
+	header Cache-Control "no-cache"
+	file_server
+}

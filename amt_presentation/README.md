@@ -6,7 +6,7 @@ Página de la defensa del trabajo de graduación. Funciona como página que se r
 
 | Tecla | Acción |
 | --- | --- |
-| P | Entrar o salir del modo presentación |
+| P o F5 | Entrar al modo presentación; P o Esc salen. F5 es el botón de inicio del control de KDE Connect |
 | Flechas, espacio, Re Pág y Av Pág | Avanzar o retroceder una sección; en cada resultado la flecha primero gira la tarjeta del objetivo a su resultado, y en Diagramas y Mejoras recorre las láminas |
 | N | Mostrar u ocultar las notas del orador |
 | R | Mostrar u ocultar las diapositivas de respaldo para las preguntas del jurado |
@@ -15,7 +15,7 @@ El tiempo total por omisión es de 40 minutos y se cambia con `?min=30` en la di
 
 ## Guion
 
-`guion.html` arma el guion completo de la defensa a partir de las notas del orador de cada sección (`aside.notas`), agrupado por parte (`data-parte`) con su hora de inicio y su duración, más las respuestas de las diapositivas de respaldo. Se imprime con una parte por página.
+`guion.html` arma el guion completo de la defensa a partir de las notas del orador de cada sección (`aside.notas`), agrupado por parte (`data-parte`) con su hora de inicio y su duración, más las respuestas de las diapositivas de respaldo. Se imprime con una parte por página. No se publica en Railway: se abre en local con `python3 -m http.server` dentro de esta carpeta.
 
 ## Contenido generado
 
