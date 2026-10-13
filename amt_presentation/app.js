@@ -1,11 +1,8 @@
-// Modo presentación: navegación por teclado, notas del orador, reloj por sección y anillos de métrica
+// Modo presentación: navegación por teclado, notas del orador, tarjetas que giran y anillos de métrica
 (() => {
   const params = new URLSearchParams(location.search);
-  const minutosTotales = Number(params.get('min')) || 20;
   const cuerpo = document.body;
   const progreso = document.querySelector('.progreso');
-  const reloj = document.querySelector('.orador .reloj');
-  const nombreSeccion = document.querySelector('.orador .seccion');
 
   // Anillos dibujados a partir de data-valor y data-color
   document.querySelectorAll('.anillo[data-valor]').forEach((el) => {
@@ -36,61 +33,78 @@
     });
   });
 
-  // Carrusel de resultados: cada paso muestra el objetivo y luego su resultado
-  const carruseles = [...document.querySelectorAll('.carrusel')].map((raiz) => {
-    const pasos = [...raiz.querySelectorAll('.paso-oe')];
-    const alternar = raiz.querySelector('[data-carrusel="alternar"]');
-    const anterior = raiz.querySelector('[data-carrusel="anterior"]');
-    const siguiente = raiz.querySelector('[data-carrusel="siguiente"]');
+  const sinMovimiento = matchMedia('(prefers-reduced-motion: reduce)');
+  // Gira solo la tarjeta: media vuelta hasta quedar de canto, cambia el contenido y termina el giro
+  function girar(el, cambiar, dir = 1) {
+    if (sinMovimiento.matches || !el.animate) { cambiar(); return; }
+    const ida = el.animate([{ transform: 'perspective(1400px) rotateY(0deg)' }, { transform: `perspective(1400px) rotateY(${90 * dir}deg)` }], { duration: 200, easing: 'ease-in' });
+    ida.onfinish = () => {
+      cambiar();
+      el.animate([{ transform: `perspective(1400px) rotateY(${-90 * dir}deg)` }, { transform: 'perspective(1400px) rotateY(0deg)' }], { duration: 260, easing: 'ease-out' });
+    };
+  }
+
+  // Tarjeta de cada objetivo: el botón la gira para mostrar el resultado y volver al objetivo
+  const volteos = [...document.querySelectorAll('.volteo')].map((raiz) => {
+    const paso = raiz.querySelector('.paso-oe');
+    const pista = raiz.querySelector('.pista-carrusel');
+    const boton = raiz.querySelector('[data-volteo]');
     const estado = raiz.querySelector('[aria-live]');
-    const puntos = raiz.querySelector('.puntos');
-    let i = 0, resultado = false;
-    pasos.forEach((paso, k) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = k < pasos.length - 1 ? k + 1 : 'G';
-      b.setAttribute('aria-label', paso.getAttribute('aria-label'));
-      b.addEventListener('click', () => mostrar(k, false));
-      puntos.append(b);
-    });
-    function mostrar(k, verResultado, anunciar = true) {
-      i = Math.max(0, Math.min(k, pasos.length - 1));
-      resultado = verResultado;
-      pasos.forEach((paso, n) => {
-        paso.hidden = n !== i;
-        paso.classList.toggle('ver-resultado', n === i && resultado);
-      });
-      [...puntos.children].forEach((b, n) => (n === i ? b.setAttribute('aria-current', 'step') : b.removeAttribute('aria-current')));
-      alternar.textContent = resultado ? 'Ver objetivo' : 'Ver resultado';
-      anterior.disabled = i === 0 && !resultado;
-      siguiente.disabled = i === pasos.length - 1 && resultado;
-      const cara = pasos[i].querySelector(resultado ? '.cara.resultado' : '.cara.objetivo');
-      if (anunciar) estado.textContent = `${cara.querySelector('.etiqueta').textContent}. ${cara.querySelector('h3').textContent}`;
+    let resultado = false;
+    function aplicar(v) {
+      resultado = v;
+      paso.classList.toggle('ver-resultado', v);
+      boton.textContent = v ? 'Ver objetivo' : 'Ver resultado';
+      const cara = paso.querySelector(v ? '.cara.resultado' : '.cara.objetivo');
+      estado.textContent = `${cara.querySelector('.etiqueta').textContent}. ${cara.querySelector('h3').textContent}`;
     }
-    // Avanza de objetivo a resultado y de resultado al siguiente objetivo; devuelve false en los extremos
-    function paso(dir) {
-      if (dir > 0) {
-        if (!resultado) mostrar(i, true);
-        else if (i < pasos.length - 1) mostrar(i + 1, false);
-        else return false;
-      } else {
-        if (resultado) mostrar(i, false);
-        else if (i > 0) mostrar(i - 1, true);
-        else return false;
-      }
+    function voltear(v) {
+      if (v === resultado) return false;
+      girar(pista, () => aplicar(v), v ? 1 : -1);
       return true;
     }
-    alternar.addEventListener('click', () => mostrar(i, !resultado));
-    anterior.addEventListener('click', () => paso(-1));
-    siguiente.addEventListener('click', () => paso(1));
-    mostrar(0, false, false);
-    return { raiz, paso };
+    boton.addEventListener('click', () => voltear(!resultado));
+    return { raiz, paso: (dir) => voltear(dir > 0) };
   });
 
+  // Mazos de láminas con pestañas, anterior y siguiente
+  const mazos = [...document.querySelectorAll('.mazo')].map((raiz) => {
+    const laminas = [...raiz.querySelectorAll('.lamina')];
+    const pila = raiz.querySelector('.pila');
+    const pestanas = raiz.querySelector('.pestanas');
+    const anterior = raiz.querySelector('[data-mazo="anterior"]');
+    const siguiente = raiz.querySelector('[data-mazo="siguiente"]');
+    const estado = raiz.querySelector('[aria-live]');
+    let i = 0;
+    laminas.forEach((l, k) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = l.dataset.pestana;
+      b.addEventListener('click', () => ir(k));
+      pestanas.append(b);
+    });
+    function aplicar(k, anunciar) {
+      i = k;
+      laminas.forEach((l, n) => { l.hidden = n !== i; });
+      [...pestanas.children].forEach((b, n) => (n === i ? b.setAttribute('aria-current', 'step') : b.removeAttribute('aria-current')));
+      anterior.disabled = i === 0;
+      siguiente.disabled = i === laminas.length - 1;
+      if (anunciar) estado.textContent = laminas[i].querySelector('h3').textContent;
+    }
+    function ir(k) {
+      if (k === i || k < 0 || k >= laminas.length) return false;
+      girar(pila, () => aplicar(k, true), k > i ? 1 : -1);
+      return true;
+    }
+    anterior.addEventListener('click', () => ir(i - 1));
+    siguiente.addEventListener('click', () => ir(i + 1));
+    aplicar(0, false);
+    return { raiz, paso: (dir) => ir(i + dir) };
+  });
+  const pasables = [...volteos, ...mazos];
+
   const principales = () => [...document.querySelectorAll('.slide')].filter((s) => cuerpo.classList.contains('ver-respaldo') || !s.classList.contains('respaldo'));
-  const pesoTotal = [...document.querySelectorAll('.slide[data-peso]')].reduce((a, s) => a + Number(s.dataset.peso), 0);
   let indice = 0;
-  let inicioSeccion = Date.now();
 
   function marcar(i) {
     const lista = principales();
@@ -98,9 +112,6 @@
     lista.forEach((s, k) => s.classList.toggle('actual', k === indice));
     const actual = lista[indice];
     progreso.style.width = `${((indice + 1) / lista.length) * 100}%`;
-    nombreSeccion.textContent = actual.dataset.titulo || '';
-    inicioSeccion = Date.now();
-    tic();
     return actual;
   }
 
@@ -110,15 +121,6 @@
     actual.scrollIntoView({ behavior: cuerpo.classList.contains('presentando') ? 'instant' : 'smooth', block: 'start' });
   }
 
-  function tic() {
-    const actual = principales()[indice];
-    const objetivo = actual && actual.dataset.peso ? (Number(actual.dataset.peso) / pesoTotal) * minutosTotales * 60 : 0;
-    const t = Math.floor((Date.now() - inicioSeccion) / 1000);
-    const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
-    reloj.textContent = objetivo ? `${fmt(t)} de ${fmt(objetivo)}` : fmt(t);
-    reloj.classList.toggle('tarde', objetivo && t > objetivo);
-  }
-  setInterval(tic, 1000);
 
   // En modo presentación cada sección se escala para caber en la ventana sin scroll
   function ajustar() {
@@ -141,17 +143,17 @@
 
   document.querySelectorAll('[data-accion="presentar"]').forEach((b) => b.addEventListener('click', alternarPresentacion));
 
-  // En modo presentación las flechas recorren primero el carrusel de la sección actual
+  // En modo presentación las flechas giran primero la tarjeta o el mazo de la sección actual
   function pasoCarrusel(dir) {
     const actual = principales()[indice];
-    const c = carruseles.find((x) => actual && actual.contains(x.raiz));
+    const c = pasables.find((x) => actual && actual.contains(x.raiz));
     return c ? c.paso(dir) : false;
   }
 
   document.addEventListener('keydown', (e) => {
     if (e.target.closest('input, textarea') || (e.key === ' ' && e.target.closest('button, a'))) return;
     const k = e.key;
-    if (k === 'p' || k === 'P') alternarPresentacion();
+    if (k === 'p' || k === 'P' || (k === 'Escape' && cuerpo.classList.contains('presentando'))) alternarPresentacion();
     else if (k === 'n' || k === 'N') cuerpo.classList.toggle('con-notas');
     else if (k === 'r' || k === 'R') { cuerpo.classList.toggle('ver-respaldo'); marcar(indice); }
     else if (!cuerpo.classList.contains('presentando')) return;
