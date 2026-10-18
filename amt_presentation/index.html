@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=6">
+  <link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body>
 <div class="progreso" aria-hidden="true"></div>
@@ -32,6 +32,7 @@
 <!-- 1. Presentación -->
 <section class="slide hero" id="inicio" data-peso="45" data-parte="Presentación" data-titulo="Presentación">
   <div class="campo">
+    <img class="logo-uvg" src="assets/logo_uvg.png" alt="Universidad del Valle de Guatemala">
     <span class="etiqueta">Trabajo de graduación · Universidad del Valle de Guatemala</span>
     <h1>Del audio<br>al Braille</h1>
     <p class="lead">Transcripción automática de piano polifónico a musicografía Braille con inteligencia artificial y algoritmos deterministas.</p>
@@ -52,8 +53,8 @@
 <!-- 2. Introducción -->
 <section class="slide" id="introduccion" data-peso="45" data-parte="Introducción" data-titulo="Introducción">
   <div class="contenido centrado">
-    <span class="etiqueta">Introducción</span>
-    <h2>Casi toda la música está grabada.<br>Casi nada está en Braille.</h2>
+    <h2 class="titulo-seccion">Introducción</h2>
+    <p class="subtitulo">Casi toda la música está grabada. Casi nada está en Braille.</p>
     <div class="dividido">
       <img class="foto" src="assets/leyendo_braille.jpg" alt="Un dedo recorre una hoja con texto en Braille" style="aspect-ratio:4/3">
       <div>
@@ -68,8 +69,8 @@
 <!-- 3. Problema -->
 <section class="slide" id="problema" data-peso="90" data-parte="Problema" data-titulo="Problema">
   <div class="contenido centrado">
-    <span class="etiqueta">El problema</span>
-    <h2>El repertorio en Braille es mínimo</h2>
+    <h2 class="titulo-seccion">El problema</h2>
+    <p class="subtitulo">¿Por qué hay tan pocas partituras en Braille?</p>
     <div class="cifras">
       <div><div class="cifra">2,200 <small>millones</small></div><p class="pie">de personas viven con alguna deficiencia visual (Organización Mundial de la Salud, 2019).</p></div>
       <div><div class="cifra">&lt;5<small>%</small></div><p class="pie">del catálogo musical impreso está transcrito a Braille (Giesteira, Godall y Zattera, 2015).</p></div>
@@ -91,8 +92,8 @@
 
 <section class="slide" id="origenes" data-peso="90" data-parte="Problema" data-titulo="Orígenes y alternativas">
   <div class="contenido centrado">
-    <span class="etiqueta">Orígenes y alternativas</span>
-    <h2>Dos tecnologías que no se hablan</h2>
+    <h2 class="titulo-seccion">Orígenes y alternativas</h2>
+    <p class="subtitulo">Dos tecnologías que no se hablan</p>
     <div class="cadena">
       <div class="eslabon"><b>Grabación</b><span>Lo que existe para casi cualquier obra</span></div>
       <div class="eslabon"><b>Transcripción automática</b><span>Las redes neuronales ya convierten audio en notas</span></div>
@@ -118,10 +119,10 @@
 <!-- 4. Propuesta -->
 <section class="slide" id="propuesta" data-peso="150" data-parte="Propuesta" data-titulo="Propuesta y objetivos">
   <div class="contenido centrado">
-    <span class="etiqueta">Mi propuesta</span>
-    <h2>Un sistema que escucha y escribe Braille</h2>
+    <h2 class="titulo-seccion">Propuesta</h2>
+    <p class="subtitulo">Un sistema que escucha y escribe Braille</p>
     <p class="lead">Objetivo general: desarrollar un sistema de código abierto, usable por personas con discapacidad visual, que convierta grabaciones de piano de hasta cinco minutos en partituras Braille, y determinar qué tan cerca quedan de las de un transcriptor humano.</p>
-    <div class="tarjetas tres">
+    <div class="tarjetas tres fijo-tres">
       <div class="tarjeta"><h3>1. Elegir el modelo</h3><p>Comparar tres familias de transcripción sobre obras completas.</p><span class="chip">F1 de nota ≥ 75 %</span></div>
       <div class="tarjeta"><h3>2. Ajustarlo</h3><p>Hacerlo robusto a ruido, reverberación y micrófono de teléfono.</p><span class="chip">+5 puntos fuera de estudio</span></div>
       <div class="tarjeta"><h3>3. Traducir</h3><p>Traductor determinista con las reglas del Manual de Aller Pérez.</p><span class="chip">28 reglas probadas</span></div>
@@ -135,8 +136,8 @@
 
 <section class="slide" id="alcance" data-peso="150" data-parte="Propuesta" data-titulo="Alcance, justificación y limitantes">
   <div class="contenido centrado">
-    <span class="etiqueta">Alcance, justificación y limitantes</span>
-    <h2>Qué entra y qué no</h2>
+    <h2 class="titulo-seccion">Alcance, justificación y limitantes</h2>
+    <p class="subtitulo">¿Qué entra y qué no?</p>
     <div class="tarjetas tres">
       <div class="tarjeta">
         <h3>Alcance</h3>
@@ -159,8 +160,8 @@
 <!-- 5. Desarrollo -->
 <section class="slide" id="desarrollo" data-peso="105" data-parte="Desarrollo" data-titulo="Arquitectura">
   <div class="contenido centrado">
-    <span class="etiqueta">Desarrollo</span>
-    <h2>Un pipeline de etapas independientes</h2>
+    <h2 class="titulo-seccion">Desarrollo</h2>
+    <p class="subtitulo">Un pipeline de etapas independientes</p>
     <div class="cadena">
       <div class="eslabon"><b>Normalizador</b><span>Lleva el volumen a un nivel estable</span><span class="teoria">Nivel RMS</span></div>
       <div class="eslabon acento"><b>Modelo de Kong ajustado</b><span>Detecta cada nota con inicio, final y altura</span><span class="teoria">Espectrograma y red CRNN</span></div>
@@ -180,8 +181,8 @@
 
 <section class="slide" id="diagramas" data-peso="90" data-parte="Desarrollo" data-titulo="Diagramas del sistema">
   <div class="contenido centrado">
-    <span class="etiqueta">Desarrollo · diagramas</span>
-    <h2>Cómo está construido</h2>
+    <h2 class="titulo-seccion">Desarrollo</h2>
+    <p class="subtitulo">¿Cómo está construido?</p>
     <div class="mazo" role="region" aria-roledescription="mazo de diagramas" aria-label="Diagramas del sistema">
       <div class="pestanas" role="group" aria-label="Elegir diagrama"></div>
       <div class="pila">
@@ -289,8 +290,8 @@
 
 <section class="slide" id="caso" data-peso="60" data-parte="Desarrollo" data-titulo="Un caso real">
   <div class="contenido centrado">
-    <span class="etiqueta">Desarrollo · un caso real</span>
-    <h2>Für Elise, del sonido a los puntos</h2>
+    <h2 class="titulo-seccion">Desarrollo</h2>
+    <p class="subtitulo">Für Elise, del sonido a los puntos</p>
     <div class="caso">
       <div class="paso">
         <div class="titulo-paso"><b>1. El sonido</b><span>Espectrograma de los primeros siete segundos de la grabación</span></div>
@@ -311,8 +312,8 @@
 
 <section class="slide" id="pivotes" data-peso="45" data-parte="Desarrollo" data-titulo="Pivotes">
   <div class="contenido centrado">
-    <span class="etiqueta">Desarrollo · decisiones</span>
-    <h2>Lo que cambié en el camino</h2>
+    <h2 class="titulo-seccion">Desarrollo</h2>
+    <p class="subtitulo">¿Qué cambió en el camino?</p>
     <div class="tarjetas tres">
       <div class="tarjeta"><h3>Aplicación web, no APK</h3><p>Un enlace se comparte más fácil y la misma compilación sirve en computadora y teléfono.</p></div>
       <div class="tarjeta"><h3>Hilos, no cola distribuida</h3><p>Trabajando solo, prioricé un servicio simple de operar que corre en una computadora local.</p></div>
@@ -325,8 +326,8 @@
 <!-- 6. Resultados: una diapositiva por objetivo con la tarjeta que gira -->
 <section class="slide" id="resultados" data-peso="15" data-parte="Resultados" data-titulo="Panorama de resultados">
   <div class="contenido centrado">
-    <span class="etiqueta">Resultados · esto encontramos</span>
-    <h2>Seis objetivos, cuatro cumplidos</h2>
+    <h2 class="titulo-seccion">Resultados</h2>
+    <p class="subtitulo">¿Qué encontramos? Seis objetivos, cuatro cumplidos</p>
     <div class="anillos">
       <div class="anillo" data-valor="4" data-max="6" data-color="#31ce01" data-texto="4/6"><p class="pie">objetivos específicos cumplidos</p></div>
     </div>
@@ -345,8 +346,8 @@
 
 <section class="slide" id="resultado-1" data-peso="30" data-parte="Resultados" data-titulo="Resultado 1">
   <div class="contenido centrado">
-    <span class="etiqueta">Resultados · 1 de 7</span>
-    <h2 class="oculto-visual">Objetivo específico 1 y su resultado</h2>
+    <h2 class="titulo-seccion">Resultados</h2>
+    <p class="subtitulo">Objetivo específico 1 de 6</p>
     <div class="carrusel volteo">
       <div class="pista-carrusel">
         <div class="paso-oe">
@@ -388,8 +389,8 @@
 
 <section class="slide" id="resultado-2" data-peso="30" data-parte="Resultados" data-titulo="Resultado 2">
   <div class="contenido centrado">
-    <span class="etiqueta">Resultados · 2 de 7</span>
-    <h2 class="oculto-visual">Objetivo específico 2 y su resultado</h2>
+    <h2 class="titulo-seccion">Resultados</h2>
+    <p class="subtitulo">Objetivo específico 2 de 6</p>
     <div class="carrusel volteo">
       <div class="pista-carrusel">
         <div class="paso-oe">
@@ -432,8 +433,8 @@
 
 <section class="slide" id="resultado-3" data-peso="30" data-parte="Resultados" data-titulo="Resultado 3">
   <div class="contenido centrado">
-    <span class="etiqueta">Resultados · 3 de 7</span>
-    <h2 class="oculto-visual">Objetivo específico 3 y su resultado</h2>
+    <h2 class="titulo-seccion">Resultados</h2>
+    <p class="subtitulo">Objetivo específico 3 de 6</p>
     <div class="carrusel volteo">
       <div class="pista-carrusel">
         <div class="paso-oe">
@@ -478,8 +479,8 @@
 
 <section class="slide" id="resultado-4" data-peso="30" data-parte="Resultados" data-titulo="Resultado 4">
   <div class="contenido centrado">
-    <span class="etiqueta">Resultados · 4 de 7</span>
-    <h2 class="oculto-visual">Objetivo específico 4 y su resultado</h2>
+    <h2 class="titulo-seccion">Resultados</h2>
+    <p class="subtitulo">Objetivo específico 4 de 6</p>
     <div class="carrusel volteo">
       <div class="pista-carrusel">
         <div class="paso-oe">
@@ -522,8 +523,8 @@
 
 <section class="slide" id="resultado-5" data-peso="30" data-parte="Resultados" data-titulo="Resultado 5">
   <div class="contenido centrado">
-    <span class="etiqueta">Resultados · 5 de 7</span>
-    <h2 class="oculto-visual">Objetivo específico 5 y su resultado</h2>
+    <h2 class="titulo-seccion">Resultados</h2>
+    <p class="subtitulo">Objetivo específico 5 de 6</p>
     <div class="carrusel volteo">
       <div class="pista-carrusel">
         <div class="paso-oe">
@@ -567,8 +568,8 @@
 
 <section class="slide" id="resultado-6" data-peso="30" data-parte="Resultados" data-titulo="Resultado 6">
   <div class="contenido centrado">
-    <span class="etiqueta">Resultados · 6 de 7</span>
-    <h2 class="oculto-visual">Objetivo específico 6 y su resultado</h2>
+    <h2 class="titulo-seccion">Resultados</h2>
+    <p class="subtitulo">Objetivo específico 6 de 6</p>
     <div class="carrusel volteo">
       <div class="pista-carrusel">
         <div class="paso-oe">
@@ -606,8 +607,8 @@
 
 <section class="slide" id="resultado-general" data-peso="15" data-parte="Resultados" data-titulo="Resultado general">
   <div class="contenido centrado">
-    <span class="etiqueta">Resultados · 7 de 7</span>
-    <h2 class="oculto-visual">Objetivo general y su resultado</h2>
+    <h2 class="titulo-seccion">Resultados</h2>
+    <p class="subtitulo">Objetivo general</p>
     <div class="carrusel volteo">
       <div class="pista-carrusel">
         <div class="paso-oe">
@@ -646,8 +647,8 @@
 
 <section class="slide" id="demo" data-peso="120" data-parte="Demo y evidencias" data-titulo="Demo">
   <div class="contenido centrado">
-    <span class="etiqueta">Demo y evidencias</span>
-    <h2>Pruébalo desde el teléfono</h2>
+    <h2 class="titulo-seccion">Demo y evidencias</h2>
+    <p class="subtitulo">Pruébalo desde el teléfono</p>
     <div class="dividido">
       <div style="display:grid;justify-items:center;gap:16px">
         <img class="qr" src="assets/qr_demo.svg" alt="Código QR hacia la aplicación publicada">
@@ -666,8 +667,8 @@
 <!-- 7. Análisis -->
 <section class="slide" id="analisis" data-peso="75" data-parte="Análisis" data-titulo="Dónde se pierde la exactitud">
   <div class="contenido centrado">
-    <span class="etiqueta">Análisis · por lo tanto</span>
-    <h2>El traductor funciona.<br>La pérdida está antes.</h2>
+    <h2 class="titulo-seccion">Análisis de resultados</h2>
+    <p class="subtitulo">¿Dónde se pierde la exactitud? Antes del traductor</p>
     <div class="barras" data-max="100" data-meta="70">
       <div class="barra" data-valor="78.8"><div class="nombre">Mismo traductor con la partitura correcta</div><div class="pista"><span class="relleno verde"></span></div><div class="valor">78.8%</div></div>
       <div class="barra" data-valor="33.2"><div class="nombre">Mismo traductor desde el audio</div><div class="pista"><span class="relleno coral"></span></div><div class="valor">33.2%</div></div>
@@ -679,8 +680,8 @@
 
 <section class="slide" id="analisis-causas" data-peso="60" data-parte="Análisis" data-titulo="Tres causas medidas">
   <div class="contenido centrado">
-    <span class="etiqueta">Análisis · tres causas medidas</span>
-    <h2>Por qué la partitura pierde exactitud</h2>
+    <h2 class="titulo-seccion">Análisis de resultados</h2>
+    <p class="subtitulo">¿Por qué la partitura pierde exactitud?</p>
     <div class="tarjetas tres">
       <div class="tarjeta"><h3>Manos que se cruzan</h3><p>Las variaciones para dos teclados quedan en 31.5 % contra 37.7 % de las de un teclado. El reparto por registro falla en los cruces.</p></div>
       <div class="tarjeta"><h3>Grabación con teléfono</h3><p>Los reataques pasan de 1.2 % a 9 % y las mismas obras bajan de 40.0 % a 26.7 %.</p></div>
@@ -692,8 +693,8 @@
 
 <section class="slide" id="analisis-sistemas" data-peso="45" data-parte="Análisis" data-titulo="Visión de administración de sistemas">
   <div class="contenido centrado">
-    <span class="etiqueta">Análisis · administración de sistemas</span>
-    <h2>Un servicio pequeño y reproducible</h2>
+    <h2 class="titulo-seccion">Análisis de resultados</h2>
+    <p class="subtitulo">Visión de administración de sistemas</p>
     <div class="tarjetas cuatro">
       <div class="tarjeta"><h3>Arquitectura</h3><p>Cliente servidor con una cadena de filtros. El pipeline no guarda estado y escala hacia arriba sin cambios.</p></div>
       <div class="tarjeta"><h3>DevOps</h3><p>249 pruebas en cada cambio, ramas dev, docs y main, y la misma imagen Docker en la nube o en local.</p></div>
@@ -707,8 +708,8 @@
 <!-- 8. Conclusiones -->
 <section class="slide" id="conclusiones" data-peso="150" data-parte="Conclusiones" data-titulo="Conclusiones">
   <div class="contenido centrado">
-    <span class="etiqueta">Conclusiones · concluimos esto</span>
-    <h2>Cumple parcialmente</h2>
+    <h2 class="titulo-seccion">Conclusiones</h2>
+    <p class="subtitulo">El sistema cumple parcialmente</p>
     <ol class="lista">
       <li><span><b>El modelo se eligió con evidencia</b> y Kong cumple los tres umbrales con margen. <span class="chip ok">Cumplido</span></span></li>
       <li><span><b>El ajuste funciona en simulación</b>, pero una grabación casera es más difícil. <span class="chip parcial">Parcial</span></span></li>
@@ -721,10 +722,26 @@
   <aside class="notas"><p><b>Concluimos</b></p><p>Concluimos esto, objetivo por objetivo.</p> <p>Uno. La elección del modelo se hizo con evidencia y Kong cumple con margen.</p> <p>Dos. El ajuste funciona en la simulación, pero una grabación casera es más difícil que la suma de degradaciones simuladas. Se cumple de forma parcial.</p> <p>Tres. El traductor determinista es correcto. Con la partitura adecuada supera la meta.</p> <p>Cuatro. El sistema convierte sin intervención y a tiempo en todos los entornos.</p> <p>Cinco. La exactitud desde audio no llega al 70 %, porque la reconstrucción de la partitura pierde más de la mitad de lo que el traductor logra con una partitura correcta.</p> <p>Seis. Una persona con lector de pantalla puede completar el flujo sola en un teléfono.</p> <p>Con base en esto, el sistema cumple parcialmente su propósito. Cumple la construcción de una herramienta abierta y accesible que convierte grabaciones en Braille sin intervención. No alcanza la exactitud para un uso autónomo sin revisión. Y deja medida y localizada la etapa que hay que mejorar.</p> <p>Respondiendo la pregunta, la arquitectura híbrida sí cruza el tramo que faltaba, con 33 a 47 % de exactitud en grabaciones de estudio. Hoy la partitura funciona como un primer borrador que alguien debe revisar.</p></aside>
 </section>
 
-<section class="slide" id="recomendaciones" data-peso="120" data-parte="Recomendaciones" data-titulo="Recomendaciones">
+<section class="slide" id="recomendaciones" data-peso="60" data-parte="Recomendaciones" data-titulo="Recomendaciones">
   <div class="contenido centrado">
-    <span class="etiqueta">Recomendaciones</span>
-    <h2>Dónde invertir el siguiente esfuerzo</h2>
+    <h2 class="titulo-seccion">Recomendaciones</h2>
+    <p class="subtitulo">Una por objetivo</p>
+    <ol class="lista">
+      <li><span><b>Modelo.</b> Probar el hFT-Transformer dentro del pipeline completo y medir el modelo con pianos y salas fuera de MAESTRO.</span></li>
+      <li><span><b>Ajuste.</b> Ajustar con grabaciones de teléfono emparejadas con el MIDI de un piano digital y unir los reataques de una misma tecla.</span></li>
+      <li><span><b>Traductor.</b> Admitir un compás distinto por mano y separar voces solo en obras contrapuntísticas.</span></li>
+      <li><span><b>Integración.</b> Estimar tempo, compás y armadura de forma automática y pasar a una cola con trabajadores para varios usuarios.</span></li>
+      <li><span><b>Fidelidad.</b> Aprender el reparto de manos y pesar los errores del BSA según su efecto en la lectura.</span></li>
+      <li><span><b>Acceso.</b> Evaluar con estudiantes ciegos de piano y docentes, y con NVDA, VoiceOver y Orca.</span></li>
+    </ol>
+  </div>
+  <aside class="notas"><p><b>Recomendaciones · una por objetivo</b></p><p>Las recomendaciones salen del análisis, y las ordeno igual que los objetivos, porque cada una responde a lo que quedó abierto en su objetivo.</p><p>Uno, probar el hFT-Transformer dentro del sistema completo para confirmar que sus 5.6 puntos casi no cambian la partitura. Dos, ajustar el modelo con grabaciones de teléfono reales, grabando mientras un piano digital registra lo que se toca, y unir los reataques de la misma tecla. Tres, que el traductor acepte un compás distinto en cada mano y que separe voces solo cuando la obra es contrapuntística. Cuatro, estimar tempo, compás y armadura para que la persona no los tenga que dar, y pasar a una cola con trabajadores si el servicio crece. Cinco, aprender el reparto de manos y hacer que el BSA pese más los errores que más estorban al leer. Y seis, la más importante, evaluar con estudiantes ciegos y docentes, y con lectores de escritorio.</p></aside>
+</section>
+
+<section class="slide" id="mejoras" data-peso="60" data-parte="Recomendaciones" data-titulo="Pipeline propuesto">
+  <div class="contenido centrado">
+    <h2 class="titulo-seccion">Recomendaciones</h2>
+    <p class="subtitulo">¿Dónde invertir el siguiente esfuerzo?</p>
     <div class="mazo" role="region" aria-roledescription="mazo de diagramas" aria-label="Mejoras propuestas">
       <div class="pestanas" role="group" aria-label="Elegir diagrama"></div>
       <div class="pila">
@@ -828,14 +845,14 @@
       <p class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><p><b>Dónde invertir el siguiente esfuerzo</b></p><p>Las recomendaciones salen directo del análisis, cada una ataca una causa medida.</p> <p>Para el teléfono, un filtro que una los ataques repetidos de la misma tecla, que es barato y se puede medir con las 18 grabaciones que ya tengo. Y un segundo ajuste con grabaciones de teléfono reales, grabando mientras un piano digital registra lo que se toca.</p> <p>Para los cruces de manos, cambiar la regla de registro por un clasificador pequeño entrenado con partituras que marcan la mano de cada nota.</p> <p>Para la persona usuaria, estimar automáticamente el tempo, el compás y la armadura.</p> <p class="accion">Giro a Con personas.</p> <p>Y la más importante, evaluar con estudiantes ciegos de piano y un docente leyendo los archivos en una línea Braille. El BSA dice cuánto se parece la partitura. Solo una persona lectora puede decir si con eso ya se puede estudiar.</p></aside>
+  <aside class="notas"><p><b>Recomendaciones · pipeline propuesto</b></p><p>Así se vería el sistema con esas mejoras. La tarjeta gira con el botón.</p><p class="accion">Giro a Pipeline propuesto.</p><p>En verde lo nuevo. En la etapa acústica, el modelo ajustado con grabaciones de teléfono y la unión de fragmentos de una nota. En la etapa simbólica, la estimación de tempo y compás, el reparto de manos aprendido y las voces según la textura. El cuantizador y el traductor se quedan igual.</p><p class="accion">Giro a Con personas.</p><p>Y la validación con personas. El BSA dice cuánto se parece la partitura. Solo una persona lectora puede decir si con eso ya se puede estudiar.</p></aside>
 </section>
 
 <!-- 10. Pendientes -->
 <section class="slide" id="pendientes" data-peso="75" data-parte="Pendientes" data-titulo="Pendientes">
   <div class="contenido centrado">
-    <span class="etiqueta">Pendientes</span>
-    <h2>Lo que queda abierto</h2>
+    <h2 class="titulo-seccion">Pendientes</h2>
+    <p class="subtitulo">¿Qué queda abierto?</p>
     <ul class="lista">
       <li><b>Lectores de pantalla de escritorio.</b> <span>Probar con NVDA, VoiceOver y Orca.</span></li>
       <li><b>Evaluación con personas.</b> <span>Estudiantes ciegos de piano y un docente leyendo el BRF en una línea Braille.</span></li>
@@ -849,8 +866,8 @@
 <!-- 11. Cierre -->
 <section class="slide" id="cierre" data-peso="75" data-parte="Cierre" data-titulo="Cierre">
   <div class="contenido centrado">
-    <span class="etiqueta">Cierre</span>
-    <h2>Gracias</h2>
+    <h2 class="titulo-seccion">Cierre</h2>
+    <p class="subtitulo">Gracias</p>
     <div class="tarjetas tres">
       <div class="tarjeta"><h3>Salió bien</h3><p>Un sistema completo, medido y publicado, y una métrica para comparar contra transcriptores.</p></div>
       <div class="tarjeta"><h3>Cambiaría</h3><p>Grabar antes las pruebas con teléfono, para ajustar el modelo con audio real desde el inicio.</p></div>
@@ -1004,6 +1021,6 @@
     </dl>
   </div>
 </div>
-<script src="app.js?v=6"></script>
+<script src="app.js?v=7"></script>
 </body>
 </html>

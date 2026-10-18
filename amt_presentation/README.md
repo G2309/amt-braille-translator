@@ -29,3 +29,5 @@ El tiempo total por omisión es de 30 minutos y se cambia con `?min=30` en la di
 ## Despliegue
 
 El `Dockerfile` sirve los archivos estáticos con Caddy en el puerto `PORT`. En Railway el servicio `amt_presentation` usa esta carpeta como directorio raíz.
+
+`assets/logo_uvg.png` es el logo institucional de la Universidad del Valle de Guatemala, tomado de su sitio web, y se usa solo para identificar el trabajo de graduación.
