@@ -432,3 +432,5 @@ body.presentando .hero .campo { height: 100vh; min-height: 0; padding-top: 72px;
 @media (max-width: 860px) { .logo-uvg { position: static; margin: 0 auto 20px; width: 64px; height: 64px; } }
 @media (min-width: 861px) { .tarjetas.fijo-tres { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .tarjetas.fijo-tres .tarjeta { padding: 24px 28px; }
+.glosario-sub { font-size: 22px; margin: 28px 0 0; }
+.glosario dl.siglas dt { margin-top: 10px; }

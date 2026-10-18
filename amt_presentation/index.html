@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=7">
+  <link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body>
 <div class="progreso" aria-hidden="true"></div>
@@ -985,39 +985,73 @@
       <button class="pildora clara" type="button" data-accion="cerrar-glosario">Cerrar</button>
     </div>
     <dl>
-      <dt>Ajuste fino</dt><dd>Volver a entrenar un modelo ya entrenado con datos nuevos durante pocas iteraciones, para adaptarlo a otras condiciones.</dd>
-      <dt>Árbol de sintaxis abstracta</dt><dd>Representación jerárquica de la partitura, con partitura, manos, compases y notas, sobre la que trabaja el traductor.</dd>
-      <dt>axe-core y Lighthouse</dt><dd>Herramientas automáticas que revisan una página web contra las pautas de accesibilidad y dan un reporte de violaciones o un puntaje.</dd>
-      <dt>Basic Pitch</dt><dd>Modelo ligero de transcripción para varios instrumentos. Fue el de peor resultado en piano, con 19.5 % de F1 a nivel de nota.</dd>
-      <dt>BRF</dt><dd>Braille Ready Format. Archivo de texto con las celdas Braille codificadas en ASCII, que leen las líneas Braille y las impresoras de relieve.</dd>
-      <dt>BSA</dt><dd>Exactitud de Símbolo Braille. Proporción de celdas que coinciden con la edición de un transcriptor después de alinear las dos secuencias, sobre el largo de la más larga.</dd>
-      <dt>Compás sobre compás</dt><dd>Formato para teclado en el que la mano derecha y la izquierda se escriben en líneas seguidas con los compases alineados.</dd>
-      <dt>CRNN</dt><dd>Red neuronal convolucional recurrente. Las capas convolucionales leen el espectrograma y las recurrentes siguen cómo cambia en el tiempo.</dd>
-      <dt>Cuantizador</dt><dd>Etapa que convierte tiempos en segundos en figuras, compases y acordes, siguiendo el pulso del intérprete.</dd>
-      <dt>dBFS</dt><dd>Decibelios respecto de la escala completa. 0 dBFS es el máximo que puede registrar un archivo digital y los valores negativos son más bajos.</dd>
-      <dt>Espectrograma</dt><dd>Imagen del sonido que muestra cuánta energía hay en cada frecuencia a lo largo del tiempo.</dd>
-      <dt>F1 a nivel de nota</dt><dd>Igual que el F1 de inicio, pero exige además que el final de la nota coincida dentro de una tolerancia.</dd>
-      <dt>F1 de inicio de nota</dt><dd>Media armónica de precisión y exhaustividad. Una nota cuenta si su altura coincide y su inicio cae a menos de 50 ms del de la referencia.</dd>
-      <dt>hFT-Transformer</dt><dd>Modelo de transcripción de piano basado en transformers. Superó los umbrales pero no estima el pedal.</dd>
-      <dt>In-accord</dt><dd>Signo Braille que separa voces que suenan al mismo tiempo dentro de una misma mano.</dd>
-      <dt>Kong et al.</dt><dd>Modelo de transcripción de piano de alta resolución que estima inicio, final, altura, intensidad y pedal. Es el que usa el sistema.</dd>
-      <dt>Latencia normalizada</dt><dd>Tiempo de proceso dividido entre la duración del audio. Un valor de 0.5 significa que cinco minutos de audio tardan dos minutos y medio.</dd>
-      <dt>MAESTRO</dt><dd>Conjunto de unas 200 horas de interpretaciones de piano de concurso con el MIDI alineado al audio.</dd>
-      <dt>Máquina de estados finitos</dt><dd>Modelo que guarda el contexto, como la octava anterior y las alteraciones del compás, y decide cada salida según ese estado.</dd>
-      <dt>MIDI</dt><dd>Formato que guarda notas con su tiempo, altura e intensidad, sin compases ni figuras.</dd>
-      <dt>Musicografía Braille</dt><dd>Sistema para escribir música en Braille. El proyecto sigue el Manual simplificado de Aller Pérez, derivado del manual internacional.</dd>
-      <dt>MusicXML</dt><dd>Formato de partitura digital con compases, figuras, voces y manos.</dd>
-      <dt>Normalizador</dt><dd>Etapa que lleva el volumen de la grabación a un nivel fijo, −24.9 dBFS, antes de transcribir.</dd>
-      <dt>Partición de desarrollo y de prueba</dt><dd>Las piezas de desarrollo sirven para elegir parámetros. Las de prueba se miden una sola vez al final, con todo ya fijo.</dd>
-      <dt>Pipeline</dt><dd>Cadena de etapas en la que la salida de una es la entrada de la siguiente.</dd>
-      <dt>PWA</dt><dd>Aplicación web progresiva. Se abre desde el navegador y se puede instalar en el teléfono o la computadora sin tienda de aplicaciones.</dd>
-      <dt>Reataque</dt><dd>Cuando el modelo detecta dos ataques de la misma tecla en menos de 250 ms donde se tocó una sola nota.</dd>
-      <dt>Región viva</dt><dd>Parte de la interfaz cuyos cambios el lector de pantalla anuncia sin mover el foco.</dd>
-      <dt>Seguimiento del pulso</dt><dd>Técnica que estima dónde caen los pulsos de la música aunque el intérprete acelere o frene.</dd>
-      <dt>Signo de octava</dt><dd>Celda que indica la octava de una nota. Se escribe o no según el salto con la nota anterior.</dd>
-      <dt>TalkBack</dt><dd>Lector de pantalla de Android.</dd>
-      <dt>Tasa de Error de Nota</dt><dd>Proporción de notas omitidas, sobrantes o equivocadas respecto de la referencia.</dd>
-      <dt>WCAG</dt><dd>Pautas de accesibilidad web del W3C. Los niveles A y AA son los que se revisaron.</dd>
+      <dt>Ajuste fino</dt><dd>Proceso de seguir entrenando un modelo que ya fue entrenado, con datos nuevos y durante poco tiempo, para que se adapte a otras condiciones sin aprender todo desde cero. En inglés se llama fine-tuning. En este trabajo se usó para que el modelo acústico tolerara ruido, eco y grabaciones de teléfono.</dd>
+      <dt>Alteración</dt><dd>Signo musical que sube o baja la altura de una nota. El sostenido la sube medio tono, el bemol la baja medio tono y el becuadro anula los anteriores. En musicografía Braille una alteración vale hasta el final del compás.</dd>
+      <dt>Árbol de sintaxis abstracta</dt><dd>Forma de organizar la información en niveles, como las ramas de un árbol. En este trabajo la partitura se guarda así, con la obra arriba, luego las dos manos, luego los compases y al final las notas, para que el traductor la recorra en orden.</dd>
+      <dt>Armadura</dt><dd>Grupo de alteraciones que se escribe al inicio de una partitura y que vale para toda la obra. Indica la tonalidad, por ejemplo Do mayor, que no tiene alteraciones.</dd>
+      <dt>Aumentación de datos</dt><dd>Técnica que crea ejemplos de entrenamiento nuevos modificando los que ya existen. En este trabajo se agregó ruido, eco, compresión MP3 y efecto de teléfono a grabaciones limpias.</dd>
+      <dt>Celda Braille</dt><dd>Unidad básica de la escritura Braille. Son seis puntos en dos columnas de tres, y cada combinación de puntos en relieve representa un símbolo distinto.</dd>
+      <dt>Compás</dt><dd>Unidad en que se divide una obra musical, con un número fijo de pulsos. La indicación de compás, como 4/4 o 3/4, dice cuántos pulsos tiene cada uno y qué figura vale un pulso.</dd>
+      <dt>Compás sobre compás</dt><dd>Formato de musicografía Braille para instrumentos de teclado en el que la música de la mano derecha y la de la mano izquierda se escriben en líneas seguidas, con los compases alineados uno debajo del otro. En inglés se llama bar over bar.</dd>
+      <dt>Conjunto de datos</dt><dd>Colección organizada de ejemplos que se usa para entrenar o evaluar un modelo. En este trabajo los principales son MAESTRO, para el audio, y las ediciones Braille de referencia.</dd>
+      <dt>Cuantizador</dt><dd>Etapa del sistema que convierte los tiempos medidos en segundos en figuras musicales, compases y acordes. Hace falta porque un intérprete nunca toca con la exactitud de un reloj.</dd>
+      <dt>Ediciones de referencia</dt><dd>Partituras Braille hechas por transcriptores humanos que sirven como respuesta correcta para medir la exactitud del sistema.</dd>
+      <dt>Espectrograma</dt><dd>Imagen del sonido que muestra el tiempo en un eje y la frecuencia en el otro, con más intensidad donde hay más energía. El espectrograma mel agrupa las frecuencias de forma parecida a como las percibe el oído humano.</dd>
+      <dt>Exactitud de Símbolo Braille</dt><dd>Medida propuesta en este trabajo para comparar una partitura Braille generada con la de un transcriptor. Se alinean las dos secuencias de celdas, se cuentan las que coinciden y se dividen entre el largo de la más larga. Su sigla es BSA.</dd>
+      <dt>F1 a nivel de nota</dt><dd>Variante del F1 de inicio de nota que además exige que el final de la nota coincida. Es más estricta y depende de cómo se defina el final cuando el pedal sigue sosteniendo el sonido.</dd>
+      <dt>F1 de inicio de nota</dt><dd>Medida de acierto de un modelo de transcripción que combina en un solo número cuántas de las notas detectadas eran correctas y cuántas de las notas tocadas se detectaron. Una nota cuenta como acierto si su altura coincide y su inicio cae a menos de 50 milisegundos del verdadero.</dd>
+      <dt>Figura musical</dt><dd>Símbolo que indica cuánto dura una nota, como la redonda, la blanca, la negra, la corchea o la semicorchea.</dd>
+      <dt>Final de nota</dt><dd>Instante en que una nota deja de sonar. En inglés se llama offset.</dd>
+      <dt>Impresora Braille</dt><dd>Impresora que marca los puntos en relieve sobre papel grueso para que se puedan leer con los dedos. En inglés se llama embosser.</dd>
+      <dt>In-accord</dt><dd>Signo de musicografía Braille que separa dos o más voces que suenan al mismo tiempo dentro de una misma mano.</dd>
+      <dt>Inicio de nota</dt><dd>Instante en que se toca una nota. En inglés se llama onset.</dd>
+      <dt>Integración continua</dt><dd>Práctica de ejecutar las pruebas automáticas del código cada vez que se guarda un cambio, para detectar errores en el momento.</dd>
+      <dt>Intervalo</dt><dd>Distancia de altura entre dos notas, contada en grados de la escala. Por ejemplo, de Do a Mi hay una tercera.</dd>
+      <dt>Latencia normalizada</dt><dd>Tiempo que tarda el sistema en procesar una grabación dividido entre la duración de esa grabación. Un valor de 0.5 significa que cinco minutos de audio se procesan en dos minutos y medio.</dd>
+      <dt>Lector de pantalla</dt><dd>Programa que lee en voz alta o envía a una línea Braille lo que aparece en la pantalla, para que una persona ciega pueda usar una computadora o un teléfono. TalkBack es el de Android.</dd>
+      <dt>Ligadura</dt><dd>Línea curva de la partitura. La ligadura de prolongación une dos notas iguales para que suenen como una sola. La de expresión indica que varias notas se tocan unidas, sin cortes.</dd>
+      <dt>Línea Braille</dt><dd>Dispositivo que se conecta a una computadora o a un teléfono y forma celdas Braille con pequeñas agujas que suben y bajan, para leer el texto con los dedos. También se le llama pantalla Braille refrescable.</dd>
+      <dt>MAESTRO</dt><dd>Conjunto de datos de unas 200 horas de interpretaciones de piano de concurso, grabadas junto con las notas exactas que se tocaron en formato MIDI.</dd>
+      <dt>Máquina de estados finitos</dt><dd>Mecanismo que recuerda en qué situación está, llamada estado, y decide qué hacer según esa situación. En este trabajo recuerda la octava de la nota anterior y las alteraciones del compás, que el Braille necesita para escribir cada nota.</dd>
+      <dt>MIDI</dt><dd>Formato digital que guarda qué notas se tocaron, cuándo empezaron, cuándo terminaron y con qué fuerza, pero no la partitura con compases y figuras.</dd>
+      <dt>Modelo</dt><dd>Programa que aprendió a hacer una tarea a partir de ejemplos, en lugar de seguir reglas escritas a mano. En este trabajo el modelo acústico aprendió a reconocer notas de piano en el audio.</dd>
+      <dt>Musicografía Braille</dt><dd>Sistema para escribir música en Braille, con signos para notas, figuras, octavas, alteraciones y demás elementos de una partitura. Este trabajo sigue el Manual simplificado de musicografía braille de Aller Pérez.</dd>
+      <dt>MusicXML</dt><dd>Formato digital de partitura que guarda los compases, las figuras, las voces y las manos, como una partitura escrita.</dd>
+      <dt>Normalizador</dt><dd>Etapa del sistema que ajusta el volumen de la grabación a un nivel fijo antes de transcribirla, para que una grabación muy baja no confunda al modelo.</dd>
+      <dt>Octava</dt><dd>Distancia entre una nota y la siguiente con el mismo nombre, más aguda o más grave. El piano tiene poco más de siete octavas.</dd>
+      <dt>Partición de desarrollo y de prueba</dt><dd>Separación de los datos en dos grupos. Con las piezas de desarrollo se eligen los ajustes del sistema. Las piezas de prueba se miden una sola vez al final, con todo ya fijo, para que el resultado no esté favorecido.</dd>
+      <dt>Pedal de resonancia</dt><dd>Pedal derecho del piano. Mientras está pisado las notas siguen sonando aunque se suelten las teclas.</dd>
+      <dt>Piano polifónico</dt><dd>Música de piano en la que suenan varias notas al mismo tiempo, como acordes o melodías con acompañamiento. Es más difícil de transcribir que una melodía de una sola nota.</dd>
+      <dt>Pipeline</dt><dd>Cadena de etapas en la que el resultado de una es la entrada de la siguiente. En este trabajo va del audio al archivo BRF. También se le llama flujo de procesamiento.</dd>
+      <dt>Reataque</dt><dd>Error en el que el modelo detecta dos o más ataques de la misma tecla, separados por menos de 250 milisegundos, donde en realidad se tocó una sola nota.</dd>
+      <dt>Red neuronal</dt><dd>Tipo de modelo formado por muchas operaciones simples conectadas en capas, que ajusta sus valores internos al ver ejemplos. Una red convolucional recurrente combina capas que detectan patrones en el espectrograma con capas que siguen cómo cambian en el tiempo.</dd>
+      <dt>Región viva</dt><dd>Parte de una aplicación cuyos cambios el lector de pantalla anuncia en voz alta sin que la persona tenga que mover el foco. En este trabajo anuncia el estado de la conversión.</dd>
+      <dt>Seguimiento del pulso</dt><dd>Técnica que estima dónde caen los pulsos de la música aunque el intérprete acelere o frene. El cuantizador la usa para colocar cada nota en el compás correcto.</dd>
+      <dt>Semicorchea</dt><dd>Figura musical que dura la cuarta parte de una negra. En Braille varias semicorcheas seguidas se pueden agrupar para escribirlas de forma más corta.</dd>
+      <dt>Signo de octava</dt><dd>Celda Braille que indica en qué octava está una nota. Se escribe o no según la distancia con la nota anterior.</dd>
+      <dt>Tasa de Error de Nota</dt><dd>Proporción de notas omitidas, sobrantes o equivocadas que comete un modelo respecto de las notas que se tocaron. Mientras más baja, mejor.</dd>
+      <dt>Tempo</dt><dd>Velocidad de la música, medida en pulsos por minuto. Los términos italianos como Adagio o Allegro indican rangos de tempo.</dd>
+      <dt>Transcripción Musical Automática</dt><dd>Área que estudia cómo convertir una grabación en las notas que se tocaron, usando programas. Su sigla es AMT.</dd>
+      <dt>Transcriptor</dt><dd>Persona especializada que convierte una partitura impresa a musicografía Braille, casi siempre a mano.</dd>
+      <dt>Transformer</dt><dd>Tipo de red neuronal que, para cada parte de la entrada, decide a qué otras partes prestar atención. El hFT-Transformer lo usa primero sobre las frecuencias y luego sobre el tiempo.</dd>
+      <dt>Velocidad</dt><dd>En MIDI, número que indica con qué fuerza se tocó una nota. No tiene relación con el tempo.</dd>
+      <dt>Voz</dt><dd>Línea melódica independiente dentro de una obra. Una misma mano puede tocar dos voces a la vez, como una melodía y un acompañamiento.</dd>
+    </dl>
+    <h3 class="glosario-sub">Siglas</h3>
+    <dl class="siglas">
+        <dt>AMT</dt><dd>Transcripción Musical Automática, del inglés Automatic Music Transcription</dd>
+        <dt>API</dt><dd>Interfaz de programación de aplicaciones</dd>
+        <dt>AST</dt><dd>Árbol de sintaxis abstracta</dd>
+        <dt>BRF</dt><dd>Braille Ready Format, formato de archivo listo para Braille</dd>
+        <dt>BSA</dt><dd>Exactitud de Símbolo Braille, del inglés Braille Symbol Accuracy</dd>
+        <dt>CRNN</dt><dd>Red neuronal convolucional recurrente</dd>
+        <dt>dBFS</dt><dd>Decibelios respecto de la escala completa</dd>
+        <dt>GPU</dt><dd>Unidad de procesamiento gráfico</dd>
+        <dt>hFT</dt><dd>Transformer jerárquico de frecuencia y tiempo</dd>
+        <dt>MIDI</dt><dd>Musical Instrument Digital Interface, interfaz digital de instrumentos musicales</dd>
+        <dt>PWA</dt><dd>Aplicación web progresiva</dd>
+        <dt>WCAG</dt><dd>Pautas de Accesibilidad para el Contenido Web</dd>
+        <dt>WCAG-EM</dt><dd>Metodología de evaluación de la conformidad con las WCAG</dd>
     </dl>
   </div>
 </div>
