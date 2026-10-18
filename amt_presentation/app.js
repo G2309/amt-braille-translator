@@ -150,13 +150,35 @@
     return c ? c.paso(dir) : false;
   }
 
+  // Glosario: la tecla G lo abre y lo cierra, Esc también lo cierra
+  const glosario = document.getElementById('glosario');
+  let focoPrevio = null;
+  function alternarGlosario(abrir = glosario.hidden) {
+    if (abrir) {
+      focoPrevio = document.activeElement;
+      glosario.hidden = false;
+      glosario.querySelector('.glosario-caja').focus();
+    } else {
+      glosario.hidden = true;
+      if (focoPrevio) focoPrevio.focus();
+    }
+  }
+  glosario.querySelector('[data-accion="cerrar-glosario"]').addEventListener('click', () => alternarGlosario(false));
+  glosario.addEventListener('click', (e) => { if (e.target === glosario) alternarGlosario(false); });
+
+  // Las notas se abren con N seguida de O en menos de un segundo
+  let ultimaN = 0;
+
   document.addEventListener('keydown', (e) => {
     if (e.target.closest('input, textarea') || (e.key === ' ' && e.target.closest('button, a'))) return;
     const k = e.key;
+    if (k === 'g' || k === 'G') { alternarGlosario(); return; }
+    if (!glosario.hidden) { if (k === 'Escape') alternarGlosario(false); return; }
+    if (k === 'n' || k === 'N') { ultimaN = Date.now(); return; }
+    if ((k === 'o' || k === 'O') && Date.now() - ultimaN < 1000) { ultimaN = 0; cuerpo.classList.toggle('con-notas'); return; }
     // El control de KDE Connect inicia con F5; aquí entra al modo presentación en lugar de recargar
     if (k === 'F5') { e.preventDefault(); if (!cuerpo.classList.contains('presentando')) alternarPresentacion(); return; }
     if (k === 'p' || k === 'P' || (k === 'Escape' && cuerpo.classList.contains('presentando'))) alternarPresentacion();
-    else if (k === 'n' || k === 'N') cuerpo.classList.toggle('con-notas');
     else if (k === 'r' || k === 'R') { cuerpo.classList.toggle('ver-respaldo'); marcar(indice); }
     else if (!cuerpo.classList.contains('presentando')) return;
     else if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(k)) { e.preventDefault(); if (!pasoCarrusel(1)) ir(indice + 1); }

@@ -1,6 +1,6 @@
 // Arma el guion a partir de las notas del orador de la presentación, agrupado por parte y con su tiempo
 (async () => {
-  const minutos = Number(new URLSearchParams(location.search).get('min')) || 40;
+  const minutos = Number(new URLSearchParams(location.search).get('min')) || 30;
   const contenedor = document.getElementById('partes');
   const indice = document.querySelector('.indice ol');
   const html = await (await fetch('./')).text();

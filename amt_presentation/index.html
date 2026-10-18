@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
 <div class="progreso" aria-hidden="true"></div>
@@ -19,7 +19,7 @@
     <a href="#problema">Problema</a>
     <a href="#propuesta">Propuesta</a>
     <a href="#desarrollo">Desarrollo</a>
-    <a href="#resultado-1">Resultados</a>
+    <a href="#resultados">Resultados</a>
     <a href="#analisis">Análisis</a>
     <a href="#conclusiones">Conclusiones</a>
     <a href="#respaldo">Preguntas</a>
@@ -30,7 +30,7 @@
 <main>
 
 <!-- 1. Presentación -->
-<section class="slide hero" id="inicio" data-peso="5" data-parte="Presentación" data-titulo="Presentación">
+<section class="slide hero" id="inicio" data-peso="45" data-parte="Presentación" data-titulo="Presentación">
   <div class="campo">
     <span class="etiqueta">Trabajo de graduación · Universidad del Valle de Guatemala</span>
     <h1>Del audio<br>al Braille</h1>
@@ -46,11 +46,11 @@
       <div class="telefono" aria-hidden="true"><img src="assets/telefono_nulaVision.png" alt=""></div>
     </div>
   </div>
-  <aside class="notas"><p><b>Presentación</b></p><p>Buenos días. Mi nombre es Gustavo Adolfo Cruz Bardales y hoy presento mi trabajo de graduación, Del audio al Braille: transcripción automática de piano polifónico a musicografía Braille con inteligencia artificial y algoritmos deterministas.</p><p>En una frase: construí un sistema que escucha una grabación de piano y entrega la partitura escrita en Braille, lista para leerse en una línea Braille o imprimirse en relieve.</p><p class="accion">Desplazo el teléfono del centro hasta la vista previa del Braille.</p><p>Lo que ven en el teléfono del centro es la aplicación publicada después de una conversión terminada. Arriba están los datos de la obra, después el aviso de que el archivo está listo y abajo la vista previa del Braille que generó el sistema. A los lados están la pantalla donde se elige el modo y el modo para lector de pantalla, con alto contraste.</p><p>La presentación sigue el orden del documento. Primero el problema y por qué importa. Después mi propuesta, con sus seis objetivos y su alcance. Luego cómo lo desarrollé, qué resultados obtuve y qué significan. Cierro con conclusiones, recomendaciones y lo que queda pendiente. A mitad del camino hago una demostración con la aplicación.</p></aside>
+  <aside class="notas"><p><b>Portada</b></p><p>Buenos días. Mi nombre es Gustavo Cruz y hoy les presento mi trabajo de graduación, «Del audio al Braille».</p> <p>En una frase, construí un sistema que escucha una grabación de piano y entrega la partitura escrita en Braille, lista para leerse en una línea Braille o imprimirse en relieve. Fue un trabajo individual, así que todo lo que van a ver, desde el modelo hasta la aplicación, lo hice yo.</p> <p class="accion">Señalo el teléfono del centro.</p> <p>Ese teléfono muestra la aplicación publicada con una conversión ya terminada. Al final de los resultados la van a ver funcionando.</p></aside>
 </section>
 
 <!-- 2. Introducción -->
-<section class="slide" id="introduccion" data-peso="5" data-parte="Introducción" data-titulo="Introducción">
+<section class="slide" id="introduccion" data-peso="45" data-parte="Introducción" data-titulo="Introducción">
   <div class="contenido centrado">
     <span class="etiqueta">Introducción</span>
     <h2>Casi toda la música está grabada.<br>Casi nada está en Braille.</h2>
@@ -62,18 +62,18 @@
       </div>
     </div>
   </div>
-  <aside class="notas"><p><b>Introducción</b></p><p>Empiezo con un contraste. Hoy casi cualquier obra de piano está grabada; basta buscarla. Pero a una persona ciega que estudia piano la grabación no le basta. Necesita la partitura, y la necesita en musicografía Braille.</p><p>La musicografía Braille es un sistema completo de lectoescritura musical. Con ella un músico ciego lee cada nota, cada figura y cada indicación con el mismo rigor que un músico vidente. El sistema funciona. Lo que falta es material.</p><p>Esa partitura la produce a mano un transcriptor especializado, casi siempre una persona vidente con formación en la normativa Braille. Es un trabajo lento y son pocas las personas que lo hacen. Giesteira, Godall y Zattera concluyen que la escasez de partituras transcritas es el factor que más limita el avance del estudiante ciego.</p><p>Eso cambia la pregunta. El problema no está en la capacidad del músico ni en el sistema Braille. Está en la producción del material, y producir material sí es algo que la tecnología puede atacar. Mi trabajo construye el tramo que faltaba: de la grabación al archivo Braille.</p></aside>
+  <aside class="notas"><p><b>Introducción</b></p><p>Empiezo con un contraste. Hoy casi cualquier obra de piano está grabada, basta con buscarla. Pero una persona ciega que estudia piano necesita la partitura, y la necesita en musicografía Braille.</p> <p>Ese sistema existe y funciona. Lo que falta es material. Las partituras las transcribe a mano un especialista, casi siempre una persona vidente, y eso toma semanas. Así que el problema no está en el músico ni en el Braille. Está en producir el material, y eso sí es algo que la tecnología puede atacar.</p></aside>
 </section>
 
 <!-- 3. Problema -->
-<section class="slide" id="problema" data-peso="5" data-parte="Problema" data-titulo="Problema">
+<section class="slide" id="problema" data-peso="90" data-parte="Problema" data-titulo="Problema">
   <div class="contenido centrado">
     <span class="etiqueta">El problema</span>
     <h2>El repertorio en Braille es mínimo</h2>
     <div class="cifras">
       <div><div class="cifra">2,200 <small>millones</small></div><p class="pie">de personas viven con alguna deficiencia visual (Organización Mundial de la Salud, 2019).</p></div>
       <div><div class="cifra">&lt;5<small>%</small></div><p class="pie">del catálogo musical impreso está transcrito a Braille (Giesteira, Godall y Zattera, 2015).</p></div>
-      <div><div class="cifra">Semanas</div><p class="pie">tarda un transcriptor especializado en pasar una obra a musicografía Braille.</p></div>
+      <div><div class="cifra">10.38<small>%</small></div><p class="pie">de la población de Guatemala tiene al menos una dificultad funcional (Censo 2018, CONADI).</p></div>
     </div>
     <div class="dividido">
       <figure class="figura" style="margin:0">
@@ -86,10 +86,10 @@
       </div>
     </div>
   </div>
-  <aside class="notas"><p><b>Problema</b></p><p>Para dimensionarlo: según el informe mundial sobre la visión de la Organización Mundial de la Salud, al menos 2,200 millones de personas viven con alguna deficiencia visual. Solo una fracción estudia música, pero la magnitud muestra que no es un problema marginal.</p><p>Del lado del material, menos del 5 % del repertorio impreso existe en Braille. Un músico vidente consigue una partitura, la estudia y la descarta el mismo día. Un músico ciego depende de un catálogo institucional o de un transcriptor, y espera semanas. Eso limita lo que puede tocar y también su curiosidad por explorar música nueva.</p><p class="accion">Señalo la imagen de las notas con sus celdas.</p><p>¿Por qué no basta con reemplazar símbolos? En la imagen cada nota se escribe con una celda de seis puntos que codifica a la vez su nombre y su figura. Pero la musicografía Braille es lineal y depende del contexto. El signo de octava se escribe o no según el salto desde la nota anterior. Una alteración vale para todo el compás. Y en piano las dos manos se escriben compás sobre compás, alineadas. Es una gramática, no una tabla de equivalencias.</p></aside>
+  <aside class="notas"><p><b>Población y características</b></p><p>Para dimensionarlo. La Organización Mundial de la Salud estima que al menos 2,200 millones de personas viven con alguna deficiencia visual. En Guatemala el censo de 2018 registró a más de un millón cuatrocientas mil personas con alguna dificultad funcional, el 10.38 % de la población.</p> <p>Del lado del material, menos del 5 % del repertorio impreso existe en Braille. Un músico vidente consigue una partitura y la estudia el mismo día. Un músico ciego depende de que alguien la transcriba.</p> <p class="accion">Señalo la imagen de las celdas.</p> <p>Y no basta con cambiar un símbolo por otro. Cada nota es una celda de seis puntos, pero el signo de octava depende del salto con la nota anterior, una alteración vale para todo el compás y las dos manos se escriben alineadas compás por compás. Es una gramática, no una tabla de equivalencias.</p></aside>
 </section>
 
-<section class="slide" id="origenes" data-peso="5" data-parte="Problema" data-titulo="Orígenes y alternativas">
+<section class="slide" id="origenes" data-peso="90" data-parte="Problema" data-titulo="Orígenes y alternativas">
   <div class="contenido centrado">
     <span class="etiqueta">Orígenes y alternativas</span>
     <h2>Dos tecnologías que no se hablan</h2>
@@ -112,11 +112,11 @@
       </table>
     </div>
   </div>
-  <aside class="notas"><p><b>Orígenes y alternativas</b></p><p>El origen del problema es una desconexión entre dos tecnologías que maduraron por separado.</p><p>Por un lado está la transcripción musical automática. Desde Onsets and Frames de Hawthorne y su equipo en 2018, y luego el modelo de Kong y su equipo en 2021, las redes neuronales convierten audio de piano en notas con más de 96 % de F1 en el inicio de nota. Pero terminan en un MIDI: notas con tiempos en segundos, sin compases, sin figuras y sin manos.</p><p>Por otro lado están los traductores a Braille, como BrailleMUSE o GOODFEEL, que aplican la normativa con reglas explícitas. Pero empiezan en un MusicXML limpio, una partitura digital que casi nunca existe para la obra que la persona quiere estudiar.</p><p class="accion">Señalo el eslabón oscuro de la cadena.</p><p>Entre ambos queda el tramo vacío, y hoy lo cubre la propia persona ciega, que tendría que encadenar herramientas que no fueron diseñadas para hablarse. La tabla resume las alternativas. El transcriptor humano es exacto pero lento. Los traductores necesitan una partitura digital. Los modelos acústicos no escriben Braille. Ninguna cruza la frontera y ninguna mide su resultado contra un transcriptor humano. Esos son los dos vacíos que ataca este trabajo.</p></aside>
+  <aside class="notas"><p><b>Orígenes y alternativas</b></p><p>El origen es una desconexión entre dos tecnologías que maduraron por separado.</p> <p>Por un lado está la transcripción automática. Modelos como Onsets and Frames o el de Kong convierten audio de piano en notas con alrededor de 95 % de acierto en el inicio de cada nota. Pero terminan en un MIDI, es decir, notas con tiempos en segundos, sin compases, sin figuras y sin manos.</p> <p>Por otro lado están los traductores a Braille, como BrailleMUSE. Aplican la normativa con reglas, pero necesitan una partitura digital limpia, que casi nunca existe para la obra que alguien quiere estudiar.</p> <p class="accion">Señalo el eslabón oscuro.</p> <p>En medio queda este tramo vacío, y hoy lo cubre la propia persona ciega. La tabla resume las alternativas. Ninguna cruza la frontera, y ninguna mide su resultado contra un transcriptor humano. Esos son los dos vacíos que ataca mi trabajo.</p></aside>
 </section>
 
 <!-- 4. Propuesta -->
-<section class="slide" id="propuesta" data-peso="10" data-parte="Propuesta" data-titulo="Propuesta y objetivos">
+<section class="slide" id="propuesta" data-peso="150" data-parte="Propuesta" data-titulo="Propuesta y objetivos">
   <div class="contenido centrado">
     <span class="etiqueta">Mi propuesta</span>
     <h2>Un sistema que escucha y escribe Braille</h2>
@@ -130,10 +130,10 @@
       <div class="tarjeta"><h3>6. Acceso autónomo</h3><p>Cliente usable con lector de pantalla en computadora y teléfono.</p><span class="chip">100 % etiquetado</span></div>
     </div>
   </div>
-  <aside class="notas"><p><b>Propuesta y objetivos</b></p><p>Mi propuesta parte de una pregunta de investigación: ¿en qué medida un sistema automatizado, que articule un modelo acústico con un módulo determinista de traducción, puede generar partituras Braille a partir de grabaciones de piano con la exactitud necesaria para su uso autónomo?</p><p>De ahí sale el objetivo general: desarrollar un sistema de código abierto, operable por personas con discapacidad visual, que convierta grabaciones de piano de hasta cinco minutos en partituras Braille en formato BRF, y determinar qué tan cerca quedan de las de un transcriptor humano. Son dos compromisos: construir el sistema y medirlo con honestidad.</p><p>La idea central del diseño es que el sistema sea híbrido. La parte que escucha es probabilística, porque reconocer notas en un audio es un problema de aproximación. La parte que escribe Braille es determinista, porque la normativa no admite aproximaciones: un signo de octava mal puesto cambia toda la frase. Un modelo generativo que escribiera Braille directamente podría inventar notaciones inválidas con apariencia correcta. Separar las dos etapas permite medir y corregir cada una por su lado.</p><p class="accion">Recorro las seis tarjetas en orden.</p><p>Los seis objetivos específicos siguen el recorrido del audio. El primero es elegir el modelo acústico comparando tres familias sobre obras completas, con un F1 a nivel de nota de al menos 75 %. El segundo es ajustarlo para que resista ruido, reverberación y micrófono de teléfono, con una mejora de al menos cinco puntos sin perder más de dos en audio limpio. El tercero es el traductor determinista con 28 reglas del Manual simplificado de musicografía Braille de Aller Pérez, cada una con su prueba. El cuarto es integrar todo para que una grabación se convierta sin intervención en un tiempo de hasta 1.5 veces su duración. El quinto es comparar la partitura con ediciones Braille hechas por personas y alcanzar una Exactitud de Símbolo Braille de 70 %. El sexto es que una persona ciega pueda usar el sistema sola con su lector de pantalla.</p><p>Les pido que recuerden la meta del quinto objetivo, 70 %, porque es la que responde la pregunta de investigación. Vuelvo a ella en los resultados.</p></aside>
+  <aside class="notas"><p><b>Pregunta, objetivo general y objetivos</b></p><p>Mi pregunta de investigación fue esta. ¿En qué medida un sistema que une un modelo acústico con un traductor determinista puede generar partituras Braille desde grabaciones de piano, con la exactitud necesaria para usarlas de forma autónoma?</p> <p>De ahí sale el objetivo general, que tiene dos partes. Construir un sistema abierto y accesible que convierta grabaciones de hasta cinco minutos en partituras Braille, y medir qué tan cerca quedan de las de un transcriptor humano.</p> <p>La idea central es un sistema híbrido. La parte que escucha usa inteligencia artificial, porque reconocer notas es un problema de aproximación. La parte que escribe Braille es determinista, porque la normativa no admite aproximaciones. Separarlas me permite medir y corregir cada una por su lado, y eso va a ser clave en el análisis.</p> <p class="accion">Recorro las tarjetas en orden.</p> <p>Los seis objetivos siguen el camino del audio. Elegir el modelo, ajustarlo a grabaciones reales de uso, traducir con 28 reglas del Manual de Aller Pérez, integrar todo en menos de 1.5 veces la duración del audio, medir la fidelidad contra ediciones humanas y lograr que una persona ciega lo use sola. Les pido que recuerden la meta del quinto, 70 % de exactitud, porque es la que responde la pregunta.</p></aside>
 </section>
 
-<section class="slide" id="alcance" data-peso="10" data-parte="Propuesta" data-titulo="Alcance, justificación y limitantes">
+<section class="slide" id="alcance" data-peso="150" data-parte="Propuesta" data-titulo="Alcance, justificación y limitantes">
   <div class="contenido centrado">
     <span class="etiqueta">Alcance, justificación y limitantes</span>
     <h2>Qué entra y qué no</h2>
@@ -153,11 +153,11 @@
     </div>
     <p class="cuerpo" style="margin-top:32px">Fuera de alcance: voz y otros instrumentos, ornamentos, matices y pedal en Braille, y estimación automática de tempo, compás y armadura.</p>
   </div>
-  <aside class="notas"><p><b>Alcance, justificación y limitantes</b></p><p>Antes de los resultados dejo claro qué entra y qué no, para que se lean contra estos límites.</p><p>El alcance es piano a dos manos. La entrada es un archivo MP3, WAV o FLAC, o una grabación de teléfono, de hasta cinco minutos. La traducción cubre 28 reglas de nueve secciones del Manual: notas y silencios, signos de octava, alteraciones con armadura y compás, intervalos, in-accords, ligaduras, barras de compás, el formato compás sobre compás y los signos de mano. Agregué la agrupación de semicorcheas de la sección cuatro porque las ediciones humanas la usan siempre. La salida es un archivo BRF, el formato que leen las líneas Braille y las impresoras de relieve.</p><p>La justificación tiene varias caras. La social: la Convención sobre los Derechos de las Personas con Discapacidad garantiza la educación inclusiva y el acceso a la cultura en formatos accesibles, y el Tratado de Marrakech permite producir obras accesibles, partituras incluidas, sin pedir permiso al titular de los derechos. La económica: las herramientas con más cobertura son propietarias y de pago, y este sistema es abierto. La científica: el campo tiene una forma rigurosa de medir la parte acústica, pero no tenía una métrica para medir el Braille final contra un transcriptor. Definirla es una contribución por sí misma.</p><p>También aclaro lo que no pretende. No sustituye al transcriptor, cuyo criterio sigue siendo necesario para el repertorio complejo y para revisar la calidad. Lo que hace es bajar el costo de tener un primer borrador.</p><p>Las limitantes: fue un trabajo individual de dieciséis semanas, con GPU gratuita y con cuota en Kaggle. Hay muy pocas obras con grabación y edición Braille de la misma partitura, lo que limita el tamaño de la evaluación. Y el modelo acústico no estima tempo, compás ni armadura, así que la persona los indica.</p><p>Queda fuera la voz y otros instrumentos, los ornamentos, matices y pedal en Braille, la edición de la partitura, el procesamiento en tiempo real y la publicación en tiendas de aplicaciones.</p></aside>
+  <aside class="notas"><p><b>Alcance, justificación y limitantes</b></p><p>Antes de los resultados dejo claro qué entra y qué no, para que se lean contra estos límites.</p> <p>El alcance es piano a dos manos, audio de hasta cinco minutos, 28 reglas de nueve secciones del Manual y salida en archivo BRF, el formato que leen las líneas Braille y las impresoras de relieve.</p> <p>La justificación tiene tres caras. La social, porque la Convención sobre los Derechos de las Personas con Discapacidad y el Tratado de Marrakech respaldan el acceso a material en formatos accesibles. La económica, porque las herramientas con más cobertura son de pago y esta es abierta. Y la científica, porque no existía una métrica que comparara el Braille final contra un transcriptor.</p> <p>Las limitantes. Fue un trabajo individual de dieciséis semanas, con GPU gratuita y con cuota en Kaggle. Hay muy pocas obras que tengan a la vez grabación y edición Braille de la misma partitura. Y el modelo no estima tempo, compás ni armadura, así que esos tres datos los da la persona.</p> <p>Quedan fuera la voz y otros instrumentos, los ornamentos y matices en Braille, la edición de la partitura y el procesamiento en tiempo real.</p></aside>
 </section>
 
 <!-- 5. Desarrollo -->
-<section class="slide" id="desarrollo" data-peso="6" data-parte="Desarrollo" data-titulo="Arquitectura">
+<section class="slide" id="desarrollo" data-peso="105" data-parte="Desarrollo" data-titulo="Arquitectura">
   <div class="contenido centrado">
     <span class="etiqueta">Desarrollo</span>
     <h2>Un pipeline de etapas independientes</h2>
@@ -175,10 +175,10 @@
       <div class="tarjeta"><h3>Calidad</h3><p>249 pruebas automáticas, integración continua y experimentos reproducibles en Kaggle con GPU.</p></div>
     </div>
   </div>
-  <aside class="notas"><p><b>Arquitectura</b></p><p>Paso al desarrollo. El sistema es un pipeline de etapas independientes, y cada una se apoya en un concepto del marco teórico.</p><p class="accion">Recorro la cadena de izquierda a derecha.</p><p>Primero un normalizador lleva el volumen a un nivel estable. Después el modelo de Kong, una red convolucional recurrente que recibe el espectrograma del audio y detecta cada nota con su inicio, su final, su altura y su intensidad. Luego una limpieza quita los armónicos que el modelo confunde con notas y reparte las notas entre las manos. El cuantizador sigue el pulso del intérprete y convierte tiempos en segundos en figuras, compases y acordes. Esa es la reconstrucción musical que nadie había resuelto.</p><p>La segunda mitad es determinista y funciona como un compilador. La partitura se organiza en un árbol de sintaxis abstracta, una máquina de estados lleva el contexto de octava y de alteraciones, y el traductor recorre el árbol aplicando las reglas. El renderizador alinea las dos manos compás sobre compás y escribe el archivo BRF.</p><p>Alrededor del pipeline hay tres piezas. Un cliente en Flutter publicado como aplicación web progresiva, con modos tutor, baja visión y lector de pantalla. Una API en FastAPI que recibe el audio y lo procesa en segundo plano. Y la calidad: 249 pruebas automáticas e integración continua. Trabajé con Scrumban en siete sprints, y el historial del repositorio es el registro del avance.</p></aside>
+  <aside class="notas"><p><b>Arquitectura del pipeline</b></p><p>Paso al desarrollo. El sistema es una cadena de etapas independientes, y cada una se apoya en un concepto del marco teórico.</p> <p>Un normalizador deja el volumen estable. El modelo de Kong, una red convolucional recurrente, recibe el espectrograma y detecta cada nota con su inicio, final, altura e intensidad. Una limpieza quita armónicos y reparte las notas entre las manos. El cuantizador sigue el pulso del intérprete y convierte tiempos en segundos en figuras y compases.</p> <p>La segunda mitad funciona como un compilador. La partitura se organiza en un árbol de sintaxis abstracta, una máquina de estados lleva el contexto de octava y de alteraciones, y el traductor recorre el árbol aplicando las reglas. Al final se alinean las dos manos y se escribe el archivo.</p> <p>Alrededor hay una API en FastAPI, un cliente en Flutter publicado como aplicación web, y 249 pruebas automáticas que corren en cada cambio.</p></aside>
 </section>
 
-<section class="slide" id="diagramas" data-peso="6" data-parte="Desarrollo" data-titulo="Diagramas del sistema">
+<section class="slide" id="diagramas" data-peso="90" data-parte="Desarrollo" data-titulo="Diagramas del sistema">
   <div class="contenido centrado">
     <span class="etiqueta">Desarrollo · diagramas</span>
     <h2>Cómo está construido</h2>
@@ -284,10 +284,10 @@
       <p class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><p><b>Diagramas del sistema</b></p><p>Estos cuatro diagramas muestran cómo está construido. Avanzo con el botón y la tarjeta gira.</p><p class="accion">Contexto.</p><p>La persona aporta una grabación y tres datos de la obra. El sistema devuelve un BRF que se lee en una línea Braille, se imprime o se recorre con un lector de pantalla.</p><p class="accion">Giro a Despliegue.</p><p>La aplicación es estática y vive en GitHub Pages. La API es un solo contenedor en Railway con dos procesadores virtuales y dos gigabytes de memoria. El modelo ajustado se publica como release en GitHub, verificado con su huella, y entra en la imagen al construirla. GitHub Actions corre las pruebas en cada cambio. La misma imagen corre en una computadora local, que es el uso para el que está pensado; Railway sirve para la demostración.</p><p class="accion">Giro a Secuencia.</p><p>La aplicación envía el audio, recibe un identificador y pregunta el estado cada dos segundos mientras un hilo de trabajo procesa. Al terminar descarga el BRF. La región viva anuncia cada cambio al lector de pantalla sin mover el foco.</p><p class="accion">Giro a Traductor.</p><p>La partitura es un árbol con dos manos, compases y eventos. A la derecha está la regla que más contexto exige: con un salto de tercera o menos no hay signo de octava, con una sexta o más siempre lo hay, y con una cuarta o una quinta solo si cambia la octava. Esa decisión depende de la nota anterior, por eso hace falta una máquina de estados.</p></aside>
+  <aside class="notas"><p><b>Diagramas del sistema</b></p><p>Estos diagramas muestran cómo está montado.</p> <p class="accion">Giro a Despliegue.</p> <p>La aplicación es estática y vive en GitHub Pages. La API es un solo contenedor en Railway con dos procesadores virtuales y dos gigas de memoria. El modelo ajustado se publica en GitHub y entra en la imagen al construirla. La misma imagen corre en una computadora local, que es el uso para el que está pensado. Railway lo usé para la demostración.</p> <p class="accion">Giro a Secuencia.</p> <p>La conversión es asíncrona. La aplicación sube el audio, recibe un identificador y pregunta el estado cada dos segundos mientras un hilo de trabajo procesa. Así la aplicación nunca se congela, y el lector de pantalla anuncia cada cambio.</p> <p class="accion">Giro a Traductor.</p> <p>Y esta es la regla que más contexto exige. Con un salto de tercera o menos no hay signo de octava. Con sexta o más, siempre. Con cuarta o quinta, solo si cambia la octava. Por eso hace falta una máquina de estados.</p></aside>
 </section>
 
-<section class="slide" id="caso" data-peso="4" data-parte="Desarrollo" data-titulo="Un caso real">
+<section class="slide" id="caso" data-peso="60" data-parte="Desarrollo" data-titulo="Un caso real">
   <div class="contenido centrado">
     <span class="etiqueta">Desarrollo · un caso real</span>
     <h2>Für Elise, del sonido a los puntos</h2>
@@ -306,10 +306,10 @@
       </div>
     </div>
   </div>
-  <aside class="notas"><p><b>Un caso con salida del sistema</b></p><p>Para que no quede abstracto, un caso con salida del sistema: los primeros siete segundos de Für Elise.</p><p>Arriba está el espectrograma, con el tiempo en horizontal y la frecuencia en vertical. Se ve la alternancia entre Mi y Re sostenido.</p><p>En medio está lo que transcribió el modelo ajustado. Cada barra es una nota con su inicio, su duración y su altura. Ya son notas, pero todavía son tiempos en segundos.</p><p>Abajo están las celdas Braille que escribió el traductor después de cuantizar: la mano derecha arriba y la izquierda abajo, alineadas por compás. Cada punto oscuro es un punto en relieve. Es el mismo fragmento en tres representaciones, y cada paso es una etapa del pipeline.</p></aside>
+  <aside class="notas"><p><b>Un caso con salida del sistema</b></p><p>Para que no quede abstracto, los primeros siete segundos de Für Elise. Arriba el sonido, en un espectrograma. En medio, las notas que detectó el modelo. Abajo, las celdas que escribió el traductor, con la mano derecha arriba y la izquierda abajo. Es el mismo fragmento en tres formas, y cada paso es una etapa del sistema. Todo es salida real, no una ilustración.</p></aside>
 </section>
 
-<section class="slide" id="pivotes" data-peso="4" data-parte="Desarrollo" data-titulo="Pivotes">
+<section class="slide" id="pivotes" data-peso="45" data-parte="Desarrollo" data-titulo="Pivotes">
   <div class="contenido centrado">
     <span class="etiqueta">Desarrollo · decisiones</span>
     <h2>Lo que cambié en el camino</h2>
@@ -319,11 +319,31 @@
       <div class="tarjeta"><h3>Agrupación de semicorcheas</h3><p>Las ediciones humanas la usan siempre. Sin ella, tres de cada cuatro semicorcheas correctas contaban como error.</p></div>
     </div>
   </div>
-  <aside class="notas"><p><b>Pivotes</b></p><p>En el camino tomé decisiones que cambiaron el plan. Las muestro porque cada una salió de un dato o de una restricción.</p><p>La primera: el plan era una aplicación nativa de Android. La cambié por una aplicación web progresiva, porque un enlace se comparte más fácil que un instalador y la misma compilación funciona en computadora y en teléfono.</p><p>La segunda: el plan era una cola distribuida con Celery y Redis. Trabajando solo, prioricé un grupo de hilos dentro de la API, que es más simple de operar y cumple el procesamiento asíncrono que pide un prototipo.</p><p>La tercera salió de los resultados. La agrupación de semicorcheas no estaba en el plan, pero las ediciones humanas la usan siempre y sin ella tres de cada cuatro semicorcheas correctas contaban como error.</p><p>Hubo otras: el ajuste se hizo con MAESTRO degradado en lugar de MAPS, usé Kaggle en lugar de Colab por la facilidad de montar el dataset y las dos GPU, y el árbol se recorre por tipo de nodo. Todas están documentadas en el repositorio.</p></aside>
+  <aside class="notas"><p><b>Pivotes</b></p><p>En el camino cambié tres decisiones, y cada una salió de un dato o de una restricción. Cambié la aplicación de Android por una aplicación web, porque un enlace se comparte más fácil y la misma compilación sirve en computadora y teléfono. Cambié la cola distribuida por un grupo de hilos, porque trabajando solo convenía algo simple de operar. Y agregué la agrupación de semicorcheas, porque las ediciones humanas la usan siempre.</p></aside>
 </section>
 
 <!-- 6. Resultados: una diapositiva por objetivo con la tarjeta que gira -->
-<section class="slide" id="resultado-1" data-peso="1.4" data-parte="Resultados" data-titulo="Resultado 1">
+<section class="slide" id="resultados" data-peso="15" data-parte="Resultados" data-titulo="Panorama de resultados">
+  <div class="contenido centrado">
+    <span class="etiqueta">Resultados · esto encontramos</span>
+    <h2>Seis objetivos, cuatro cumplidos</h2>
+    <div class="anillos">
+      <div class="anillo" data-valor="4" data-max="6" data-color="#31ce01" data-texto="4/6"><p class="pie">objetivos específicos cumplidos</p></div>
+    </div>
+    <div class="metas panorama">
+      <span class="chip ok">1 · Elegir el modelo</span>
+      <span class="chip parcial">2 · Ajustarlo</span>
+      <span class="chip ok">3 · Traducir</span>
+      <span class="chip ok">4 · Integrar</span>
+      <span class="chip no">5 · Fidelidad</span>
+      <span class="chip ok">6 · Acceso</span>
+    </div>
+    <p class="cuerpo" style="margin-top:24px">Uno cumplido de forma parcial y uno no cumplido.</p>
+  </div>
+  <aside class="notas"><p><b>Panorama</b></p><p>Esto encontramos. De los seis objetivos se cumplieron cuatro, uno se cumplió de forma parcial y uno no se cumplió. Los recorro en orden.</p></aside>
+</section>
+
+<section class="slide" id="resultado-1" data-peso="30" data-parte="Resultados" data-titulo="Resultado 1">
   <div class="contenido centrado">
     <span class="etiqueta">Resultados · 1 de 7</span>
     <h2 class="oculto-visual">Objetivo específico 1 y su resultado</h2>
@@ -363,10 +383,10 @@
       <p class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><p><b>Resultados · objetivo específico 1</b></p><p>Ahora los resultados. Para cada objetivo muestro primero lo que me comprometí a lograr y luego lo que obtuve. Avanzo con la flecha y la tarjeta gira.</p><p class="accion">Objetivo 1.</p><p>Elegir la arquitectura con al menos 80 % de F1 de inicio, 75 % a nivel de nota y como máximo 25 % de error.</p><p class="accion">Giro la tarjeta: resultado 1.</p><p>Evalué tres familias sobre 20 obras completas de MAESTRO, 134 minutos de audio. Kong y el hFT-Transformer cumplen; Basic Pitch, un modelo ligero de propósito general, queda en 19.5 %. Elegí Kong: 95.9 % de F1 de inicio y 83.7 % a nivel de nota, a medio punto de lo que publican sus autores. El hFT obtuvo más, pero no estima el pedal y era más difícil de integrar. Cumplido.</p></aside>
+  <aside class="notas"><p><b>Objetivo y resultado 1</b></p><p>Comparé tres familias sobre 20 obras completas de MAESTRO. Kong y el hFT-Transformer pasan los umbrales y Basic Pitch se queda en 19.5 %. Elegí Kong, con 95.9 % de acierto en el inicio de nota y 83.7 % a nivel de nota, a medio punto de lo que publican sus autores.</p></aside>
 </section>
 
-<section class="slide" id="resultado-2" data-peso="1.4" data-parte="Resultados" data-titulo="Resultado 2">
+<section class="slide" id="resultado-2" data-peso="30" data-parte="Resultados" data-titulo="Resultado 2">
   <div class="contenido centrado">
     <span class="etiqueta">Resultados · 2 de 7</span>
     <h2 class="oculto-visual">Objetivo específico 2 y su resultado</h2>
@@ -407,10 +427,10 @@
       <p class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><p><b>Resultados · objetivo específico 2</b></p><p class="accion">Objetivo 2.</p><p>Ajustar el modelo para ganar cinco puntos fuera de distribución sin perder más de dos en audio limpio.</p><p class="accion">Giro la tarjeta: resultado 2.</p><p>Con 150 obras degradadas al azar, el promedio de las condiciones degradadas subió 5.79 puntos y el audio limpio bajó 1.00. El micrófono de celular simulado pasó de 44 a 60 %. Después grabé 18 interpretaciones con un teléfono en una habitación con ventilador y lluvia, y ahí el modelo parte las notas sostenidas: los reataques pasan de 1.2 % a 9 % y las mismas obras bajan de 40 a 26.7 % de exactitud. Se cumple con audio de estudio, no con teléfono.</p></aside>
+  <aside class="notas"><p><b>Objetivo y resultado 2</b></p><p>En condiciones simuladas el ajuste mejoró 5.79 puntos y perdió solo uno en audio limpio, así que cumple el criterio. Pero con grabaciones de teléfono en una casa, las mismas obras bajaron de 40 a 26.7 % de exactitud. Por eso lo reporto como parcial.</p></aside>
 </section>
 
-<section class="slide" id="resultado-3" data-peso="1.4" data-parte="Resultados" data-titulo="Resultado 3">
+<section class="slide" id="resultado-3" data-peso="30" data-parte="Resultados" data-titulo="Resultado 3">
   <div class="contenido centrado">
     <span class="etiqueta">Resultados · 3 de 7</span>
     <h2 class="oculto-visual">Objetivo específico 3 y su resultado</h2>
@@ -453,10 +473,10 @@
       <p class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><p><b>Resultados · objetivo específico 3</b></p><p class="accion">Objetivo 3.</p><p>Un traductor determinista con 28 reglas del Manual, cada una con su prueba.</p><p class="accion">Giro la tarjeta: resultado 3.</p><p>Las 28 reglas quedaron trazadas a su numeración en el Manual, con 249 pruebas en 73 clases que pasan en cada cambio con tres versiones de Python. Cumplido.</p></aside>
+  <aside class="notas"><p><b>Objetivo y resultado 3</b></p><p>Las 28 reglas quedaron trazadas a su número en el Manual, cada una con su prueba, y la suite de 249 pruebas corre en cada cambio con tres versiones de Python.</p></aside>
 </section>
 
-<section class="slide" id="resultado-4" data-peso="1.4" data-parte="Resultados" data-titulo="Resultado 4">
+<section class="slide" id="resultado-4" data-peso="30" data-parte="Resultados" data-titulo="Resultado 4">
   <div class="contenido centrado">
     <span class="etiqueta">Resultados · 4 de 7</span>
     <h2 class="oculto-visual">Objetivo específico 4 y su resultado</h2>
@@ -497,10 +517,10 @@
       <p class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><p><b>Resultados · objetivo específico 4</b></p><p class="accion">Objetivo 4.</p><p>De audio a BRF sin intervención, en hasta 1.5 veces la duración, en al menos 90 % de las ejecuciones.</p><p class="accion">Giro la tarjeta: resultado 4.</p><p>Todas las ejecuciones quedaron bajo el límite y todos los BRF fueron válidos. En GPU tarda 0.08 veces la duración, en Railway 0.72 y en mi computadora con dos núcleos 1.21. La parte determinista tarda menos de medio segundo. Cumplido.</p></aside>
+  <aside class="notas"><p><b>Objetivo y resultado 4</b></p><p>Todas las conversiones quedaron por debajo de 1.5 veces la duración del audio, con archivos válidos. En GPU tarda 0.08 veces, en Railway 0.72 y en mi computadora con dos núcleos 1.21. La parte determinista tarda menos de medio segundo.</p></aside>
 </section>
 
-<section class="slide" id="resultado-5" data-peso="1.4" data-parte="Resultados" data-titulo="Resultado 5">
+<section class="slide" id="resultado-5" data-peso="30" data-parte="Resultados" data-titulo="Resultado 5">
   <div class="contenido centrado">
     <span class="etiqueta">Resultados · 5 de 7</span>
     <h2 class="oculto-visual">Objetivo específico 5 y su resultado</h2>
@@ -542,10 +562,10 @@
       <p class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><p><b>Resultados · objetivo específico 5</b></p><p class="accion">Objetivo 5.</p><p>El que responde la pregunta: 70 % de Exactitud de Símbolo Braille frente a ediciones humanas.</p><p class="accion">Giro la tarjeta: resultado 5.</p><p>No se cumplió. Medí 57 grabaciones en cinco conjuntos. El repertorio intermedio llega a 46.5 % y las piezas de prueba de Goldberg, que nunca usé para ajustar nada, a 33.2 %. Las mejoras del cuantizador subieron entre 9 y 16 puntos en todos los conjuntos. Y con la partitura correcta el mismo traductor llega a 78.8 %. Ese dato lo explico en el análisis.</p></aside>
+  <aside class="notas"><p><b>Objetivo y resultado 5</b></p><p>Aquí está el resultado más importante. Medí 57 grabaciones contra ediciones Braille hechas por personas. En las piezas de prueba, que no usé para ajustar nada, la exactitud fue de 33.2 %, y en el repertorio intermedio de 46.5 %. La meta era 70, así que no se cumplió. Pero quédense con este otro número, 78.8 %. Lo explico en el análisis.</p></aside>
 </section>
 
-<section class="slide" id="resultado-6" data-peso="1.4" data-parte="Resultados" data-titulo="Resultado 6">
+<section class="slide" id="resultado-6" data-peso="30" data-parte="Resultados" data-titulo="Resultado 6">
   <div class="contenido centrado">
     <span class="etiqueta">Resultados · 6 de 7</span>
     <h2 class="oculto-visual">Objetivo específico 6 y su resultado</h2>
@@ -581,10 +601,10 @@
       <p class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><p><b>Resultados · objetivo específico 6</b></p><p class="accion">Objetivo 6.</p><p>Acceso autónomo con lector de pantalla y todos los elementos etiquetados.</p><p class="accion">Giro la tarjeta: resultado 6.</p><p>226 de 226 elementos etiquetados en 42 configuraciones, cero violaciones de accesibilidad en axe y 100 en Lighthouse. Recorrí el flujo con TalkBack solo con el teclado y sin mirar la pantalla, hasta guardar el archivo. Cumplido en el teléfono; en computadora, con pruebas automáticas.</p></aside>
+  <aside class="notas"><p><b>Objetivo y resultado 6</b></p><p>Los 226 elementos de la aplicación están etiquetados, no hubo ninguna violación de accesibilidad y con TalkBack completé todo el flujo sin mirar la pantalla. En computadora lo verifiqué con pruebas automáticas.</p></aside>
 </section>
 
-<section class="slide" id="resultado-general" data-peso="1.6" data-parte="Resultados" data-titulo="Resultado general">
+<section class="slide" id="resultado-general" data-peso="15" data-parte="Resultados" data-titulo="Resultado general">
   <div class="contenido centrado">
     <span class="etiqueta">Resultados · 7 de 7</span>
     <h2 class="oculto-visual">Objetivo general y su resultado</h2>
@@ -620,11 +640,11 @@
       <p class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><p><b>Resultados · objetivo general</b></p><p class="accion">Objetivo general.</p><p>Construir el sistema y determinar qué tan cerca queda de un transcriptor.</p><p class="accion">Giro la tarjeta: resultado general.</p><p>Cuatro objetivos cumplidos, uno cumplido en estudio y uno no cumplido. El sistema existe, está publicado y su exactitud quedó medida y localizada. El objetivo general se cumple.</p></aside>
+  <aside class="notas"><p><b>Objetivo y resultado general</b></p><p>El objetivo general pedía construir el sistema y medir qué tan cerca queda de un transcriptor. El sistema está publicado y esa distancia quedó medida, así que se cumple. Ahora se los muestro funcionando.</p></aside>
 </section>
 
 
-<section class="slide" id="demo" data-peso="6" data-parte="Demo y evidencias" data-titulo="Demo">
+<section class="slide" id="demo" data-peso="120" data-parte="Demo y evidencias" data-titulo="Demo">
   <div class="contenido centrado">
     <span class="etiqueta">Demo y evidencias</span>
     <h2>Pruébalo desde el teléfono</h2>
@@ -640,11 +660,11 @@
       </div>
     </div>
   </div>
-  <aside class="notas"><p><b>Demo y evidencias</b></p><p class="accion">Antes de la defensa: abrir la aplicación unos minutos antes para despertar la API. Tener una grabación corta en el teléfono y el video listo por si falla la red.</p><p>Ahora la demostración. Pueden escanear el código para abrir la aplicación en su teléfono.</p><p class="accion">Abro la aplicación con TalkBack activo.</p><p>Elijo el modo lector de pantalla. Escuchen que TalkBack anuncia cada botón con su nombre y su función. Elijo una grabación de 30 segundos de Für Elise, dejo el tempo, el compás y la armadura, y activo Convertir a Braille.</p><p>Mientras procesa, la región viva anuncia el estado: grabación recibida, transcribiendo y traduciendo, y listo. No tuve que mover el foco ni mirar la pantalla. Activo Descargar archivo BRF y el archivo queda guardado en el teléfono.</p><p>Como materiales quedan la aplicación instalable, la API publicada, el código y los manuales del sistema en el repositorio, y las mediciones de las 57 grabaciones. Como evidencias, el registro frase por frase de lo que dijo TalkBack, las auditorías de accesibilidad y el video de la conversión.</p></aside>
+  <aside class="notas"><p><b>Demo</b></p><p>Pueden escanear el código para abrirla en su teléfono.</p> <p class="accion">Abro la aplicación con TalkBack activo y subo el volumen.</p> <p>Elijo el modo lector de pantalla. Escuchen que TalkBack dice cada botón con su nombre y su función. Elijo la grabación de Für Elise, dejo el tempo y el compás, y activo «Convertir a Braille».</p> <p>Mientras procesa, la aplicación va anunciando el estado sin que yo mueva el foco. Grabación recibida, transcribiendo, y listo. Descargo el archivo y queda guardado en el teléfono.</p> <p>Como evidencia queda el registro frase por frase de lo que dijo TalkBack, los reportes de las auditorías y todo el código y los manuales en el repositorio.</p> <p class="accion">Si la red falla, reproduzco el video de respaldo y digo lo mismo sobre él.</p></aside>
 </section>
 
 <!-- 7. Análisis -->
-<section class="slide" id="analisis" data-peso="10" data-parte="Análisis" data-titulo="Análisis">
+<section class="slide" id="analisis" data-peso="75" data-parte="Análisis" data-titulo="Dónde se pierde la exactitud">
   <div class="contenido centrado">
     <span class="etiqueta">Análisis · por lo tanto</span>
     <h2>El traductor funciona.<br>La pérdida está antes.</h2>
@@ -653,50 +673,58 @@
       <div class="barra" data-valor="33.2"><div class="nombre">Mismo traductor desde el audio</div><div class="pista"><span class="relleno coral"></span></div><div class="valor">33.2%</div></div>
     </div>
     <p class="leyenda-meta">Partición de prueba de las Variaciones Goldberg.</p>
+  </div>
+  <aside class="notas"><p><b>Dónde se pierde la exactitud</b></p><p>Por lo tanto, ¿por qué no llegamos al 70? Para responderlo hice una prueba de diagnóstico. Le di al mismo traductor la partitura correcta de las Goldberg, en lugar del audio, y la comparé con la misma edición humana.</p> <p>Con la partitura llega a 78.8 %, por encima de la meta. Desde el audio, ese mismo traductor queda en 33.2. Como el traductor es el mismo, la pérdida de 45 puntos ocurre antes de él, cuando el cuantizador convierte las notas en una partitura con compases, manos y figuras.</p> <p>Y esto explica algo que parece raro. El modelo acierta el 83.7 % de las notas, pero la partitura queda en 33. El acierto de notas no pide que cada nota quede en el compás correcto, en la mano correcta y con su figura. La partitura sí lo pide.</p></aside>
+</section>
+
+<section class="slide" id="analisis-causas" data-peso="60" data-parte="Análisis" data-titulo="Tres causas medidas">
+  <div class="contenido centrado">
+    <span class="etiqueta">Análisis · tres causas medidas</span>
+    <h2>Por qué la partitura pierde exactitud</h2>
     <div class="tarjetas tres">
-      <div class="tarjeta"><h3>Manos que se cruzan</h3><p>Las variaciones para dos teclados quedan en 31.5 % contra 37.7 % de las de un teclado: el reparto por registro falla en los cruces.</p></div>
-      <div class="tarjeta"><h3>Grabación con teléfono</h3><p>Las mismas obras bajan de 40.0 % a 26.7 %. El modelo parte notas sostenidas: 9 % de reataques contra 1.2 % en estudio.</p></div>
-      <div class="tarjeta"><h3>Tiempo a figuras</h3><p>Se conserva 62.9 % de las notas por compás, pero solo 43.2 % en orden y 56.1 % de esas con su figura correcta.</p></div>
+      <div class="tarjeta"><h3>Manos que se cruzan</h3><p>Las variaciones para dos teclados quedan en 31.5 % contra 37.7 % de las de un teclado. El reparto por registro falla en los cruces.</p></div>
+      <div class="tarjeta"><h3>Grabación con teléfono</h3><p>Los reataques pasan de 1.2 % a 9 % y las mismas obras bajan de 40.0 % a 26.7 %.</p></div>
+      <div class="tarjeta"><h3>Tiempo a figuras</h3><p>El ritmo es la medida que más acompaña al resultado, con r = 0.79 en 31 piezas. Las piezas lentas salen peor.</p></div>
     </div>
   </div>
-  <aside class="notas"><p><b>Análisis</b></p><p>Pasemos a qué significan estos resultados. La pregunta obvia es por qué no se alcanzó el 70 %.</p><p>Para responderla hice un experimento de diagnóstico. Le di al mismo traductor la partitura digital correcta de las Goldberg, en lugar del audio, y la comparé con la misma edición humana. Con la partitura llega a 89.1 % en desarrollo y a 78.8 % en prueba, por encima de la meta. Doce de las catorce piezas de prueba superan el 70 %. Desde el audio, ese mismo traductor queda en 33.2.</p><p>Por lo tanto, el traductor funciona y la pérdida está antes, en el tramo entre el audio y la partitura que arma el cuantizador. Ese tramo es justamente el que no había resuelto nadie.</p><p>Para saber dónde exactamente, separé la exactitud en tres medidas leídas del propio Braille. En la partición de prueba el sistema escribe 62.9 % de las notas de cada compás, porque faltan o sobran notas. De esas, 43.2 % quedan en el orden de la referencia dentro de cada mano. Y de esas, 56.1 % tienen la figura correcta. La pérdida se reparte entre tres pasos.</p><p class="accion">Señalo las tres tarjetas.</p><p>Hay tres causas medidas. La primera son las manos que se cruzan: las variaciones que Bach escribió para dos teclados quedan en 31.5 % contra 37.7 % de las de un teclado, porque mi reparto de manos decide por registro y en los cruces cada mano toca en el registro de la otra. La segunda es la grabación con teléfono: las mismas obras bajan de 40 a 26.7 %, porque el ruido y el micrófono hacen que el modelo parta una nota en varios ataques. La tercera es el paso de tiempo a figuras: en piezas lentas, con pocas notas por pulso, el seguimiento del pulso tiene pocos ataques en que apoyarse y la flexibilidad de la intérprete se convierte en figuras distintas.</p><p>Un dato más: en el repertorio intermedio, con dos voces y tempo estable, el primer movimiento de la Sonatina de Clementi llega a 54.7 %, con casi 80 % de alturas correctas. El sistema rinde mejor justo en el tipo de obra que estudia un estudiante.</p></aside>
+  <aside class="notas"><p><b>Tres causas medidas</b></p><p>Encontré tres causas con datos. Primera, las manos que se cruzan. Las variaciones que Bach escribió para dos teclados quedan en 31.5 % contra 37.7 % de las de un teclado, porque mi reparto decide la mano por registro, y en un cruce cada mano toca en el registro de la otra.</p> <p>Segunda, el teléfono. El modelo parte las notas largas en varios ataques. Los reataques pasan de 1.2 a 9 %. No comprobé si la causa es el ruido o el procesamiento del teléfono, y eso queda abierto.</p> <p>Tercera, el paso de tiempos a figuras. Entre las 31 piezas, la exactitud de ritmo es lo que más se mueve junto con el resultado final, y las piezas lentas son las que peor salen.</p></aside>
+</section>
+
+<section class="slide" id="analisis-sistemas" data-peso="45" data-parte="Análisis" data-titulo="Visión de administración de sistemas">
+  <div class="contenido centrado">
+    <span class="etiqueta">Análisis · administración de sistemas</span>
+    <h2>Un servicio pequeño y reproducible</h2>
+    <div class="tarjetas cuatro">
+      <div class="tarjeta"><h3>Arquitectura</h3><p>Cliente servidor con una cadena de filtros. El pipeline no guarda estado y escala hacia arriba sin cambios.</p></div>
+      <div class="tarjeta"><h3>DevOps</h3><p>249 pruebas en cada cambio, ramas dev, docs y main, y la misma imagen Docker en la nube o en local.</p></div>
+      <div class="tarjeta"><h3>ITIL</h3><p>Incidente de 17 veces la duración del audio por 32 hilos en 2 vCPU. Diagnóstico, corrección a 0.77 y registro.</p></div>
+      <div class="tarjeta"><h3>Seguridad</h3><p>HTTPS, CORS restringido, límite de 100 MB y ningún dato personal. Falta autenticación y límite de peticiones.</p></div>
+    </div>
+  </div>
+  <aside class="notas"><p><b>Visión de administración de sistemas</b></p><p>Desde la administración de sistemas, el sistema es un servicio pequeño y reproducible. La arquitectura es cliente servidor, y el pipeline no guarda estado, así que escala bien hacia arriba y se puede llevar a varios servidores sin tocarlo.</p> <p>Cada cambio pasa por pruebas automáticas, y la misma imagen Docker corre en la nube o en local. Tuve un incidente que manejé como tal. En Railway la conversión tardaba 17 veces la duración del audio porque PyTorch abría 32 hilos con solo 2 procesadores. Lo diagnostiqué, fijé los hilos en 2 y bajó a 0.77.</p> <p>En seguridad tiene lo básico para un prototipo. Le falta autenticación y límite de peticiones antes de abrirlo a mucha gente.</p></aside>
 </section>
 
 <!-- 8. Conclusiones -->
-<section class="slide" id="conclusiones" data-peso="10" data-parte="Conclusiones" data-titulo="Conclusiones">
+<section class="slide" id="conclusiones" data-peso="150" data-parte="Conclusiones" data-titulo="Conclusiones">
   <div class="contenido centrado">
-    <span class="etiqueta">Conclusiones</span>
-    <h2>Concluimos</h2>
+    <span class="etiqueta">Conclusiones · concluimos esto</span>
+    <h2>Cumple parcialmente</h2>
     <ol class="lista">
-      <li><span><b>Es posible ir de una grabación a una partitura Braille sin intervención</b>, en menos tiempo que lo que dura la obra.</span></li>
-      <li><span><b>La traducción determinista con las reglas del Manual es correcta</b>: con la partitura adecuada supera la meta de exactitud.</span></li>
-      <li><span><b>El cuello de botella es la transcripción y su conversión a figuras</b>, no el Braille.</span></li>
-      <li><span><b>El ajuste fino funciona en condiciones simuladas</b>, pero no alcanza para grabaciones caseras con teléfono.</span></li>
-      <li><span><b>Una interfaz accesible desde el diseño</b> permite completar el flujo con lector de pantalla.</span></li>
+      <li><span><b>El modelo se eligió con evidencia</b> y Kong cumple los tres umbrales con margen. <span class="chip ok">Cumplido</span></span></li>
+      <li><span><b>El ajuste funciona en simulación</b>, pero una grabación casera es más difícil. <span class="chip parcial">Parcial</span></span></li>
+      <li><span><b>El traductor es correcto</b> y con la partitura adecuada supera la meta. <span class="chip ok">Cumplido</span></span></li>
+      <li><span><b>Convierte sin intervención y a tiempo</b> en todos los entornos. <span class="chip ok">Cumplido</span></span></li>
+      <li><span><b>La exactitud desde audio no llega al 70 %</b> porque la reconstrucción de la partitura pierde más de la mitad. <span class="chip no">No cumplido</span></span></li>
+      <li><span><b>Una persona con lector de pantalla lo usa sola</b> en un teléfono. <span class="chip ok">Cumplido en móvil</span></span></li>
     </ol>
   </div>
-  <aside class="notas"><p><b>Conclusiones</b></p><p>Concluimos cinco cosas, en el mismo orden de los objetivos.</p><p>Primera: es posible ir de una grabación de piano a una partitura Braille sin intervención humana, en menos tiempo de lo que dura la obra. El sistema existe, está publicado y es abierto. Eso responde la primera mitad del objetivo general.</p><p>Segunda: la traducción determinista basada en el Manual es correcta. Con la partitura adecuada supera la meta, con 78.8 % en piezas que no usé para ajustar nada, y las 28 reglas están trazadas y probadas. Separar la parte probabilística de la determinista fue la decisión correcta, porque permitió localizar el error.</p><p>Tercera, que es la respuesta a la pregunta de investigación: con la tecnología actual, la partitura generada desde el audio queda entre 33 y 47 % de exactitud frente a un transcriptor humano. El cuello de botella no es el Braille. Es la transcripción y su conversión a figuras, compases y manos.</p><p>Cuarta: el ajuste fino funciona en las condiciones que simula, con casi seis puntos de mejora, pero la simulación no reproduce una grabación casera. Para que el sistema sirva con un teléfono hace falta entrenar con grabaciones de teléfono.</p><p>Quinta: una interfaz accesible desde el diseño permite que una persona complete todo el flujo solo con su lector de pantalla. La autonomía, que es el motivo del proyecto, está resuelta en la interacción.</p><p>Y una conclusión de método: la Exactitud de Símbolo Braille, con su desglose por categoría, permite comparar cualquier sistema contra transcriptores humanos. Es una medición reproducible que el campo no tenía.</p></aside>
+  <aside class="notas"><p><b>Concluimos</b></p><p>Concluimos esto, objetivo por objetivo.</p> <p>Uno. La elección del modelo se hizo con evidencia y Kong cumple con margen.</p> <p>Dos. El ajuste funciona en la simulación, pero una grabación casera es más difícil que la suma de degradaciones simuladas. Se cumple de forma parcial.</p> <p>Tres. El traductor determinista es correcto. Con la partitura adecuada supera la meta.</p> <p>Cuatro. El sistema convierte sin intervención y a tiempo en todos los entornos.</p> <p>Cinco. La exactitud desde audio no llega al 70 %, porque la reconstrucción de la partitura pierde más de la mitad de lo que el traductor logra con una partitura correcta.</p> <p>Seis. Una persona con lector de pantalla puede completar el flujo sola en un teléfono.</p> <p>Con base en esto, el sistema cumple parcialmente su propósito. Cumple la construcción de una herramienta abierta y accesible que convierte grabaciones en Braille sin intervención. No alcanza la exactitud para un uso autónomo sin revisión. Y deja medida y localizada la etapa que hay que mejorar.</p> <p>Respondiendo la pregunta, la arquitectura híbrida sí cruza el tramo que faltaba, con 33 a 47 % de exactitud en grabaciones de estudio. Hoy la partitura funciona como un primer borrador que alguien debe revisar.</p></aside>
 </section>
 
-<!-- 9. Recomendaciones -->
-<section class="slide" id="recomendaciones" data-peso="4" data-parte="Recomendaciones" data-titulo="Recomendaciones">
+<section class="slide" id="recomendaciones" data-peso="120" data-parte="Recomendaciones" data-titulo="Recomendaciones">
   <div class="contenido centrado">
     <span class="etiqueta">Recomendaciones</span>
     <h2>Dónde invertir el siguiente esfuerzo</h2>
-    <div class="tarjetas dos">
-      <div class="tarjeta"><h3>Unir fragmentos de una nota</h3><p>Un filtro que una ataques repetidos de la misma tecla, ajustado con la partición de desarrollo. Ataca la causa medida en teléfonos.</p></div>
-      <div class="tarjeta"><h3>Ajuste con grabaciones reales</h3><p>Grabar con teléfono mientras un piano digital registra el MIDI, para tener pares reales de entrenamiento.</p></div>
-      <div class="tarjeta"><h3>Reparto de manos aprendido</h3><p>Un clasificador pequeño entrenado con partituras donde cada nota tiene su mano, en lugar de reglas de registro.</p></div>
-      <div class="tarjeta"><h3>Evaluación con personas</h3><p>Sesiones con estudiantes ciegos de piano y un docente, leyendo el BRF en una línea Braille.</p></div>
-    </div>
-  </div>
-  <aside class="notas"><p><b>Recomendaciones</b></p><p>Las recomendaciones salen directamente del análisis. Cada una ataca una causa medida.</p><p>Uno: un filtro que una los ataques repetidos de la misma tecla, ajustado con la partición de desarrollo. Es lo más barato y ataca la causa principal en teléfonos.</p><p>Dos: ajustar el modelo con pares de grabación de teléfono y MIDI, grabando con el teléfono mientras un piano digital registra lo que se toca.</p><p>Tres: reemplazar el reparto de manos por registro con un clasificador pequeño entrenado con partituras donde cada nota tiene su mano.</p><p>Cuatro: evaluar con personas, estudiantes ciegos de piano y un docente, leyendo el BRF en una línea Braille.</p></aside>
-</section>
-
-<section class="slide" id="mejoras" data-peso="6" data-parte="Recomendaciones" data-titulo="Mejoras propuestas">
-  <div class="contenido centrado">
-    <span class="etiqueta">Recomendaciones · mejoras propuestas</span>
-    <h2>Cómo cerraría la distancia</h2>
     <div class="mazo" role="region" aria-roledescription="mazo de diagramas" aria-label="Mejoras propuestas">
       <div class="pestanas" role="group" aria-label="Elegir diagrama"></div>
       <div class="pila">
@@ -800,26 +828,26 @@
       <p class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><p><b>Mejoras propuestas</b></p><p>Este mazo muestra esas mejoras como diagramas. La tarjeta gira con el botón.</p><p class="accion">Hoy.</p><p>El punto de partida: de cada compás se conserva 62.9 % de las notas, 43.2 % en orden y 56.1 % con la figura correcta, para un 33.2 % final. Debajo, en verde, el mismo traductor con la partitura correcta: 78.8.</p><p class="accion">Giro a Pipeline propuesto.</p><p>En verde lo nuevo. En la etapa acústica, el modelo ajustado con grabaciones de teléfono y la unión de fragmentos de una nota. En la etapa simbólica, la estimación de tempo, compás y armadura para que la persona no tenga que darlos, el reparto de manos aprendido y las voces activadas solo en obras contrapuntísticas. El cuantizador y el traductor se conservan.</p><p class="accion">Giro a Muchos usuarios.</p><p>Hoy el sistema escala verticalmente, y para un prototipo de un usuario eso no es un defecto. Para escalar horizontalmente movería el estado de los trabajos a Redis o PostgreSQL, los archivos a un almacenamiento de objetos y el procesamiento a trabajadores con una cola. Como el pipeline no guarda estado, pasa casi sin cambios.</p><p class="accion">Giro a Con personas.</p><p>Y la validación con personas, que es lo que más falta. El BSA dice cuánto se parece la partitura; solo una persona lectora puede decir si con ese parecido ya se puede estudiar.</p></aside>
+  <aside class="notas"><p><b>Dónde invertir el siguiente esfuerzo</b></p><p>Las recomendaciones salen directo del análisis, cada una ataca una causa medida.</p> <p>Para el teléfono, un filtro que una los ataques repetidos de la misma tecla, que es barato y se puede medir con las 18 grabaciones que ya tengo. Y un segundo ajuste con grabaciones de teléfono reales, grabando mientras un piano digital registra lo que se toca.</p> <p>Para los cruces de manos, cambiar la regla de registro por un clasificador pequeño entrenado con partituras que marcan la mano de cada nota.</p> <p>Para la persona usuaria, estimar automáticamente el tempo, el compás y la armadura.</p> <p class="accion">Giro a Con personas.</p> <p>Y la más importante, evaluar con estudiantes ciegos de piano y un docente leyendo los archivos en una línea Braille. El BSA dice cuánto se parece la partitura. Solo una persona lectora puede decir si con eso ya se puede estudiar.</p></aside>
 </section>
 
 <!-- 10. Pendientes -->
-<section class="slide" id="pendientes" data-peso="5" data-parte="Pendientes" data-titulo="Pendientes">
+<section class="slide" id="pendientes" data-peso="75" data-parte="Pendientes" data-titulo="Pendientes">
   <div class="contenido centrado">
     <span class="etiqueta">Pendientes</span>
     <h2>Lo que queda abierto</h2>
     <ul class="lista">
-      <li><b>Lector de pantalla de escritorio.</b> <span>Probar con NVDA, VoiceOver y Orca; hoy la computadora se valida con pruebas automáticas.</span></li>
-      <li><b>Tempo, compás y armadura automáticos.</b> <span>Hoy los indica la persona usuaria.</span></li>
-      <li><b>Voces y ligaduras por tipo de obra.</b> <span>Ayudan en contrapunto y empeoran en melodía con acompañamiento.</span></li>
-      <li><b>Seguridad para uso público.</b> <span>Límite de peticiones, usuario sin privilegios en el contenedor y borrado de archivos por tiempo.</span></li>
+      <li><b>Lectores de pantalla de escritorio.</b> <span>Probar con NVDA, VoiceOver y Orca.</span></li>
+      <li><b>Evaluación con personas.</b> <span>Estudiantes ciegos de piano y un docente leyendo el BRF en una línea Braille.</span></li>
+      <li><b>Un compás distinto por mano.</b> <span>Lo necesita la Variación 26.</span></li>
+      <li><b>Seguridad para uso público.</b> <span>Autenticación, límite de peticiones y borrado de archivos por tiempo.</span></li>
     </ul>
   </div>
-  <aside class="notas"><p><b>Pendientes</b></p><p>Lo que queda abierto, y por qué.</p><p>Probar con lectores de pantalla de escritorio: NVDA, VoiceOver y Orca. No tenía equipos con Windows ni de Apple, así que la computadora está validada con pruebas automáticas que revisan el mismo árbol de accesibilidad que leen esos lectores.</p><p>Estimar tempo, compás y armadura de forma automática. El modelo acústico no los entrega y no cabía otro modelo en el plazo.</p><p>Decidir voces y ligaduras según la obra. Probé ambas: las voces separadas ayudan en contrapunto pero restan entre 6 y 11 puntos en melodía con acompañamiento, así que quedaron apagadas.</p><p>Y la seguridad para uso público: límite de peticiones, usuario sin privilegios en el contenedor y borrado de archivos por tiempo. Para un prototipo de demostración el riesgo es bajo, pero antes de abrirlo a muchas personas es necesario.</p><p>Son la continuidad natural del trabajo y están documentados en el repositorio con su prioridad.</p></aside>
+  <aside class="notas"><p><b>Lo que queda abierto</b></p><p>Quedan pendientes concretos. Probar con lectores de escritorio como NVDA y VoiceOver. Hacer la evaluación con personas, que no fue posible porque el tema se aprobó a finales de marzo, después hubo que conseguir asesor, y los músicos ciegos son un grupo pequeño y difícil de contactar. Soportar un compás distinto en cada mano, como pide la Variación 26. Y agregar autenticación, límite de peticiones y borrado automático de archivos antes de abrir el servicio al público.</p> <p>Son la continuación natural del trabajo y están documentados en el repositorio con su prioridad.</p></aside>
 </section>
 
 <!-- 11. Cierre -->
-<section class="slide" id="cierre" data-peso="5" data-parte="Cierre" data-titulo="Cierre">
+<section class="slide" id="cierre" data-peso="75" data-parte="Cierre" data-titulo="Cierre">
   <div class="contenido centrado">
     <span class="etiqueta">Cierre</span>
     <h2>Gracias</h2>
@@ -830,7 +858,7 @@
     </div>
     <p class="cuerpo" style="margin-top:40px">A mi asesor Luis Alberto Suriano Saravia, a la Universidad del Valle de Guatemala y a quienes publican datos abiertos como MAESTRO, Open Goldberg Variations y BrailleOrch.</p>
   </div>
-  <aside class="notas"><p><b>Cierre</b></p><p>Para cerrar, una retrospectiva breve.</p><p>Lo que salió bien: un sistema completo, de la grabación al Braille, medido en cada etapa y publicado como código abierto, y una métrica para comparar contra transcriptores humanos.</p><p>Lo que cambiaría: grabaría las pruebas con teléfono desde el principio. Con esas grabaciones a tiempo, el ajuste fino se habría hecho con audio de ese tipo y no solo con degradaciones simuladas.</p><p>Lo que aprendí: a medir antes de decidir. El primer benchmark dio 33 % y parecía que el modelo no servía; el problema era la convención de evaluación. La primera versión en la nube tardaba 17 veces la duración del audio; el problema eran los hilos. Medir me evitó decisiones equivocadas.</p><p>Agradezco a mi asesor, Luis Alberto Suriano Saravia, a la Universidad del Valle de Guatemala y a quienes publican datos abiertos como MAESTRO, Open Goldberg Variations y BrailleOrch, sin los cuales esta evaluación no habría sido posible.</p><p>Muchas gracias. Quedo atento a sus preguntas.</p><p class="accion">Si hace falta, presiono R para mostrar las diapositivas de respaldo.</p></aside>
+  <aside class="notas"><p><b>Gracias</b></p><p>Para cerrar, una retrospectiva corta. Lo que salió bien es un sistema completo, medido en cada etapa y publicado como código abierto, más una forma de comparar contra transcriptores que antes no existía.</p> <p>Lo que cambiaría es grabar las pruebas con teléfono desde el principio, para ajustar el modelo con ese audio y no solo con simulaciones.</p> <p>Y lo que aprendí es a medir antes de decidir. El primer benchmark dio 33 % y parecía que el modelo no servía, y el problema era la forma de evaluar. La primera versión en la nube tardaba 17 veces más, y el problema eran los hilos. Medir me evitó varias decisiones equivocadas.</p> <p>Agradezco a mi asesor, Luis Alberto Suriano, a la Universidad del Valle de Guatemala y a quienes publican datos abiertos como MAESTRO, Open Goldberg Variations y BrailleOrch. Muchas gracias. Quedo atento a sus preguntas.</p> <p class="accion">Si hace falta, presiono R para mostrar las diapositivas de respaldo.</p></aside>
 </section>
 
 <!-- Respaldo para preguntas del jurado -->
@@ -930,9 +958,52 @@
 <footer class="pie-pagina">
   <p>Gustavo Adolfo Cruz Bardales · Universidad del Valle de Guatemala · Código abierto en <a href="https://github.com/G2309/amt-braille-translator">GitHub</a></p>
   <p class="creditos" style="margin-top:16px">Imágenes: «Reading Braille» de Stefan Malmesjö, CC BY 2.0; «Braille music», CC0; vía Wikimedia Commons. Espectrograma, notas y celdas Braille generados por el sistema.</p>
-  <p class="creditos">Atajos: P presentar · flechas avanzar · N notas del orador · R preguntas de respaldo. Esc sale del modo presentación.</p>
 </footer>
 
-<script src="app.js?v=5"></script>
+
+<div class="glosario" id="glosario" role="dialog" aria-modal="true" aria-labelledby="glosario-titulo" hidden>
+  <div class="glosario-caja" tabindex="-1">
+    <div class="glosario-cabeza">
+      <h2 id="glosario-titulo">Glosario</h2>
+      <button class="pildora clara" type="button" data-accion="cerrar-glosario">Cerrar</button>
+    </div>
+    <dl>
+      <dt>Ajuste fino</dt><dd>Volver a entrenar un modelo ya entrenado con datos nuevos durante pocas iteraciones, para adaptarlo a otras condiciones.</dd>
+      <dt>Árbol de sintaxis abstracta</dt><dd>Representación jerárquica de la partitura, con partitura, manos, compases y notas, sobre la que trabaja el traductor.</dd>
+      <dt>axe-core y Lighthouse</dt><dd>Herramientas automáticas que revisan una página web contra las pautas de accesibilidad y dan un reporte de violaciones o un puntaje.</dd>
+      <dt>Basic Pitch</dt><dd>Modelo ligero de transcripción para varios instrumentos. Fue el de peor resultado en piano, con 19.5 % de F1 a nivel de nota.</dd>
+      <dt>BRF</dt><dd>Braille Ready Format. Archivo de texto con las celdas Braille codificadas en ASCII, que leen las líneas Braille y las impresoras de relieve.</dd>
+      <dt>BSA</dt><dd>Exactitud de Símbolo Braille. Proporción de celdas que coinciden con la edición de un transcriptor después de alinear las dos secuencias, sobre el largo de la más larga.</dd>
+      <dt>Compás sobre compás</dt><dd>Formato para teclado en el que la mano derecha y la izquierda se escriben en líneas seguidas con los compases alineados.</dd>
+      <dt>CRNN</dt><dd>Red neuronal convolucional recurrente. Las capas convolucionales leen el espectrograma y las recurrentes siguen cómo cambia en el tiempo.</dd>
+      <dt>Cuantizador</dt><dd>Etapa que convierte tiempos en segundos en figuras, compases y acordes, siguiendo el pulso del intérprete.</dd>
+      <dt>dBFS</dt><dd>Decibelios respecto de la escala completa. 0 dBFS es el máximo que puede registrar un archivo digital y los valores negativos son más bajos.</dd>
+      <dt>Espectrograma</dt><dd>Imagen del sonido que muestra cuánta energía hay en cada frecuencia a lo largo del tiempo.</dd>
+      <dt>F1 a nivel de nota</dt><dd>Igual que el F1 de inicio, pero exige además que el final de la nota coincida dentro de una tolerancia.</dd>
+      <dt>F1 de inicio de nota</dt><dd>Media armónica de precisión y exhaustividad. Una nota cuenta si su altura coincide y su inicio cae a menos de 50 ms del de la referencia.</dd>
+      <dt>hFT-Transformer</dt><dd>Modelo de transcripción de piano basado en transformers. Superó los umbrales pero no estima el pedal.</dd>
+      <dt>In-accord</dt><dd>Signo Braille que separa voces que suenan al mismo tiempo dentro de una misma mano.</dd>
+      <dt>Kong et al.</dt><dd>Modelo de transcripción de piano de alta resolución que estima inicio, final, altura, intensidad y pedal. Es el que usa el sistema.</dd>
+      <dt>Latencia normalizada</dt><dd>Tiempo de proceso dividido entre la duración del audio. Un valor de 0.5 significa que cinco minutos de audio tardan dos minutos y medio.</dd>
+      <dt>MAESTRO</dt><dd>Conjunto de unas 200 horas de interpretaciones de piano de concurso con el MIDI alineado al audio.</dd>
+      <dt>Máquina de estados finitos</dt><dd>Modelo que guarda el contexto, como la octava anterior y las alteraciones del compás, y decide cada salida según ese estado.</dd>
+      <dt>MIDI</dt><dd>Formato que guarda notas con su tiempo, altura e intensidad, sin compases ni figuras.</dd>
+      <dt>Musicografía Braille</dt><dd>Sistema para escribir música en Braille. El proyecto sigue el Manual simplificado de Aller Pérez, derivado del manual internacional.</dd>
+      <dt>MusicXML</dt><dd>Formato de partitura digital con compases, figuras, voces y manos.</dd>
+      <dt>Normalizador</dt><dd>Etapa que lleva el volumen de la grabación a un nivel fijo, −24.9 dBFS, antes de transcribir.</dd>
+      <dt>Partición de desarrollo y de prueba</dt><dd>Las piezas de desarrollo sirven para elegir parámetros. Las de prueba se miden una sola vez al final, con todo ya fijo.</dd>
+      <dt>Pipeline</dt><dd>Cadena de etapas en la que la salida de una es la entrada de la siguiente.</dd>
+      <dt>PWA</dt><dd>Aplicación web progresiva. Se abre desde el navegador y se puede instalar en el teléfono o la computadora sin tienda de aplicaciones.</dd>
+      <dt>Reataque</dt><dd>Cuando el modelo detecta dos ataques de la misma tecla en menos de 250 ms donde se tocó una sola nota.</dd>
+      <dt>Región viva</dt><dd>Parte de la interfaz cuyos cambios el lector de pantalla anuncia sin mover el foco.</dd>
+      <dt>Seguimiento del pulso</dt><dd>Técnica que estima dónde caen los pulsos de la música aunque el intérprete acelere o frene.</dd>
+      <dt>Signo de octava</dt><dd>Celda que indica la octava de una nota. Se escribe o no según el salto con la nota anterior.</dd>
+      <dt>TalkBack</dt><dd>Lector de pantalla de Android.</dd>
+      <dt>Tasa de Error de Nota</dt><dd>Proporción de notas omitidas, sobrantes o equivocadas respecto de la referencia.</dd>
+      <dt>WCAG</dt><dd>Pautas de accesibilidad web del W3C. Los niveles A y AA son los que se revisaron.</dd>
+    </dl>
+  </div>
+</div>
+<script src="app.js?v=6"></script>
 </body>
 </html>

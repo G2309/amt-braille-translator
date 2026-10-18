@@ -7,11 +7,11 @@ Página de la defensa del trabajo de graduación. Funciona como página que se r
 | Tecla | Acción |
 | --- | --- |
 | P o F5 | Entrar al modo presentación; P o Esc salen. F5 es el botón de inicio del control de KDE Connect |
-| Flechas, espacio, Re Pág y Av Pág | Avanzar o retroceder una sección; en cada resultado la flecha primero gira la tarjeta del objetivo a su resultado, y en Diagramas y Mejoras recorre las láminas |
-| N | Mostrar u ocultar las notas del orador |
+| Flechas, espacio, Re Pág y Av Pág | Avanzar o retroceder una sección; en cada resultado la flecha primero gira la tarjeta del objetivo a su resultado, y en Diagramas y Recomendaciones recorre las láminas |
 | R | Mostrar u ocultar las diapositivas de respaldo para las preguntas del jurado |
+| G | Abrir o cerrar el glosario |
 
-El tiempo total por omisión es de 40 minutos y se cambia con `?min=30` en la dirección; el reloj de cada sección se reparte según los pesos de la rúbrica (`data-peso`). Con `?presentar` la página abre directamente en modo presentación.
+El tiempo total por omisión es de 30 minutos y se cambia con `?min=30` en la dirección; el reloj de cada sección se reparte según los pesos de la rúbrica (`data-peso`). Con `?presentar` la página abre directamente en modo presentación.
 
 ## Guion
 
