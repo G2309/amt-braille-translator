@@ -54,7 +54,8 @@
     function aplicar(v) {
       resultado = v;
       paso.classList.toggle('ver-resultado', v);
-      boton.textContent = v ? 'Ver objetivo' : 'Ver resultado';
+      const [verA, verB] = (boton.dataset.volteo || 'Ver resultado|Ver objetivo').split('|');
+      boton.textContent = v ? verB : verA;
       const cara = paso.querySelector(v ? '.cara.resultado' : '.cara.objetivo');
       estado.textContent = `${cara.querySelector('.etiqueta').textContent}. ${cara.querySelector('h3').textContent}`;
     }
