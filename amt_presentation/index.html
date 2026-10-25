@@ -161,7 +161,6 @@
       <div class="tarjeta">
         <h3>Limitantes</h3>
         <ul>
-          <li>Trabajo individual de dieciséis semanas</li>
           <li>Cómputo en Kaggle con doble GPU</li>
           <li>Pocas obras con grabación y Braille de la misma edición</li>
           <li>El modelo no estima tempo, compás ni armadura</li>
@@ -280,15 +279,17 @@
               </ul>
             </div>
             <div>
-              <h4>Máquina de estados del signo de octava</h4>
-              <div class="columna">
-                <div class="nodo"><b>Salto de tercera o menos</b><small>No se escribe signo de octava</small></div>
-                <div class="conector v"></div>
-                <div class="nodo"><b>Cuarta o quinta</b><small>Signo solo si cambia de octava</small></div>
-                <div class="conector v"></div>
-                <div class="nodo acento"><b>Sexta o más</b><small>Siempre lleva signo de octava</small></div>
-              </div>
-              <p class="leyenda" style="margin-top:12px">El estado también guarda las alteraciones vigentes, que se reinician en cada barra de compás.</p>
+              <h4>Regla del signo de octava</h4>
+              <p class="leyenda">El estado recuerda la nota anterior. El salto hasta la nota nueva decide si se escribe el signo.</p>
+              <table class="tabla compacta" style="margin-top:12px">
+                <thead><tr><th scope="col">Salto desde la nota anterior</th><th scope="col">Signo de octava</th><th scope="col">Ejemplo</th></tr></thead>
+                <tbody>
+                  <tr><td>Tercera o menos</td><td>Nunca</td><td style="white-space:nowrap">Do4 a Mi4<small>sin signo</small></td></tr>
+                  <tr><td>Cuarta o quinta</td><td>Solo si cambia de octava</td><td style="white-space:nowrap">Do4 a Sol4<small>sin signo</small>Si3 a Mi4<small>con signo</small></td></tr>
+                  <tr><td>Sexta o más</td><td>Siempre</td><td style="white-space:nowrap">Do4 a La4<small>con signo</small></td></tr>
+                </tbody>
+              </table>
+              <p class="leyenda" style="margin-top:12px">La primera nota de cada renglón siempre lleva signo. El estado también guarda las alteraciones vigentes, que se reinician en cada barra de compás.</p>
             </div>
           </div>
         </div>
@@ -301,7 +302,7 @@
       <p class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><p><b>Desarrollo · diagramas</b></p><p>Estos diagramas muestran cómo está montado.</p><p class="accion">Giro a Despliegue.</p><p>El cliente es estático y vive en GitHub Pages. La API es serverless en Railway, se apaga cuando no hay tráfico y despierta con la primera petición. El modelo ajustado se publica en GitHub y entra en la imagen del contenedor. La misma imagen también corre en una computadora local.</p><p class="accion">Giro a Secuencia.</p><p>La conversión corre en segundo plano. La aplicación sube el audio, pregunta el estado cada dos segundos y descarga el BRF cuando está listo, y el lector de pantalla avisa cada cambio.</p><p class="accion">Giro a Traductor.</p><p>Y esta es la regla que más contexto exige. Con un salto de tercera o menos no hay signo de octava. Con sexta o más, siempre. Con cuarta o quinta, solo si cambia la octava. Por eso hace falta una máquina de estados.</p></aside>
+  <aside class="notas"><p><b>Desarrollo · diagramas</b></p><p>Estos diagramas muestran cómo está montado.</p><p class="accion">Giro a Despliegue.</p><p>El cliente es estático y vive en GitHub Pages. La API es serverless en Railway, se apaga cuando no hay tráfico y despierta con la primera petición. El modelo ajustado se publica en GitHub y entra en la imagen del contenedor. La misma imagen también corre en una computadora local.</p><p class="accion">Giro a Secuencia.</p><p>La conversión corre en segundo plano. La aplicación sube el audio, pregunta el estado cada dos segundos y descarga el BRF cuando está listo, y el lector de pantalla avisa cada cambio.</p><p class="accion">Giro a Traductor.</p><p>A la izquierda está el árbol, que guarda qué notas tiene la partitura. A la derecha, la regla que más contexto exige. En Braille la celda de una nota no dice su octava, y escribir el signo en cada nota llenaría la página. Por eso el estado recuerda la nota anterior y mide el salto. Con tercera o menos no hay signo, porque se entiende que la nota está cerca. Con sexta o más siempre hay signo. Con cuarta o quinta depende de si se cruzó a otra octava, como de Si3 a Mi4. La primera nota de cada renglón siempre lleva signo.</p></aside>
 </section>
 
 <section class="slide" id="caso" data-peso="60" data-parte="Desarrollo" data-titulo="Un caso real">
@@ -907,7 +908,7 @@
 <section class="slide respaldo" id="r-escalabilidad" data-titulo="Escalabilidad">
   <div class="contenido centrado">
     <span class="etiqueta">Escalabilidad y arquitectura</span>
-    <h2>Escala hacia arriba y hacia cero</h2>
+    <h2>Escala hacia arriba </h2>
     <div class="tarjetas dos">
       <div class="tarjeta"><h3>Hoy</h3><p>Cliente servidor. El modelo se carga una sola vez en la primera conversión y las siguientes lo reutilizan. Escala hacia arriba, de 1.21 veces la duración con 2 núcleos a 0.08 con GPU, y el contenedor se apaga sin tráfico.</p></div>
       <div class="tarjeta"><h3>Siguiente paso</h3><p>Escalar a varios servidores con los trabajos en Redis o una base SQL, los archivos en un almacenamiento compartido y la conversión en trabajadores con Celery. Cada conversión depende solo de su audio, así que su código no cambia.</p></div>
