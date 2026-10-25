@@ -419,7 +419,7 @@
           </div>
           <div class="cara resultado">
             <div class="encabezado"><span class="etiqueta">Resultado 2</span><span class="chip estado parcial">Cumplido en estudio, no con teléfono</span></div>
-            <h3>+5.79 puntos en estudio, pero el teléfono resta</h3>
+            <h3>+5.80 puntos en estudio, pero el teléfono resta</h3>
             <div class="datos">
               <div>
                 <div class="barras" data-max="100">
@@ -445,7 +445,7 @@
       <p class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><p><b>Objetivo y resultado 2</b></p><p>En condiciones simuladas el ajuste mejoró 5.79 puntos y perdió solo uno en audio limpio, así que cumple el criterio. Pero con grabaciones de teléfono en una casa, las mismas obras bajaron de 40 a 26.7 % de exactitud. Por eso lo reporto como parcial.</p></aside>
+  <aside class="notas"><p><b>Objetivo y resultado 2</b></p><p>En condiciones simuladas el ajuste mejoró 5.80 puntos y perdió solo uno en audio limpio, así que cumple el criterio. Pero con grabaciones de teléfono en una casa, las mismas obras bajaron de 40 a 26.7 % de exactitud. Por eso lo reporto como parcial.</p></aside>
 </section>
 
 <section class="slide" id="resultado-3" data-peso="30" data-parte="Resultados" data-titulo="Resultado 3">
@@ -717,7 +717,7 @@
     <p class="subtitulo">El sistema cumple parcialmente</p>
     <ol class="lista compacta">
       <li><span><b>Modelo.</b> Un modelo especializado en piano supera los umbrales. Kong obtuvo 95.89 % de F1 de inicio y 83.74 % a nivel de nota, cerca de lo que publican sus autores. <span class="chip ok">Cumplido</span></span></li>
-      <li><span><b>Ajuste.</b> Mejoró 5.79 puntos en condiciones simuladas perdiendo solo un punto en audio limpio, pero la simulación no representó una grabación casera, donde la partitura bajó 13.3 puntos. <span class="chip parcial">Parcial</span></span></li>
+      <li><span><b>Ajuste.</b> Mejoró 5.80 puntos en condiciones simuladas perdiendo solo un punto en audio limpio, pero la simulación no representó una grabación casera, donde la partitura bajó 13.3 puntos. <span class="chip parcial">Parcial</span></span></li>
       <li><span><b>Traductor.</b> Con la partitura correcta llega a 78.8 %, por encima de la meta. Hizo falta agregar la agrupación de semicorcheas, que no estaba planificada. <span class="chip ok">Cumplido</span></span></li>
       <li><span><b>Integración.</b> Convierte grabaciones de hasta cinco minutos sin intervención y en menos de 1.5 veces su duración en todos los entornos. <span class="chip ok">Cumplido</span></span></li>
       <li><span><b>Fidelidad.</b> Desde el audio la exactitud quedó entre 33.2 y 46.5 %. La pérdida está en convertir las notas en una partitura con compases, manos y figuras. <span class="chip no">No cumplido</span></span></li>
@@ -1006,9 +1006,9 @@
       <button class="pildora clara" type="button" data-accion="cerrar-glosario">Cerrar</button>
     </div>
     <dl>
-      <dt>Ajuste fino</dt><dd>Proceso de seguir entrenando un modelo que ya fue entrenado, con datos nuevos y durante poco tiempo, para que se adapte a otras condiciones sin aprender todo desde cero. En inglés se llama fine-tuning. En este trabajo se usó para que el modelo acústico tolerara ruido, eco y grabaciones de teléfono.</dd>
+      <dt>Ajuste fino</dt><dd>Proceso de seguir entrenando un modelo que ya fue entrenado, con datos nuevos y durante poco tiempo, para que se adapte a otras condiciones sin aprender todo desde cero. En inglés se llama fine-tuning. En este trabajo se usó para que el modelo acústico tolerara ruido, eco y el sonido de un teléfono simulados, y después se probó con grabaciones hechas con teléfono.</dd>
       <dt>Alteración</dt><dd>Signo musical que sube o baja la altura de una nota. El sostenido la sube medio tono, el bemol la baja medio tono y el becuadro anula los anteriores. En musicografía Braille una alteración vale hasta el final del compás.</dd>
-      <dt>Árbol de sintaxis abstracta</dt><dd>Forma de organizar la información en niveles, como las ramas de un árbol. En este trabajo la partitura se guarda así, con la obra arriba, luego las dos manos, luego los compases y al final las notas, para que el traductor la recorra en orden.</dd>
+      <dt>Árbol de sintaxis abstracta</dt><dd>Forma de organizar la información en niveles, como las ramas de un árbol. En este trabajo la partitura se guarda así, con la obra arriba, luego las dos manos, luego los compases y al final las notas, para que el traductor la recorra nodo por nodo.</dd>
       <dt>Armadura</dt><dd>Grupo de alteraciones que se escribe al inicio de una partitura y que vale para toda la obra. Indica la tonalidad, por ejemplo Do mayor, que no tiene alteraciones.</dd>
       <dt>Aumentación de datos</dt><dd>Técnica que crea ejemplos de entrenamiento nuevos modificando los que ya existen. En este trabajo se agregó ruido, eco, compresión MP3 y efecto de teléfono a grabaciones limpias.</dd>
       <dt>Celda Braille</dt><dd>Unidad básica de la escritura Braille. Son seis puntos en dos columnas de tres, y cada combinación de puntos en relieve representa un símbolo distinto.</dd>
@@ -1028,7 +1028,7 @@
       <dt>Inicio de nota</dt><dd>Instante en que se toca una nota. En inglés se llama onset.</dd>
       <dt>Integración continua</dt><dd>Práctica de ejecutar las pruebas automáticas del código cada vez que se guarda un cambio, para detectar errores en el momento.</dd>
       <dt>Intervalo</dt><dd>Distancia de altura entre dos notas, contada en grados de la escala. Por ejemplo, de Do a Mi hay una tercera.</dd>
-      <dt>Latencia normalizada</dt><dd>Tiempo que tarda el sistema en procesar una grabación dividido entre la duración de esa grabación. Un valor de 0.5 significa que cinco minutos de audio se procesan en dos minutos y medio.</dd>
+      <dt>Latencia normalizada</dt><dd>Tiempo que tarda el sistema en procesar una grabación dividido entre la duración de esa grabación. Un valor de 0.5 significa que cinco minutos de audio se procesan en dos minutos y medio. Aplicada al sistema completo en el cuarto objetivo, la misma medida se llama cociente de procesamiento.</dd>
       <dt>Lector de pantalla</dt><dd>Programa que lee en voz alta o envía a una línea Braille lo que aparece en la pantalla, para que una persona ciega pueda usar una computadora o un teléfono. TalkBack es el de Android.</dd>
       <dt>Ligadura</dt><dd>Línea curva de la partitura. La ligadura de prolongación une dos notas iguales para que suenen como una sola. La de expresión indica que varias notas se tocan unidas, sin cortes.</dd>
       <dt>Línea Braille</dt><dd>Dispositivo que se conecta a una computadora o a un teléfono y forma celdas Braille con pequeñas agujas que suben y bajan, para leer el texto con los dedos. También se le llama pantalla Braille refrescable.</dd>
@@ -1050,12 +1050,12 @@
       <dt>Seguimiento del pulso</dt><dd>Técnica que estima dónde caen los pulsos de la música aunque el intérprete acelere o frene. El cuantizador la usa para colocar cada nota en el compás correcto.</dd>
       <dt>Semicorchea</dt><dd>Figura musical que dura la cuarta parte de una negra. En Braille varias semicorcheas seguidas se pueden agrupar para escribirlas de forma más corta.</dd>
       <dt>Signo de octava</dt><dd>Celda Braille que indica en qué octava está una nota. Se escribe o no según la distancia con la nota anterior.</dd>
-      <dt>Tasa de Error de Nota</dt><dd>Proporción de notas omitidas, sobrantes o equivocadas que comete un modelo respecto de las notas que se tocaron. Mientras más baja, mejor.</dd>
+      <dt>Tasa de Error de Nota</dt><dd>Proporción de notas omitidas, sobrantes o equivocadas que comete un modelo respecto de las notas que se tocaron. Mientras más baja, mejor. Su sigla es NER.</dd>
       <dt>Tempo</dt><dd>Velocidad de la música, medida en pulsos por minuto. Los términos italianos como Adagio o Allegro indican rangos de tempo.</dd>
       <dt>Transcripción Musical Automática</dt><dd>Área que estudia cómo convertir una grabación en las notas que se tocaron, usando programas. Su sigla es AMT.</dd>
       <dt>Transcriptor</dt><dd>Persona especializada que convierte una partitura impresa a musicografía Braille, casi siempre a mano.</dd>
       <dt>Transformer</dt><dd>Tipo de red neuronal que, para cada parte de la entrada, decide a qué otras partes prestar atención. El hFT-Transformer lo usa primero sobre las frecuencias y luego sobre el tiempo.</dd>
-      <dt>Variaciones Goldberg</dt><dd>Obra para teclado de Johann Sebastian Bach formada por un aria y treinta variaciones. Es la colección principal de la evaluación porque el proyecto Open Goldberg Variations publica una grabación y una edición Braille de la misma partitura. Sus piezas se dividieron en una partición de desarrollo y una de prueba.</dd>
+      <dt>Variaciones Goldberg</dt><dd>Obra para teclado de Johann Sebastian Bach formada por un aria, treinta variaciones y la repetición del aria, 32 piezas en total. Es la colección principal de la evaluación porque el proyecto Open Goldberg Variations publica una grabación y una edición Braille de la misma partitura. Sus piezas se dividieron en una partición de desarrollo y una de prueba.</dd>
       <dt>Velocidad</dt><dd>En MIDI, número que indica con qué fuerza se tocó una nota. No tiene relación con el tempo.</dd>
       <dt>Voz</dt><dd>Línea melódica independiente dentro de una obra. Una misma mano puede tocar dos voces a la vez, como una melodía y un acompañamiento.</dd>
     </dl>
@@ -1066,12 +1066,14 @@
         <dt>AST</dt><dd>Árbol de sintaxis abstracta</dd>
         <dt>BRF</dt><dd>Braille Ready Format, formato de archivo listo para Braille</dd>
         <dt>BSA</dt><dd>Exactitud de Símbolo Braille, del inglés Braille Symbol Accuracy</dd>
+        <dt>CPU</dt><dd>Unidad central de procesamiento</dd>
         <dt>CRNN</dt><dd>Red neuronal convolucional recurrente</dd>
         <dt>dBFS</dt><dd>Decibelios respecto de la escala completa</dd>
         <dt>GPU</dt><dd>Unidad de procesamiento gráfico</dd>
         <dt>hFT</dt><dd>Transformer jerárquico de frecuencia y tiempo</dd>
+        <dt>IA</dt><dd>Inteligencia artificial</dd>
         <dt>MIDI</dt><dd>Musical Instrument Digital Interface, interfaz digital de instrumentos musicales</dd>
-        <dt>PWA</dt><dd>Aplicación web progresiva</dd>
+        <dt>NER</dt><dd>Tasa de Error de Nota, del inglés Note Error Rate</dd>
         <dt>WCAG</dt><dd>Pautas de Accesibilidad para el Contenido Web</dd>
         <dt>WCAG-EM</dt><dd>Metodología de evaluación de la conformidad con las WCAG</dd>
     </dl>
