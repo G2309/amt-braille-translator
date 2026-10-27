@@ -708,36 +708,60 @@
 </section>
 
 <!-- 8. Conclusiones -->
-<section class="slide" id="conclusiones" data-peso="150" data-parte="Conclusiones" data-titulo="Conclusiones">
+<section class="slide" id="conclusiones" data-peso="90" data-parte="Conclusiones" data-titulo="Conclusiones por objetivo">
   <div class="contenido centrado">
     <h2 class="titulo-seccion">Conclusiones</h2>
-    <p class="subtitulo">El sistema cumple parcialmente</p>
-    <ol class="lista compacta">
-      <li><span><b>Modelo.</b> Un modelo especializado en piano supera los umbrales. Kong obtuvo 95.89 % de F1 de inicio y 83.74 % a nivel de nota, cerca de lo que publican sus autores. <span class="chip ok">Cumplido</span></span></li>
-      <li><span><b>Ajuste.</b> Mejoró 5.80 puntos en condiciones simuladas perdiendo solo un punto en audio limpio, pero la simulación no representó una grabación casera, donde la partitura bajó 13.3 puntos. <span class="chip parcial">Parcial</span></span></li>
-      <li><span><b>Traductor.</b> Con la partitura correcta llega a 78.8 %, por encima de la meta. Hizo falta agregar la agrupación de semicorcheas, que no estaba planificada. <span class="chip ok">Cumplido</span></span></li>
-      <li><span><b>Integración.</b> Convierte grabaciones de hasta cinco minutos sin intervención y en menos de 1.5 veces su duración en todos los entornos. <span class="chip ok">Cumplido</span></span></li>
-      <li><span><b>Fidelidad.</b> Desde el audio la exactitud quedó entre 33.2 y 46.5 %. La pérdida está en convertir las notas en una partitura con compases, manos y figuras. <span class="chip no">No cumplido</span></span></li>
-      <li><span><b>Acceso.</b> Una persona con lector de pantalla completa sola el flujo en un teléfono, con los 226 elementos etiquetados y TalkBack leyendo bien los diez controles. <span class="chip ok">Cumplido</span></span></li>
-    </ol>
-    <p class="cuerpo" style="margin-top:20px">El sistema construye una herramienta abierta y accesible, y deja medida y ubicada la etapa que hay que mejorar.</p>
+    <p class="subtitulo">¿Qué se concluye de cada objetivo?</p>
+    <p class="lead respuesta">La articulación funciona de extremo a extremo y una persona con lector de pantalla puede operarla sola. Desde audio de estudio la partitura alcanza entre 33.2 y 46.5 %, por debajo del 70 % fijado, y la pérdida se concentra en la reconstrucción de la partitura.</p>
+    <div class="tarjetas tres fijo-tres">
+      <div class="tarjeta conclusion"><h3>1. Modelo</h3><p>El modelo fija el techo de todo el flujo. Se esperaba que uno especializado en piano superara los umbrales, y Kong lo hizo con 83.74 % de F1 de nota. El resultado depende de cómo se mide el final de las notas.</p><span class="chip ok">Cumplido</span></div>
+      <div class="tarjeta conclusion"><h3>2. Ajuste</h3><p>Se esperaba que las degradaciones simuladas representaran al usuario final. En simulación mejoró 5.80 puntos, pero con teléfono las mismas obras perdieron 13.3 puntos, debido a que simular cada degradación por separado no reprodujo una grabación casera.</p><span class="chip parcial">Parcial</span></div>
+      <div class="tarjeta conclusion"><h3>3. Traductor</h3><p>Las reglas deterministas eran la decisión correcta, y con la partitura como entrada llegó a 78.8 %. Lo inesperado fue que las ediciones humanas agrupan las semicorcheas, y sin esa extensión no habría superado la meta.</p><span class="chip ok">Cumplido</span></div>
+      <div class="tarjeta conclusion"><h3>4. Integración</h3><p>Se buscaba una espera viable para estudiar. Convierte sin intervención y en menos de 1.5 veces la duración en todos los entornos, con un máximo de 1.21. En la nube el criterio dependió tanto de la configuración como del código.</p><span class="chip ok">Cumplido</span></div>
+      <div class="tarjeta conclusion"><h3>5. Fidelidad</h3><p>Se esperaba una pérdida moderada frente al F1 acústico y fue mucho mayor, 33.2 % en las piezas de prueba. No se cumplió debido a que la reconstrucción pierde más de la mitad de lo que el traductor logra con una partitura correcta.</p><span class="chip no">No cumplido</span></div>
+      <div class="tarjeta conclusion"><h3>6. Acceso</h3><p>Se diseñó accesible desde el inicio porque una herramienta inaccesible anularía el propósito. Una persona con lector de pantalla completa sola el flujo en un teléfono. En computadora solo se verificó con pruebas automáticas.</p><span class="chip ok">Cumplido</span></div>
+    </div>
   </div>
-  <aside class="notas"><p><b>Concluimos</b></p><p>Con todo esto llego a las conclusiones, y las tomo objetivo por objetivo.</p><p>La elección del modelo se hizo con evidencia y Kong cumple con margen. El ajuste fino funciona en la simulación, pero una grabación casera resultó más difícil que la suma de degradaciones simuladas, por eso ese objetivo se cumple de forma parcial. El traductor determinista es correcto, y con la partitura adecuada supera la meta. El sistema convierte sin intervención y a tiempo en todos los entornos donde lo probé. La exactitud desde audio no llega al 70 %, porque la reconstrucción de la partitura pierde más de la mitad de lo que el traductor logra con una partitura correcta. Y una persona con lector de pantalla puede completar el flujo sola en un teléfono.</p><p>En conjunto, el sistema cumple parcialmente su propósito. Logra ser una herramienta abierta y accesible que convierte grabaciones en Braille sin intervención, pero todavía no alcanza la exactitud para usarse sin revisión. Lo que sí deja es la etapa que hay que mejorar, medida y localizada.</p><p>Respondiendo a la pregunta, la arquitectura híbrida sí cubre el paso que faltaba entre la grabación y el Braille, con 33 a 47 % de exactitud en grabaciones de estudio. Hoy esa partitura sirve como un primer borrador que alguien tiene que revisar.</p></aside>
+  <aside class="notas"><p><b>Conclusiones por objetivo</b></p><p>La pregunta era en qué medida este sistema puede generar partituras Braille con la exactitud necesaria para el uso autónomo. La respuesta corta es que la cadena funciona de principio a fin y una persona ciega la puede usar sola, pero la partitura que sale del audio queda entre 33 y 47 %, lejos del 70 que me propuse. Y esa pérdida tiene un lugar, la reconstrucción de la partitura.</p><p class="accion">Recorro las tarjetas.</p><p>En el primer objetivo, elegí el modelo con evidencia porque esa etapa pone el techo de todo lo demás. Esperaba que un modelo especializado en piano pasara los umbrales y Kong lo hizo. Lo que aprendí ahí es que el resultado depende mucho de cómo se mide el final de las notas, porque esa convención movió el F1 de 33 a casi 84 %.</p><p>En el segundo, esperaba que las degradaciones simuladas se parecieran a lo que graba una persona en su casa. En la simulación el ajuste cumplió, pero con teléfono las mismas obras perdieron 13.3 puntos. Simular el ruido, el eco y la compresión por separado no reprodujo una grabación casera, y por eso queda parcial.</p><p>En el tercero, usar reglas deterministas resultó la decisión correcta, porque con la partitura como entrada el traductor llega a 78.8 %. Lo que no esperaba es que las ediciones humanas agruparan siempre las semicorcheas, y sin agregar esa regla no habría pasado la meta.</p><p>En el cuarto, la espera es viable en todos los entornos, con un máximo de 1.21 veces la duración. La nube me enseñó que ese número depende tanto de cómo se configura el contenedor como del código.</p><p>El quinto es el que no se cumplió. Esperaba perder algunos puntos frente al F1 del modelo y perdí mucho más. La razón es que la reconstrucción de la partitura se lleva más de la mitad de lo que el traductor logra con una partitura correcta.</p><p>Y en el sexto, diseñé la aplicación accesible desde el inicio, porque si una persona ciega no la puede usar el proyecto pierde su razón de ser. En el teléfono completa el flujo sola. En computadora solo lo verifiqué con pruebas automáticas.</p></aside>
+</section>
+
+<section class="slide" id="conclusion-general" data-peso="60" data-parte="Conclusiones" data-titulo="Conclusión general">
+  <div class="contenido centrado">
+    <h2 class="titulo-seccion">Conclusiones</h2>
+    <p class="subtitulo">El sistema cumple parcialmente su propósito</p>
+    <div class="tarjetas tres fijo-tres">
+      <div class="tarjeta oscura"><h3>Conclusión general</h3><p>Cumple la construcción de una herramienta abierta y accesible que convierte grabaciones en Braille sin intervención. No alcanza la exactitud para el uso autónomo, debido a que el paso de notas a partitura concentra la pérdida y a que el teléfono agrega notas partidas. La distancia al transcriptor quedó medida en 57 grabaciones y ubicada en una etapa.</p></div>
+      <div class="tarjeta"><h3>Limitaciones</h3><ul><li>Las Goldberg vienen de una sola intérprete</li><li>Un solo teléfono en una sola sala</li><li>Sin evaluación con personas ciegas, así que la utilidad de la partitura queda sin comprobar</li></ul></div>
+      <div class="tarjeta"><h3>Aporte</h3><ul><li>Cruza la frontera entre la transcripción acústica y la traducción Braille, que ningún antecedente cubría</li><li>Una forma reproducible de medir una partitura Braille contra ediciones humanas</li><li>Hoy entrega un primer borrador que reduce la dependencia de un intermediario</li></ul></div>
+    </div>
+  </div>
+  <aside class="notas"><p><b>Conclusión general</b></p><p>Juntando los seis objetivos, el sistema cumple parcialmente su propósito. Cumple en construir una herramienta abierta y accesible que convierte grabaciones en Braille sin que nadie intervenga. No alcanza la exactitud para el uso autónomo, debido a dos cosas. El paso de las notas a una partitura con compases, manos y figuras es donde se pierde casi todo, y las grabaciones con teléfono agregan notas partidas que el ajuste no anticipó. El objetivo general sí se cumple, porque pedía construir el sistema y determinar qué tan lejos queda de un transcriptor, y esa distancia quedó medida en 57 grabaciones y ubicada en una etapa.</p><p class="accion">Señalo Limitaciones.</p><p>Estas cifras hay que leerlas con sus condiciones. Las Goldberg vienen de una sola intérprete, las grabaciones con teléfono se hicieron con un solo teléfono en una sola habitación, y la limitación de más peso es que no hubo evaluación con personas ciegas. El trabajo arrancó a finales de marzo, cuando se aprobó el tema, y no hubo tiempo de coordinar sesiones con un grupo tan pequeño y difícil de contactar. Por eso no sé todavía si un 33 % ya sirve para estudiar o no.</p><p class="accion">Señalo Aporte.</p><p>Lo que deja el trabajo es un sistema que cruza la frontera entre la transcripción de audio y la traducción a Braille, que ninguno de los antecedentes cubría, y una forma reproducible de medir una partitura Braille contra ediciones humanas, que se puede usar con otros sistemas. Con la exactitud de hoy la partitura funciona como un primer borrador que alguien revisa, así que reduce la dependencia de un transcriptor sin eliminarla.</p></aside>
 </section>
 
 <section class="slide" id="recomendaciones" data-peso="60" data-parte="Recomendaciones" data-titulo="Recomendaciones">
   <div class="contenido centrado">
     <h2 class="titulo-seccion">Recomendaciones</h2>
-        <ol class="lista">
-      <li><span><b>Modelo.</b> Probar el hFT-Transformer dentro del pipeline completo y medir el modelo con pianos y salas fuera de MAESTRO.</span></li>
-      <li><span><b>Ajuste.</b> Ajustar con grabaciones de teléfono emparejadas con el MIDI de un piano digital y unir los reataques de una misma tecla.</span></li>
-      <li><span><b>Traductor.</b> Admitir un compás distinto por mano y separar voces solo en obras contrapuntísticas.</span></li>
-      <li><span><b>Integración.</b> Estimar tempo, compás y armadura de forma automática y medir la espera con varios usuarios.</span></li>
-      <li><span><b>Fidelidad.</b> Aprender el reparto de manos y ajustar el seguimiento del pulso para tempos lentos.</span></li>
-      <li><span><b>Acceso.</b> Evaluar con estudiantes ciegos de piano y docentes, y con NVDA, VoiceOver y Orca.</span></li>
-    </ol>
+    <p class="subtitulo">¿Qué hallazgo origina cada una y qué se espera?</p>
+    <div class="desplazable">
+      <table class="tabla compacta recomendaciones">
+        <thead><tr><th>Hallazgo</th><th>Recomendación</th><th>Se espera</th></tr></thead>
+        <tbody>
+          <tr><td>1. hFT-Transformer tuvo 5.6 puntos más de F1, sin medir su efecto en la partitura</td><td>Transcribir con él las piezas de prueba y comparar su BSA con el 33.2 %</td><td>Decidir con un dato si conviene cambiar de modelo</td></tr>
+          <tr><td>2. Con teléfono los reataques pasan de 1.2 a 9.0 % y la exactitud baja 13.3 puntos</td><td>Filtro que una los ataques repetidos de una tecla y ajuste con teléfonos y MIDI de un piano digital</td><td>Menos notas partidas y un F1 medible con teléfono</td></tr>
+          <tr><td>3. La Variación 26 tiene un compás por mano y las voces bajan la música con acompañamiento</td><td>Compás por mano, voces solo si un detector de textura las encuentra, y signos de pedal y matices</td><td>Más exactitud y cobertura sin cambiar la arquitectura</td></tr>
+          <tr><td>4. El modelo no estima compás ni armadura y la latencia se midió con un usuario</td><td>Estimarlos de las notas transcritas y medir la espera con varias conversiones a la vez</td><td>Pedir menos datos y conocer la capacidad del servicio</td></tr>
+          <tr><td>5. Manos que se cruzan 31.5 % frente a 37.7 % y piezas lentas con poco ritmo</td><td>Clasificador de manos entrenado con partituras y ventana de pulso más amplia</td><td>Subir alturas y ritmo donde más puede crecer el BSA</td></tr>
+          <tr><td>6. En computadora solo hubo pruebas automáticas</td><td>Recorrer el flujo con NVDA, VoiceOver y Orca</td><td>Completar la verificación en computadora</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tarjetas tres fijo-tres rec-extra">
+      <div class="tarjeta"><h3>Con personas</h3><p>Sesiones con estudiantes ciegos de piano y docentes para saber qué exactitud hace falta para estudiar.</p></div>
+      <div class="tarjeta"><h3>Ahorro del transcriptor</h3><p>Medir cuánto tiempo ahorra corregir el borrador frente a transcribir desde cero.</p></div>
+      <div class="tarjeta"><h3>Línea futura</h3><p>La reconstrucción de la partitura como problema de investigación propio.</p></div>
+    </div>
   </div>
-  <aside class="notas"><p><b>Recomendaciones</b></p><p>Las recomendaciones salen directo del análisis, y las ordené igual que los objetivos, porque cada una atiende lo que quedó abierto en el suyo.</p><p>Para el primero, probaría el hFT-Transformer dentro del sistema completo, para confirmar que sus 5.6 puntos de ventaja casi no cambian la partitura final. Para el segundo, ajustaría el modelo con grabaciones de teléfono hechas mientras un piano digital registra lo que se toca, y uniría los reataques de la misma tecla. Para el tercero, haría que el traductor acepte un compás distinto en cada mano y que separe voces solo cuando la obra es contrapuntística. Para el cuarto, estimaría tempo, compás y armadura para que la persona no tenga que darlos, y mediría la espera con varias conversiones al mismo tiempo antes de abrir el servicio a más gente. Para el quinto, aprendería el reparto de manos con datos y ajustaría el seguimiento del pulso para las piezas lentas, que son justo los dos grupos donde más se pierde. Y para el sexto, que considero la más importante, evaluaría con estudiantes ciegos y docentes, y con lectores de escritorio.</p></aside>
+  <aside class="notas"><p><b>Recomendaciones</b></p><p>Cada recomendación sale de un hallazgo concreto, propone una acción y dice qué se espera lograr. Las seis de la tabla siguen el orden de los objetivos.</p><p>En el modelo, el hFT-Transformer sacó 5.6 puntos más de F1 y yo inferí que eso casi no cambiaría la partitura, pero no lo comprobé. Lo recomiendo pasar por el sistema completo y comparar su BSA con el 33.2 %, para decidir con un dato.</p><p>En el ajuste, como el teléfono parte las notas, primero agregaría un filtro que una los ataques repetidos de la misma tecla. Después grabaría con varios teléfonos mientras un piano digital registra lo que se toca, y con esos pares repetiría el ajuste fino.</p><p>En el traductor, admitiría un compás distinto en cada mano, separaría voces solo cuando un detector encuentre voces independientes y agregaría pedal y matices, que el modelo ya estima.</p><p>En la integración, estimaría compás y armadura desde las notas para no pedírselos a la persona, y mediría la espera con varias conversiones al mismo tiempo.</p><p>En la fidelidad, que es donde más se puede ganar, cambiaría el reparto de manos por registro por un clasificador entrenado con partituras que marcan la mano de cada nota, y ampliaría la ventana del pulso para las piezas lentas.</p><p>Y en el acceso, recorrería el flujo con NVDA, VoiceOver y Orca para completar la prueba en computadora.</p><p class="accion">Señalo las tres tarjetas de abajo.</p><p>Fuera del sistema quedan tres más. La más importante es evaluar con estudiantes ciegos y docentes, para saber qué exactitud hace falta de verdad para estudiar una obra. También medir cuánto tiempo le ahorra a un transcriptor corregir el borrador en lugar de empezar de cero, que era la motivación del proyecto. Y como línea de investigación, estudiar la reconstrucción de la partitura como un problema propio, porque es justo donde se pierde la exactitud y casi no hay literatura sobre eso.</p></aside>
 </section>
 
 <section class="slide" id="mejoras" data-peso="60" data-parte="Recomendaciones" data-titulo="Pipeline propuesto">
@@ -748,59 +772,9 @@
       <div class="pestanas" role="group" aria-label="Elegir diagrama"></div>
       <div class="pila">
 
-        <div class="lamina" data-pestana="Hoy" role="group" aria-label="Dónde se pierde la exactitud hoy">
-          <div class="encabezado"><span class="etiqueta">Mejoras 1 de 4 · punto de partida</span></div>
-          <h3>Dónde se pierde la exactitud hoy</h3>
-          <div class="flujo">
-            <div class="nodo"><b>Audio</b><small>14 piezas de prueba de Goldberg</small></div>
-            <div class="conector"></div>
-            <div class="nodo perdida"><span class="grande">62.9%</span><b>Notas por compás</b><small>Faltan o sobran notas</small></div>
-            <div class="conector"></div>
-            <div class="nodo perdida"><span class="grande">43.2%</span><b>Alturas en orden</b><small>Orden dentro de cada mano</small></div>
-            <div class="conector"></div>
-            <div class="nodo perdida"><span class="grande">56.1%</span><b>Figura correcta</b><small>De tiempos a figuras</small></div>
-            <div class="conector"></div>
-            <div class="nodo acento"><span class="grande">33.2%</span><b>BSA final</b><small>Meta de 70 %</small></div>
-          </div>
-          <div class="flujo" style="margin-top:4px">
-            <div class="nodo nuevo"><span class="grande">78.8%</span><b>El mismo traductor con la partitura correcta</b><small>La traducción no es el problema</small></div>
-          </div>
-          <p class="leyenda"><span class="l-perdida">Etapa donde se pierde exactitud</span><span class="l-nuevo">Referencia que sí cumple la meta</span></p>
-        </div>
-
-        <div class="lamina" data-pestana="Pipeline propuesto" role="group" aria-label="Pipeline propuesto" hidden>
-          <div class="encabezado"><span class="etiqueta">Mejoras 2 de 4 · calidad de la partitura</span></div>
-          <h3>El pipeline con las etapas nuevas</h3>
-          <div class="dos-columnas">
-            <div>
-              <h4>Etapa acústica</h4>
-              <div class="columna">
-                <div class="nodo"><b>Audio y normalizador</b></div>
-                <div class="conector v"></div>
-                <div class="nodo nuevo"><b>Modelo ajustado con grabaciones de teléfono</b><small>Teléfono grabando mientras un piano digital registra el MIDI</small></div>
-                <div class="conector v"></div>
-                <div class="nodo nuevo"><b>Unión de fragmentos de una nota</b><small>Ataca los reataques de 9 % medidos con teléfono</small></div>
-              </div>
-            </div>
-            <div>
-              <h4>Etapa simbólica</h4>
-              <div class="columna">
-                <div class="nodo nuevo"><b>Tempo, compás y armadura estimados</b><small>La persona ya no tiene que darlos</small></div>
-                <div class="conector v"></div>
-                <div class="nodo nuevo"><b>Reparto de manos aprendido</b><small>Clasificador entrenado con partituras que marcan la mano</small></div>
-                <div class="conector v"></div>
-                <div class="nodo nuevo"><b>Voces según la textura</b><small>Solo en obras contrapuntísticas</small></div>
-                <div class="conector v"></div>
-                <div class="nodo acento"><b>Cuantizador, traductor y BRF</b><small>Se conservan sin cambios</small></div>
-              </div>
-            </div>
-          </div>
-          <p class="leyenda"><span class="l-nuevo">Etapa nueva</span><span>Etapa que ya existe</span></p>
-        </div>
-
-        <div class="lamina" data-pestana="Muchos usuarios" role="group" aria-label="Arquitectura para muchos usuarios" hidden>
-          <div class="encabezado"><span class="etiqueta">Mejoras 3 de 4 · escala</span></div>
-          <h3>La arquitectura para muchos usuarios</h3>
+        <div class="lamina" data-pestana="Pipeline propuesto" role="group" aria-label="Pipeline propuesto para muchos usuarios">
+          <div class="encabezado"><span class="etiqueta">Mejoras 1 de 2 · escala</span></div>
+          <h3>El pipeline propuesto para muchos usuarios</h3>
           <div class="flujo">
             <div class="nodo"><b>Cliente web</b></div>
             <div class="conector"></div>
@@ -823,7 +797,7 @@
         </div>
 
         <div class="lamina" data-pestana="Con personas" role="group" aria-label="Validación con personas" hidden>
-          <div class="encabezado"><span class="etiqueta">Mejoras 4 de 4 · validación</span></div>
+          <div class="encabezado"><span class="etiqueta">Mejoras 2 de 2 · validación</span></div>
           <h3>La prueba que más falta: con personas</h3>
           <div class="flujo">
             <div class="nodo"><b>Estudiantes ciegos de piano y un docente</b></div>
@@ -847,7 +821,7 @@
       <p class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><p><b>Recomendaciones · pipeline propuesto</b></p><p>Así se vería el sistema con esas mejoras. La tarjeta se gira con el botón.</p><p class="accion">Giro a Pipeline propuesto.</p><p>Lo verde es lo nuevo. En la parte acústica entraría el modelo ajustado con grabaciones de teléfono y un paso que une los fragmentos de una misma nota. En la parte simbólica entrarían la estimación de tempo y compás, el reparto de manos aprendido y las voces según la textura de la obra. El cuantizador y el traductor se quedan como están.</p><p class="accion">Giro a Muchos usuarios.</p><p>Si el servicio creciera, separaría la API de los trabajadores que hacen las conversiones. Los trabajos irían a una cola, su estado a una base SQL o a Redis y los archivos a un almacenamiento compartido. Como cada conversión depende solo de su audio y sus datos, y no recuerda nada de las anteriores, el mismo código puede correr en cualquier trabajador sin cambios.</p><p class="accion">Giro a Con personas.</p><p>Y por último la validación con personas. La BSA dice cuánto se parece la partitura a la de un transcriptor, pero solo alguien que la lea puede decir si con eso ya se puede estudiar.</p></aside>
+  <aside class="notas"><p><b>Recomendaciones · pipeline propuesto</b></p><p>Aquí muestro cómo crecería el sistema si lo usara mucha gente.</p><p class="accion">Pipeline propuesto.</p><p>Hoy la API y la conversión viven en el mismo contenedor. Si el servicio creciera, separaría la API de los trabajadores que hacen las conversiones. Un balanceador repartiría las peticiones entre varias copias de la API, los trabajos irían a una cola, su estado a una base SQL o a Redis y los archivos a un almacenamiento compartido. Como cada conversión depende solo de su audio y sus datos, y no recuerda nada de las anteriores, el mismo código puede correr en cualquier trabajador sin cambios.</p><p class="accion">Giro a Con personas.</p><p>Y la prueba que más falta es con personas. La BSA dice cuánto se parece la partitura a la de un transcriptor, pero solo alguien que la lea puede decir si con eso ya se puede estudiar.</p></aside>
 </section>
 
 <!-- 10. Pendientes -->
