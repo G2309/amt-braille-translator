@@ -503,3 +503,7 @@ body.presentando .hero .campo { height: 100vh; min-height: 0; padding-top: 72px;
 .leyenda-meta .muestra.gris { background: #c9ccd3; }
 .leyenda-meta .muestra.azul { background: var(--blue); margin-left: 10px; }
 @media (max-width: 760px) { .barras.comparadas .barra { grid-template-columns: 1fr 130px; } }
+
+/* Objetivo visible sobre la cara del resultado */
+.cara.resultado .recordatorio { margin: 4px 0 0; color: var(--gray-tinted); font-size: 17px; font-weight: 500; text-align: left; }
+.pieza { min-height: 130px; }

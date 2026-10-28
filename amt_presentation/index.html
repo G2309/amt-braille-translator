@@ -95,11 +95,11 @@
     <h2 class="titulo-seccion">Orígenes y alternativas</h2>
     <p class="subtitulo">Existen tecnologías, pero no se hablan entre sí</p>
     <div class="cadena">
-      <div class="eslabon"><b>Grabación</b><span>Lo que existe para casi cualquier obra</span></div>
-      <div class="eslabon"><b>Transcripción Musical Automática</b><span>Reconoce las notas de una grabación</span></div>
-      <div class="eslabon acento"><b>El paso que falta</b><span>Convertir esas notas en una partitura</span></div>
-      <div class="eslabon"><b>Traducción a musicografía Braille</b><span>Convierte una partitura digital a Braille</span></div>
-      <div class="eslabon"><b>Partitura Braille</b><span>Lo que necesita la persona ciega</span></div>
+      <div class="eslabon"><b>Grabación</b></div>
+      <div class="eslabon"><b>Transcripción Musical Automática</b></div>
+      <div class="eslabon acento"><b>El paso que falta</b></div>
+      <div class="eslabon"><b>Traducción a musicografía Braille</b></div>
+      <div class="eslabon"><b>Partitura Braille</b></div>
     </div>
     <div class="desplazable">
       <table class="tabla compacta">
@@ -123,12 +123,12 @@
     <p class="subtitulo">Un sistema que escucha y escribe Braille</p>
     <p class="lead">Objetivo general: desarrollar un sistema de código abierto, usable por personas con discapacidad visual, que convierta grabaciones de piano de hasta cinco minutos en partituras Braille, y determinar qué tan cerca quedan de las de un transcriptor humano.</p>
     <div class="tarjetas tres fijo-tres">
-      <div class="tarjeta"><h3>1. Elegir el modelo</h3><p>Comparar tres familias de transcripción sobre obras completas.</p><span class="chip">F1 de nota ≥ 75 %</span></div>
-      <div class="tarjeta"><h3>2. Ajustarlo</h3><p>Hacerlo robusto a ruido, reverberación y micrófono de teléfono.</p><span class="chip">+5 puntos fuera de estudio</span></div>
-      <div class="tarjeta"><h3>3. Traducir</h3><p>Traductor determinista con las reglas del Manual de Aller Pérez.</p><span class="chip">28 reglas probadas</span></div>
-      <div class="tarjeta"><h3>4. Integrar</h3><p>De audio a BRF sin intervención y en tiempo razonable.</p><span class="chip">≤ 1.5 veces la duración</span></div>
-      <div class="tarjeta"><h3>5. Medir fidelidad</h3><p>Comparar con ediciones Braille hechas por personas.</p><span class="chip">Exactitud ≥ 70 %</span></div>
-      <div class="tarjeta"><h3>6. Acceso autónomo</h3><p>Cliente usable con lector de pantalla en computadora y teléfono.</p><span class="chip">100 % etiquetado</span></div>
+      <div class="tarjeta"><h3>1. Elegir el modelo</h3><span class="chip">F1 de nota ≥ 75 %</span></div>
+      <div class="tarjeta"><h3>2. Ajustarlo</h3><span class="chip">+5 puntos fuera de estudio</span></div>
+      <div class="tarjeta"><h3>3. Traducir</h3><span class="chip">28 reglas probadas</span></div>
+      <div class="tarjeta"><h3>4. Latencia objetivo</h3><span class="chip">≤ 1.5 veces la duración</span></div>
+      <div class="tarjeta"><h3>5. Medir fidelidad</h3><span class="chip">Exactitud ≥ 70 %</span></div>
+      <div class="tarjeta"><h3>6. Acceso autónomo</h3><span class="chip">100 % etiquetado</span></div>
     </div>
   </div>
   <aside class="notas"><p><b>Pregunta, objetivo general y objetivos</b></p><p>Con eso llego a mi pregunta de investigación. ¿En qué medida un sistema que une un modelo acústico con un traductor determinista puede generar partituras Braille desde grabaciones de piano, con la exactitud necesaria para que una persona las use de forma autónoma?</p><p>El objetivo general sale directo de esa pregunta y tiene dos partes. La primera es construir un sistema abierto y accesible que convierta grabaciones de hasta cinco minutos en partituras Braille. La segunda es medir qué tan cerca quedan esas partituras de las que hace un transcriptor humano.</p><p>La decisión de fondo fue hacer un sistema híbrido. La parte que escucha usa inteligencia artificial, porque reconocer notas en un audio siempre es una aproximación. La parte que escribe Braille es determinista, porque la normativa tiene reglas fijas y ahí no se vale aproximar. Tenerlas separadas me permitió medir cada una por su lado, y eso va a ser clave cuando lleguemos al análisis.</p><p class="accion">Recorro las tarjetas en orden.</p><p>Los seis objetivos siguen el mismo camino que recorre el audio. Primero elegir el modelo, después ajustarlo para que funcione con grabaciones fuera del estudio, luego traducir con 28 reglas del Manual de Aller Pérez, integrar todo para que tarde menos de 1.5 veces lo que dura el audio, medir la fidelidad contra ediciones hechas por personas y, al final, lograr que una persona ciega pueda usarlo sola. Les pido que se queden con la meta del quinto, 70 % de exactitud, porque es la que responde la pregunta.</p></aside>
@@ -178,14 +178,14 @@
     <h2 class="titulo-seccion">Desarrollo</h2>
     <p class="subtitulo">Siete fases, cada una encaja sobre la anterior</p>
     <div class="rompecabezas">
-      <div class="pieza p-coral"><small>Fase 1</small><b>Investigación y diseño</b><span>Revisión de modelos, 28 reglas del Manual y una arquitectura en dos etapas</span><em>Todos los objetivos</em></div>
-      <div class="pieza p-oro"><small>Fase 2</small><b>Modelo acústico</b><span>Benchmark de tres modelos, normalizador y ajuste fino en Kaggle</span><em>Objetivos 1 y 2</em></div>
-      <div class="pieza p-azul"><small>Fase 3</small><b>Traductor Braille</b><span>Cuantizador, árbol sintáctico, máquina de estados y exportador BRF, con pruebas por regla</span><em>Objetivo 3</em></div>
-      <div class="pieza p-lila"><small>Fase 4</small><b>Pipeline y API</b><span>FastAPI con conversión en segundo plano y medición de latencia</span><em>Objetivo 4</em></div>
-      <div class="pieza p-verde"><small>Fase 5</small><b>Evaluación</b><span>Métrica BSA, comparación con ediciones humanas y mejoras del cuantizador</span><em>Objetivo 5</em></div>
-      <div class="pieza p-coral"><small>Fase 6</small><b>Cliente accesible</b><span>Aplicación web en Flutter con tres modos, auditoría y recorrido con TalkBack</span><em>Objetivo 6</em></div>
-      <div class="pieza p-oro"><small>Fase 7</small><b>Documentación y cierre</b><span>Informe, documentación del repositorio y liberación en main</span><em>Todos los objetivos</em></div>
-      <div class="pieza suelta"><small>Resultado</small><b>Sistema completo</b><span>Aplicación publicada, API en Railway y código abierto</span></div>
+      <div class="pieza p-coral"><small>Fase 1</small><b>Investigación y diseño</b><em>Todos los objetivos</em></div>
+      <div class="pieza p-oro"><small>Fase 2</small><b>Modelo acústico</b><em>Objetivos 1 y 2</em></div>
+      <div class="pieza p-azul"><small>Fase 3</small><b>Traductor Braille</b><em>Objetivo 3</em></div>
+      <div class="pieza p-lila"><small>Fase 4</small><b>Pipeline y API</b><em>Objetivo 4</em></div>
+      <div class="pieza p-verde"><small>Fase 5</small><b>Evaluación</b><em>Objetivo 5</em></div>
+      <div class="pieza p-coral"><small>Fase 6</small><b>Cliente accesible</b><em>Objetivo 6</em></div>
+      <div class="pieza p-oro"><small>Fase 7</small><b>Documentación y cierre</b><em>Todos los objetivos</em></div>
+      <div class="pieza suelta"><small>Resultado</small><b>Sistema completo</b></div>
     </div>
   </div>
   <aside class="notas"><p><b>Desarrollo · fases</b></p><p>Esta lámina muestra cómo se armó el proyecto, pieza por pieza. Lo trabajé con Scrumban en dieciséis semanas y siete sprints, y cada fase deja algo que la siguiente usa.</p><p class="accion">Recorro las piezas de arriba.</p><p>En la primera fase investigué. Revisé los modelos de transcripción de piano por familias, elegí las 28 reglas del Manual que iba a cubrir y decidí la arquitectura en dos etapas, una que escucha y otra que escribe, unidas por una lista de notas con inicio, final, altura y velocidad.</p><p>En la segunda trabajé el modelo. Comparé tres modelos sobre 20 obras completas, agregué un normalizador de volumen y después hice el ajuste fino en Kaggle con audio degradado. Aquí tuve que repetir dos cosas. El primer benchmark le dio 33 % a Kong, muy lejos de lo publicado, y el problema estaba en cómo evaluaba los finales de nota. Y la primera corrida del ajuste perdía 2.12 puntos en audio limpio, así que cambié la estrategia y la segunda sí cumplió.</p><p>La tercera fue el traductor, con el cuantizador, el árbol sintáctico, la máquina de estados y el exportador, cada regla con su prueba. Esta fase la adelanté, porque el traductor solo necesitaba la lista de notas y no dependía de qué modelo ganara.</p><p>En la cuarta uní todo en una API con FastAPI que convierte en segundo plano, y medí cuánto tarda.</p><p class="accion">Bajo a la segunda fila.</p><p>En la quinta evalué contra ediciones Braille hechas por personas, con la métrica BSA. Esa medición mostró que la mayor parte del error venía del paso de tiempos a figuras, compases y manos, y ahí hice las mejoras de pulso, manos y armónicos.</p><p>La sexta fue el cliente en Flutter, con sus tres modos, las auditorías de accesibilidad y el recorrido con TalkBack. Y la séptima fue la documentación, el informe y la liberación en main.</p><p>La pieza oscura es lo que sale al juntar todo, una aplicación publicada, una API en Railway y el código abierto.</p></aside>
@@ -199,25 +199,8 @@
       <div class="pestanas" role="group" aria-label="Elegir diagrama"></div>
       <div class="pila">
 
-        <div class="lamina" data-pestana="Contexto" role="group" aria-label="Diagrama de contexto">
-          <div class="encabezado"><span class="etiqueta">Diagrama 1 de 4 · contexto</span></div>
-          <h3>Quién lo usa y qué entrega</h3>
-          <div class="flujo">
-            <div class="nodo"><b>Usuari@</b><small>Con o sin discapacidad visual</small></div>
-            <div class="conector"></div>
-            <div class="nodo"><b>Grabación de piano</b><small>MP3, WAV, FLAC o M4A de hasta cinco minutos</small></div>
-            <div class="conector"></div>
-            <div class="nodo acento"><b>amt-braille-translator</b><small>Transcribe y traduce sin intervención</small></div>
-            <div class="conector"></div>
-            <div class="nodo"><b>Partitura BRF</b><small>Formato de las líneas y las impresoras Braille</small></div>
-            <div class="conector"></div>
-            <div class="nodo"><b>Lectura táctil</b><small>Línea Braille, impresora Braille o lector de pantalla</small></div>
-          </div>
-          <p class="lectura">Usuari@ solo aporta la grabación y tres datos de la obra, que son tempo, compás y armadura. Todo lo demás ocurre dentro del sistema.</p>
-        </div>
-
-        <div class="lamina" data-pestana="Despliegue" role="group" aria-label="Diagrama de despliegue" hidden>
-          <div class="encabezado"><span class="etiqueta">Diagrama 2 de 4 · despliegue</span></div>
+        <div class="lamina" data-pestana="Despliegue" role="group" aria-label="Diagrama de despliegue">
+          <div class="encabezado"><span class="etiqueta">Diagrama 1 de 3 · despliegue</span></div>
           <h3>Dónde corre cada parte</h3>
           <div class="despliegue">
             <div class="grupo" style="grid-area:pages"><span class="titulo-grupo">GitHub Pages</span><div class="nodo"><b>Aplicación web compilada</b><small>Archivos estáticos de Flutter</small></div></div>
@@ -232,7 +215,7 @@
         </div>
 
         <div class="lamina" data-pestana="Secuencia" role="group" aria-label="Diagrama de secuencia de una conversión" hidden>
-          <div class="encabezado"><span class="etiqueta">Diagrama 3 de 4 · secuencia</span></div>
+          <div class="encabezado"><span class="etiqueta">Diagrama 2 de 3 · secuencia</span></div>
           <h3>Una conversión de principio a fin</h3>
           <div class="secuencia">
             <div class="actor" style="grid-column:1">Persona</div>
@@ -252,7 +235,7 @@
         </div>
 
         <div class="lamina" data-pestana="Traductor" role="group" aria-label="Árbol de la partitura y máquina de estados" hidden>
-          <div class="encabezado"><span class="etiqueta">Diagrama 4 de 4 · traductor</span></div>
+          <div class="encabezado"><span class="etiqueta">Diagrama 3 de 3 · traductor</span></div>
           <h3>Un árbol para la partitura y estados para el contexto</h3>
           <div class="dos-columnas">
             <div>
@@ -299,7 +282,7 @@
       <p class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><p><b>Desarrollo · diagramas</b></p><p>Estos cuatro diagramas muestran cómo está montado el sistema por dentro, y se cambian con las pestañas.</p><p class="accion">Contexto.</p><p>El primero es el más sencillo. La persona solo pone la grabación y tres datos de la obra, que son tempo, compás y armadura. Todo lo demás pasa dentro del sistema, y lo que recibe es el archivo BRF para leerlo con una línea Braille, una impresora o el lector de pantalla.</p><p class="accion">Giro a Despliegue.</p><p>Aquí se ve dónde vive cada parte. El cliente es estático y está en GitHub Pages. La API corre en Railway en modo serverless, es decir, se apaga cuando nadie la usa y despierta con la primera petición. El modelo ajustado está publicado en GitHub y entra en la imagen del contenedor, y esa misma imagen también corre en una computadora local.</p><p class="accion">Giro a Secuencia.</p><p>Esta es la conversación entre la aplicación y el servidor. La aplicación sube el audio y el servidor responde de inmediato con un número de trabajo, mientras convierte en segundo plano. La aplicación pregunta cada dos segundos cómo va y, cuando está listo, descarga el BRF. En cada cambio de estado el lector de pantalla avisa.</p><p class="accion">Giro a Traductor.</p><p>A la izquierda está el árbol, que guarda qué tiene la partitura, es decir, manos, compases, notas y acordes. A la derecha está la regla que más contexto pide, la de octava. En Braille la celda de una nota no dice en qué octava está, y poner el signo en cada nota llenaría la página. Por eso la máquina de estados recuerda la nota anterior y mide el salto. Si es de tercera o menos no lleva signo, porque se entiende que la nota está cerca. Si es de sexta o más lo lleva siempre. Con cuarta o quinta depende de si se cruzó a otra octava, por ejemplo de Si3 a Mi4. Y la primera nota de cada renglón siempre lleva signo.</p></aside>
+  <aside class="notas"><p><b>Desarrollo · diagramas</b></p><p>Estos tres diagramas muestran cómo está montado el sistema por dentro, y se cambian con las pestañas.</p><p class="accion">Giro a Despliegue.</p><p>Aquí se ve dónde vive cada parte. El cliente es estático y está en GitHub Pages. La API corre en Railway en modo serverless, es decir, se apaga cuando nadie la usa y despierta con la primera petición. El modelo ajustado está publicado en GitHub y entra en la imagen del contenedor, y esa misma imagen también corre en una computadora local.</p><p class="accion">Giro a Secuencia.</p><p>Esta es la conversación entre la aplicación y el servidor. La aplicación sube el audio y el servidor responde de inmediato con un número de trabajo, mientras convierte en segundo plano. La aplicación pregunta cada dos segundos cómo va y, cuando está listo, descarga el BRF. En cada cambio de estado el lector de pantalla avisa.</p><p class="accion">Giro a Traductor.</p><p>A la izquierda está el árbol, que guarda qué tiene la partitura, es decir, manos, compases, notas y acordes. A la derecha está la regla que más contexto pide, la de octava. En Braille la celda de una nota no dice en qué octava está, y poner el signo en cada nota llenaría la página. Por eso la máquina de estados recuerda la nota anterior y mide el salto. Si es de tercera o menos no lleva signo, porque se entiende que la nota está cerca. Si es de sexta o más lo lleva siempre. Con cuarta o quinta depende de si se cruzó a otra octava, por ejemplo de Si3 a Mi4. Y la primera nota de cada renglón siempre lleva signo.</p></aside>
 </section>
 
 <section class="slide" id="caso" data-peso="60" data-parte="Desarrollo" data-titulo="Un caso real">
@@ -329,9 +312,9 @@
     <h2 class="titulo-seccion">Desarrollo</h2>
     <p class="subtitulo">¿Qué cambió en el camino?</p>
     <div class="tarjetas tres">
-      <div class="tarjeta"><h3>Aplicación web, no APK</h3><p>Un enlace se comparte más fácil y la misma compilación sirve en computadora y teléfono.</p></div>
-      <div class="tarjeta"><h3>Hilos, no cola distribuida</h3><p>Trabajando solo, prioricé un servicio simple de operar que corre en una computadora local.</p></div>
-      <div class="tarjeta"><h3>Agrupación de semicorcheas</h3><p>Las ediciones humanas la usan siempre. Sin ella, tres de cada cuatro semicorcheas correctas contaban como error.</p></div>
+      <div class="tarjeta"><h3>Aplicación web, no APK</h3></div>
+      <div class="tarjeta"><h3>Hilos, no cola distribuida</h3></div>
+      <div class="tarjeta"><h3>Agrupación de semicorcheas</h3></div>
     </div>
   </div>
   <aside class="notas"><p><b>Pivotes</b></p><p>En el camino cambié tres decisiones, y cada cambio salió de un dato o de una restricción concreta. La primera fue pasar de una aplicación Android a una aplicación web, porque un enlace se comparte más fácil y la misma compilación sirve en computadora y en teléfono. La segunda fue cambiar la cola distribuida por un grupo de hilos, porque trabajando solo me convenía algo sencillo de operar. Y la tercera fue agregar la agrupación de semicorcheas, porque al comparar con las ediciones humanas vi que la usan siempre, y sin ella tres de cada cuatro semicorcheas contaban como error aunque la nota estuviera bien.</p></aside>
@@ -373,6 +356,7 @@
           </div>
           <div class="cara resultado">
             <div class="encabezado"><span class="etiqueta">Resultado 1</span><span class="chip estado ok">Cumplido</span></div>
+            <p class="recordatorio">Objetivo 1: Seleccionar la arquitectura de transcripción</p>
             <h3>Dos familias cumplen y se eligió Kong</h3>
             <div class="datos">
               <div>
@@ -412,10 +396,11 @@
             <div class="encabezado"><span class="etiqueta">Objetivo específico 2</span></div>
             <h3>Ajustar el modelo al dominio de uso</h3>
             <p class="enunciado">Hacer un fine-tuning con grabaciones degradadas por compresión, ruido, reverberación y micrófono de teléfono, y cuantificar la robustez frente al modelo original.</p>
-            <div class="metas"><span class="chip">+5 puntos de F1 fuera de distribución</span><span class="chip">Pérdida ≤ 2 puntos en audio limpio</span></div>
+            <div class="metas"><span class="chip">Pérdida ≤ 2 puntos en audio limpio</span></div>
           </div>
           <div class="cara resultado">
             <div class="encabezado"><span class="etiqueta">Resultado 2</span><span class="chip estado parcial">Cumplido en estudio, no con teléfono</span></div>
+            <p class="recordatorio">Objetivo 2: Ajustar el modelo al dominio de uso</p>
             <h3>+5.80 puntos en estudio, pero el teléfono resta</h3>
             <div class="datos">
               <div>
@@ -427,10 +412,6 @@
                   <div class="barra" data-antes="83.81" data-valor="82.81"><div class="nombre">Audio limpio</div><div class="pista"><span class="relleno par"></span><span class="relleno"></span></div><div class="valor">83.8 → 82.8<small class="baja">-1.0</small></div></div>
                 </div>
                 <p class="leyenda-meta"><span class="muestra gris"></span>Modelo original <span class="muestra azul"></span>Modelo ajustado · F1 a nivel de nota. Los +5.80 son el promedio de las cuatro condiciones degradadas.</p>
-              </div>
-              <div class="cifras">
-                <div><div class="cifra">40.0<small>%</small></div><p class="pie">BSA de 9 obras grabadas en estudio</p></div>
-                <div><div class="cifra">26.7<small>%</small></div><p class="pie">BSA de las mismas obras grabadas con teléfono</p></div>
               </div>
             </div>
             <p class="lectura">En una habitación con ventilador y lluvia el modelo parte las notas sostenidas: los reataques pasan de 1.2 % a 9 %. La simulación de celular no reproduce ese efecto.</p>
@@ -461,6 +442,7 @@
           </div>
           <div class="cara resultado">
             <div class="encabezado"><span class="etiqueta">Resultado 3</span><span class="chip estado ok">Cumplido</span></div>
+            <p class="recordatorio">Objetivo 3: Traducir con un módulo determinista</p>
             <h3>28 de 28 reglas trazadas y probadas</h3>
             <div class="datos">
               <div>
@@ -501,12 +483,13 @@
         <div class="paso-oe">
           <div class="cara objetivo">
             <div class="encabezado"><span class="etiqueta">Objetivo específico 4</span></div>
-            <h3>Integrar el sistema de punta a punta</h3>
+            <h3>Latencia objetivo</h3>
             <p class="enunciado">Un servicio asíncrono que reciba un audio de hasta cinco minutos y entregue un BRF válido sin intervención humana.</p>
             <div class="metas"><span class="chip">Tiempo ≤ 1.5 veces la duración del audio</span></div>
           </div>
           <div class="cara resultado">
             <div class="encabezado"><span class="etiqueta">Resultado 4</span><span class="chip estado ok">Cumplido</span></div>
+            <p class="recordatorio">Objetivo 4: Latencia objetivo</p>
             <h3>Todas las ejecuciones bajo el límite</h3>
             <div class="datos">
               <div>
@@ -551,6 +534,7 @@
           </div>
           <div class="cara resultado">
             <div class="encabezado"><span class="etiqueta">Resultado 5</span><span class="chip estado no">No cumplido</span></div>
+            <p class="recordatorio">Objetivo 5: Medir la fidelidad frente a un transcriptor</p>
             <h3>Entre 33.2 % y 46.5 % frente a la meta de 70 %</h3>
             <div class="datos">
               <div>
@@ -598,6 +582,7 @@
           </div>
           <div class="cara resultado">
             <div class="encabezado"><span class="etiqueta">Resultado 6</span><span class="chip estado ok">Cumplido</span></div>
+            <p class="recordatorio">Objetivo 6: Dar acceso autónomo al usuario</p>
             <h3>Una persona con TalkBack llega sola al BRF</h3>
             <div class="datos">
               <div class="anillos" style="margin-top:0;gap:24px">
@@ -633,7 +618,6 @@
             <div class="encabezado"><span class="etiqueta">Objetivo general</span></div>
             <h3>Construir el sistema y saber qué tan cerca queda</h3>
             <p class="enunciado">Un sistema de código abierto, operable por personas con discapacidad visual, que convierta grabaciones de piano de hasta cinco minutos en partituras Braille, y determinar en qué medida se aproximan a las de un transcriptor humano.</p>
-            <div class="metas"><span class="chip">Sistema publicado</span><span class="chip">Cada etapa medida</span><span class="chip">Exactitud determinada</span></div>
           </div>
           <div class="cara resultado">
             <div class="encabezado"><span class="etiqueta">Resultado general</span><span class="chip estado ok">Cumplido</span></div>
@@ -730,17 +714,17 @@
 <section class="slide" id="recomendaciones" data-peso="60" data-parte="Recomendaciones" data-titulo="Recomendaciones">
   <div class="contenido centrado">
     <h2 class="titulo-seccion">Recomendaciones</h2>
-    <p class="subtitulo">¿Qué hallazgo origina cada una y qué se espera?</p>
+    <p class="subtitulo">¿Qué hallazgo origina cada una?</p>
     <div class="desplazable">
       <table class="tabla compacta recomendaciones">
-        <thead><tr><th>Hallazgo</th><th>Recomendación</th><th>Se espera</th></tr></thead>
+        <thead><tr><th>Hallazgo</th><th>Recomendación</th></tr></thead>
         <tbody>
-          <tr><td>1. hFT-Transformer tuvo 5.6 puntos más de F1, sin medir su efecto en la partitura</td><td>Transcribir con él las piezas de prueba y comparar su BSA con el 33.2 %</td><td>Decidir con un dato si conviene cambiar de modelo</td></tr>
-          <tr><td>2. Con teléfono los reataques pasan de 1.2 a 9.0 % y la exactitud baja 13.3 puntos</td><td>Filtro que una los ataques repetidos de una tecla y ajuste con teléfonos y MIDI de un piano digital</td><td>Menos notas partidas y un F1 medible con teléfono</td></tr>
-          <tr><td>3. La Variación 26 tiene un compás por mano y las voces bajan la música con acompañamiento</td><td>Compás por mano, voces solo si un detector de textura las encuentra, y signos de pedal y matices</td><td>Más exactitud y cobertura sin cambiar la arquitectura</td></tr>
-          <tr><td>4. El modelo no estima compás ni armadura y la latencia se midió con un usuario</td><td>Estimarlos de las notas transcritas y medir la espera con varias conversiones a la vez</td><td>Pedir menos datos y conocer la capacidad del servicio</td></tr>
-          <tr><td>5. Manos que se cruzan 31.5 % frente a 37.7 % y piezas lentas con poco ritmo</td><td>Clasificador de manos entrenado con partituras y ventana de pulso más amplia</td><td>Subir alturas y ritmo donde más puede crecer el BSA</td></tr>
-          <tr><td>6. En computadora solo hubo pruebas automáticas</td><td>Recorrer el flujo con NVDA, VoiceOver y Orca</td><td>Completar la verificación en computadora</td></tr>
+          <tr><td>1. hFT-Transformer tuvo 5.6 puntos más de F1, sin medir su efecto en la partitura</td><td>Transcribir con él las piezas de prueba y comparar su BSA con el 33.2 %</td></tr>
+          <tr><td>2. Con teléfono los reataques pasan de 1.2 a 9.0 % y la exactitud baja 13.3 puntos</td><td>Filtro que una los ataques repetidos de una tecla y ajuste con teléfonos y MIDI de un piano digital</td></tr>
+          <tr><td>3. La Variación 26 tiene un compás por mano y las voces bajan la música con acompañamiento</td><td>Compás por mano, voces solo si un detector de textura las encuentra, y signos de pedal y matices</td></tr>
+          <tr><td>4. El modelo no estima compás ni armadura y la latencia se midió con un usuario</td><td>Estimarlos de las notas transcritas y medir la espera con varias conversiones a la vez</td></tr>
+          <tr><td>5. Manos que se cruzan 31.5 % frente a 37.7 % y piezas lentas con poco ritmo</td><td>Clasificador de manos entrenado con partituras y ventana de pulso más amplia</td></tr>
+          <tr><td>6. En computadora solo hubo pruebas automáticas</td><td>Recorrer el flujo con NVDA, VoiceOver y Orca</td></tr>
         </tbody>
       </table>
     </div>
