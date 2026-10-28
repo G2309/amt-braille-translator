@@ -419,13 +419,14 @@
             <h3>+5.80 puntos en estudio, pero el teléfono resta</h3>
             <div class="datos">
               <div>
-                <div class="barras" data-max="100">
-                  <div class="barra" data-antes="44.14" data-valor="59.58"><div class="nombre">Micrófono de celular</div><div class="pista"><span class="relleno par"></span><span class="relleno"></span></div><div class="valor">59.6%</div></div>
-                  <div class="barra" data-antes="62.58" data-valor="68.66"><div class="nombre">Reverberación</div><div class="pista"><span class="relleno par"></span><span class="relleno"></span></div><div class="valor">68.7%</div></div>
-                  <div class="barra" data-antes="75.24" data-valor="76.81"><div class="nombre">Ruido de fondo</div><div class="pista"><span class="relleno par"></span><span class="relleno"></span></div><div class="valor">76.8%</div></div>
-                  <div class="barra" data-antes="83.81" data-valor="82.81"><div class="nombre">Audio limpio</div><div class="pista"><span class="relleno par"></span><span class="relleno"></span></div><div class="valor">82.8%</div></div>
+                <div class="barras comparadas" data-max="100">
+                  <div class="barra" data-antes="44.14" data-valor="59.58"><div class="nombre">Micrófono de celular</div><div class="pista"><span class="relleno par"></span><span class="relleno"></span></div><div class="valor">44.1 → 59.6<small class="sube">+15.4</small></div></div>
+                  <div class="barra" data-antes="62.58" data-valor="68.66"><div class="nombre">Reverberación</div><div class="pista"><span class="relleno par"></span><span class="relleno"></span></div><div class="valor">62.6 → 68.7<small class="sube">+6.1</small></div></div>
+                  <div class="barra" data-antes="75.24" data-valor="76.81"><div class="nombre">Ruido de fondo</div><div class="pista"><span class="relleno par"></span><span class="relleno"></span></div><div class="valor">75.2 → 76.8<small class="sube">+1.6</small></div></div>
+                  <div class="barra" data-antes="82.21" data-valor="82.3"><div class="nombre">Compresión MP3</div><div class="pista"><span class="relleno par"></span><span class="relleno"></span></div><div class="valor">82.2 → 82.3<small class="sube">+0.1</small></div></div>
+                  <div class="barra" data-antes="83.81" data-valor="82.81"><div class="nombre">Audio limpio</div><div class="pista"><span class="relleno par"></span><span class="relleno"></span></div><div class="valor">83.8 → 82.8<small class="baja">-1.0</small></div></div>
                 </div>
-                <p class="leyenda-meta">F1 a nivel de nota. Gris el modelo original, azul el ajustado.</p>
+                <p class="leyenda-meta"><span class="muestra gris"></span>Modelo original <span class="muestra azul"></span>Modelo ajustado · F1 a nivel de nota. Los +5.80 son el promedio de las cuatro condiciones degradadas.</p>
               </div>
               <div class="cifras">
                 <div><div class="cifra">40.0<small>%</small></div><p class="pie">BSA de 9 obras grabadas en estudio</p></div>
@@ -442,7 +443,7 @@
       <p class="oculto-visual" aria-live="polite"></p>
     </div>
   </div>
-  <aside class="notas"><p><b>Objetivo y resultado 2</b></p><p>En el segundo, con condiciones simuladas, el ajuste fino mejoró 5.80 puntos en promedio y solo perdió un punto en audio limpio, así que cumple el criterio. El detalle está en las grabaciones de teléfono hechas en una casa. Ahí las mismas obras bajaron de 40 a 26.7 % de exactitud, y por eso lo reporto como parcial. La simulación ayudó, pero una grabación casera resultó más difícil que la suma de las degradaciones que simulé.</p></aside>
+  <aside class="notas"><p><b>Objetivo y resultado 2</b></p><p>En el segundo, cada fila compara el modelo original, en gris, con el ajustado, en azul, en la misma condición. Donde más ganó fue con el micrófono de celular simulado, de 44 a casi 60. Promediando las cuatro condiciones degradadas mejoró 5.80 puntos y en audio limpio solo perdió uno, así que cumple el criterio. El detalle está en las grabaciones de teléfono hechas en una casa. Ahí las mismas obras bajaron de 40 a 26.7 % de exactitud, y por eso lo reporto como parcial. La simulación ayudó, pero una grabación casera resultó más difícil que la suma de las degradaciones que simulé.</p></aside>
 </section>
 
 <section class="slide" id="resultado-3" data-peso="30" data-parte="Resultados" data-titulo="Resultado 3">
